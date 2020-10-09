@@ -10,8 +10,11 @@ export const GREY = ['#F2F2F2','#D6D5D5','#AEAEAE','#929292','#777777','#5C5C5C'
 export const page = StyleSheet.create ({
     main: {
         backgroundColor: '#F2F2F2',
-        margin: '15px 10px',
-
+        paddingTop: 15,
+        paddingBottom: 15,
+        paddingLeft: 10,
+        paddingRight: 10,
+        height: '100%'
     },
     modal: {
         backgroundColor: 'white',
@@ -40,28 +43,7 @@ export const font = StyleSheet.create ({
         color: GREY[6],
         letterSpacing: 2
     },
-    sideDrawerActive: {
-        color: PURPLE[4],
-        fontSize: 20,
-        letterSpacing: 9
-    },
-    sideDrawerInactive: {
-        color: GREY[4],
-        fontSize: 20,
-        letterSpacing: 9
-    }
 })
-
-export const fontFamily = {
-    material: {
-        "MaterialIcons-Regular": require ('../../assets/fonts/MaterialIcons-Regular.ttf')
-    },
-    lato: {
-       "Lato-Regular": require ('../../assets/fonts/Lato-Regular.ttf'),
-       "Lato-Bold": require ('../../assets/fonts/Lato-Bold.ttf'),
-       "Lato-Light": require ('../../assets/fonts/Lato-Light.ttf')
-    }
-}
 
 // export const shadow = StyleSheet.create ({
 //     big: {
@@ -85,7 +67,7 @@ export const button = StyleSheet.create ({
     },
     secondary: {
         borderRadius: 10,
-        padding: '10px 15px',
+        padding: '10 15',
         backgroundColor: 'transparent',
         borderWidth: 1, 
         borderColor: '#6004B6',

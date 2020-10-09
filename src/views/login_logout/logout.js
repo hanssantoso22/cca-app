@@ -3,15 +3,15 @@ import Navbar from '../../components/common/navigation/navbar/navbar'
 import { page } from '../../components/common/styles'
 import { SafeAreaView, View, Text } from 'react-native'
 
-export default function home (props) {
+export default function logout (props) {
     onMenuPress = () => {
         props.navigation.openDrawer()
     }
     return (
         <SafeAreaView style={page.main}>
-            <Navbar title="Home" pressed={onMenuPress} />
+            <Navbar title="Logout" pressed={onMenuPress}/>
             <View style={page.main}>
-                <Text>Home</Text>
+                <Text>Logout</Text>
             </View>
         </SafeAreaView>
     )

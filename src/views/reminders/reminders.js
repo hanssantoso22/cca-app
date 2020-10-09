@@ -3,15 +3,15 @@ import Navbar from '../../components/common/navigation/navbar/navbar'
 import { page } from '../../components/common/styles'
 import { SafeAreaView, View, Text } from 'react-native'
 
-export default function home (props) {
+export default function reminders (props) {
     onMenuPress = () => {
         props.navigation.openDrawer()
     }
     return (
         <SafeAreaView style={page.main}>
-            <Navbar title="Home" pressed={onMenuPress} />
+            <Navbar title="Reminders" pressed={onMenuPress}/>
             <View style={page.main}>
-                <Text>Home</Text>
+                <Text>Reminders</Text>
             </View>
         </SafeAreaView>
     )

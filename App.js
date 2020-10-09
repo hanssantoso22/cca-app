@@ -1,22 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import Home from './src/views/home/home'
+import { StyleSheet, Text, SafeAreaView } from 'react-native';
+import RootController from './src/components/drawer/RootController'
+import { Provider } from 'react-redux'
+import store from './src/redux/store/store'
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Home />
-    </View>
+    <Provider store={store}>
+      <RootController />
+    </Provider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: 'Lato-Bold'
+    backgroundColor: 'black'
   },
 });
