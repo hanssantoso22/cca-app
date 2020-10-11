@@ -1,5 +1,5 @@
 import React from 'react'
-import { PURPLE, fontFamily } from '../../styles'
+import { PURPLE } from '../../styles'
 import { StyleSheet, View, Text } from 'react-native'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import { AppLoading } from 'expo'
@@ -34,6 +34,12 @@ export default function navbar (props) {
             fontFamily: 'MaterialIcons-Regular',
             color: 'white',
             fontSize: 36,
+        },
+        addButton: {
+            fontFamily: 'MaterialIcons-Regular',
+            color: 'white',
+            fontSize: 30,
+            textAlign: 'center'
         }
     })
     if (!isLoaded) {
@@ -48,7 +54,9 @@ export default function navbar (props) {
                 <View style={styles.titleWrapper}>
                     <Text style={styles.title}>{props.title}</Text>
                 </View>
-                <View style={styles.padding}></View>
+                <View style={styles.padding}>
+                    {props.title=='Manage CCA'?<Text style={styles.addButton} onPress={props.add}>add</Text>:null}
+                </View>
             </View>
         )
     }

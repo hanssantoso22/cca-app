@@ -10,15 +10,15 @@ export const GREY = ['#F2F2F2','#D6D5D5','#AEAEAE','#929292','#777777','#5C5C5C'
 export const page = StyleSheet.create ({
     main: {
         backgroundColor: '#F2F2F2',
-        paddingTop: 15,
-        paddingBottom: 15,
-        paddingLeft: 10,
-        paddingRight: 10,
-        height: '100%'
+        paddingVertical: 20,
+        paddingHorizontal: 15,
+        height: '100%',
     },
     modal: {
         backgroundColor: 'white',
-        margin: '20px 10px', 
+        paddingVertical: 20,
+        paddingHorizontal: 20,
+        borderRadius: 10,
     }
 })
 
@@ -26,8 +26,8 @@ export const card = StyleSheet.create ({
     basic: {
         backgroundColor: 'white',
         borderRadius: 15,
-        padding: '10px',
-        marginBottom: '15px'
+        padding: 10,
+        marginBottom: 15
     },
 })
 
@@ -59,15 +59,18 @@ export const font = StyleSheet.create ({
 
 
 export const button = StyleSheet.create ({
-    primary: {
-        borderRadius: 10,
-        padding: '10px 15px',
+    primaryLong: {
+        borderRadius: 8,
+        paddingVertical: 12,
+        width: '100%',
         backgroundColor: PURPLE[5],
-        color: 'white'
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     secondary: {
         borderRadius: 10,
-        padding: '10 15',
+        paddingVertical: 10,
+        paddingHorizontal: 15,
         backgroundColor: 'transparent',
         borderWidth: 1, 
         borderColor: '#6004B6',
@@ -75,13 +78,15 @@ export const button = StyleSheet.create ({
     },
     dangerPrimary: {
         borderRadius: 10,
-        padding: '10px 15px',
+        paddingVertical: 10,
+        paddingHorizontal: 15,
         backgroundColor: RED[6],
         color: 'white'
     },
     dangerSecondary: {
         borderRadius: 10,
-        padding: '10px 15px',
+        paddingVertical: 10,
+        paddingHorizontal: 15,
         backgroundColor: 'transparent',
         borderWidth: 1,
         borderColor: '#AC1F2D',
@@ -96,8 +101,12 @@ export const checkboxCard = StyleSheet.create ({
         borderRadius: 15,
         borderColor: GREY[2],
         color: GREY[5],
-        padding: '10px',
-        marginBottom: '10px'
+        paddingHorizontal: 10,
+        paddingVertical: 20,
+        marginBottom: 10,
+        flexDirection: 'row',
+        minHeight: 50,
+        marginBottom: 15,
     },
     active: {
         backgroundColor: MING[1],
@@ -105,12 +114,16 @@ export const checkboxCard = StyleSheet.create ({
         borderRadius: 15,
         borderColor: MING[4],
         color: MING[6],
-        padding: '10px',
-        marginBottom: '10px',
+        paddingHorizontal: 10,
+        paddingVertical: 20,
+        marginBottom: 10,
         shadowColor: 'black',
         shadowOpacity: 0.08,
         shadowOffset: {width: 3, height: 4},
         shadowRadius: 10,
         elevation: 2,
+        flexDirection: 'row',
+        minHeight: 50,
+        marginBottom: 15,
     }
 })

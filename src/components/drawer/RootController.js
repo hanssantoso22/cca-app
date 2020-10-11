@@ -1,6 +1,7 @@
-import { createAppContainer } from 'react-navigation'
-import { createDrawerNavigator } from 'react-navigation-drawer';
-import { createStackNavigator } from 'react-navigation-stack';
+import React from 'react'
+import { NavigationContainer } from '@react-navigation/native'
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createStackNavigator } from '@react-navigation/stack';
 import { Dimensions } from 'react-native'
 
 import HomeScreen from '../../views/home/home'
@@ -9,65 +10,68 @@ import RemindersScreen from '../../views/reminders/reminders'
 import ClubsScreen from '../../views/clubs/clubs'
 import ManageCCAScreen from '../../views/manage_cca/manage_cca'
 import ArchivesScreen from '../../views/archives/archives'
-import LogoutScreen from '../../views/login_logout/logout'
+import LoginScreen from '../../views/login_logout/login'
+import CreateAccountScreen from '../../views/login_logout/createNewAccount'
 import DrawerMenu from '../common/navigation/sideDrawer/sideDrawer'
+
+import { isLoggedIn } from '../../redux/store/store'
+import { useSelector } from 'react-redux';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
-// CREATE STACK NAVIGATORS
-const HomeNavigator = createStackNavigator({
-    HomeScreen,
-}, {
-    headerMode: 'none',
-})
-const EventsNavigator = createStackNavigator({
-    EventsScreen
-}, {
-    headerMode: 'none',
-})
-const RemindersNavigator = createStackNavigator({
-    RemindersScreen
-}, {
-    headerMode: 'none',
-})
-const ClubsNavigator = createStackNavigator({
-    ClubsScreen
-}, {
-    headerMode: 'none',
-})
-const ManageCCANavigator = createStackNavigator({
-    ManageCCAScreen
-}, {
-    headerMode: 'none',
-})
-const ArchivesNavigator = createStackNavigator({
-    ArchivesScreen
-}, {
-    headerMode: 'none',
-})
-const LogoutNavigator = createStackNavigator({
-    LogoutScreen
-}, {
-    headerMode: 'none',
-})
+const DrawerStack = createDrawerNavigator()
+const HomeStack = createStackNavigator()
+const EventsStack = createStackNavigator()
+const RemindersStack = createStackNavigator()
+const ClubsStack = createStackNavigator()
+const ManageCCAStack = createStackNavigator()
+const ArchivesStack = createStackNavigator()
+const LogoutStack = createStackNavigator()
+const AuthStack = createStackNavigator()
 
-// CREATE DRAWER NAVIGATOR
-const DrawerNavigator = createDrawerNavigator ({
-    HomeScreen: HomeNavigator,
-    EventsScreen: EventsNavigator,
-    ClubsScreen: ClubsNavigator,
-    RemindersScreen: RemindersNavigator,
-    ManageCCAScreen: ManageCCANavigator,
-    ArchivesScreen: ArchivesNavigator,
-    LogoutScreen: LogoutNavigator,
-}, {
-    initialRouteName: 'HomeScreen',
-    drawerBackgroundColor: 'white',
-    contentComponent: DrawerMenu,
-    drawerLockMode: "locked-closed",
-    disableGestures: true,
-    drawerWidth: screenWidth - 60,
-})
+const HomeStackScreen = () => (
+    <HomeStack.Navigator>
+        <HomeStack.Screen name='Home' component={HomeScreen} options={{headerShown: false}}/>
+    </HomeStack.Navigator>
+)
+const EventsStackScreen = () => (EventsScreen)
+const RemindersStackScreen = () => (RemindersScreen)
+const ClubsStackScreen = () => (ClubsScreen)
+const ManageCCAStackScreen = () => (
+    <ManageCCAStack.Navigator>
+        <ManageCCAStack.Screen name='ManageCCAScreen' component={ManageCCAScreen} options={{headerShown: false}}/>
+    </ManageCCAStack.Navigator>
+)
+const ArchivesStackScreen = () => (ArchivesScreen)
+const LogoutStackScreen = () => (LogoutScreen)
 
-export default RootController = createAppContainer(DrawerNavigator)
+const RootController = () => {
+    const isAuth = useSelector(isLoggedIn)
+    return (
+    <NavigationContainer>
+        {isAuth ? (
+            <DrawerStack.Navigator initialRouteName="HomeStackScreen"
+                        drawerBackgroundColor= "white"
+                        drawerContent= {props => <DrawerMenu {...props}/>}
+                        drawerLockMode= "locked-closed"
+                        disableGestures= {true}
+                        drawerWidth= {screenWidth - 60} >
+                <HomeStack.Screen name="HomeScreen" component={HomeStackScreen} />
+                <EventsStack.Screen name="EventsScreen" component={EventsScreen} />
+                <RemindersStack.Screen name="RemindersScreen" component={RemindersScreen} />
+                <ClubsStack.Screen name="ClubsScreen" component={ClubsScreen} />
+                <ManageCCAStack.Screen name="ManageCCAScreen" component={ManageCCAStackScreen} />
+                <ArchivesStack.Screen name="ArchivesScreen" component={ArchivesScreen} />
+                <LogoutStack.Screen name="LogoutScreen" component={LoginScreen} />
+            </DrawerStack.Navigator>
+        ) : (
+            <AuthStack.Navigator initialRouteName="AuthStackScreen">
+                <AuthStack.Screen name="LoginScreen" component={LoginScreen} />
+                <AuthStack.Screen name="CreateAccount" component={props => <CreateAccountScreen {...props} />} />
+            </AuthStack.Navigator>
+        ) }
+        
+    </NavigationContainer>
+)}
+export default RootController
 

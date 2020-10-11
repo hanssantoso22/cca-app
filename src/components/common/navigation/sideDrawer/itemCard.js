@@ -1,10 +1,10 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { useFonts, Lato_400Regular } from '@expo-google-fonts/lato'
-import { PURPLE, GREY, font } from '../../styles'
-import { useSelector } from 'react-redux'
-import { activeScreen } from '../../../../redux/reducers/slice'
+import { PURPLE, GREY } from '../../styles'
+import { activeScreen } from '../../../../redux/store/store'
 import { AppLoading } from 'expo'
+import { useSelector } from 'react-redux'
 
 export default function ItemCard (props) {
     const [isLoaded] = useFonts({
