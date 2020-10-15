@@ -8,7 +8,10 @@ import HomeScreen from '../../views/home/home'
 import EventsScreen from '../../views/events/events'
 import RemindersScreen from '../../views/reminders/reminders'
 import ClubsScreen from '../../views/clubs/clubs'
-import ManageCCAScreen from '../../views/manage_cca/manage_cca'
+import ManageCCAScreen from '../../views/manage_cca/ManageCCA'
+import CreateEventScreen from '../../views/manage_cca/CreateEvent'
+import CreateAnnouncementScreen from '../../views/manage_cca/CreateAnnouncement'
+import CreateNewModal from '../../views/manage_cca/createNewModal'
 import ArchivesScreen from '../../views/archives/archives'
 import LoginScreen from '../../views/login_logout/login'
 import CreateAccountScreen from '../../views/login_logout/createNewAccount'
@@ -39,7 +42,10 @@ const RemindersStackScreen = () => (RemindersScreen)
 const ClubsStackScreen = () => (ClubsScreen)
 const ManageCCAStackScreen = () => (
     <ManageCCAStack.Navigator>
-        <ManageCCAStack.Screen name='ManageCCAScreen' component={ManageCCAScreen} options={{headerShown: false}}/>
+        <ManageCCAStack.Screen name="ManageCCAScreen" component={ManageCCAScreen} options={{headerShown: false}}/>
+        <ManageCCAStack.Screen name="CreateNewModal" component={CreateNewModal} options={{headerShown: false, cardOverlayEnabled: true}}/>
+        <ManageCCAStack.Screen name="CreateEventScreen" component={CreateEventScreen} options={{headerShown: false}}/>
+        <ManageCCAStack.Screen name="CreateAnnouncementScreen" component={CreateAnnouncementScreen} options={{headerShown: false}}/>
     </ManageCCAStack.Navigator>
 )
 const ArchivesStackScreen = () => (ArchivesScreen)

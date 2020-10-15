@@ -6,12 +6,12 @@ export const RED = ['#F8DADD','#F2B5BB','#EB9099','#E46A76','#DE4554','#D12637',
 export const GREEN = ['#D4FFEE','#88FECC','#4CFDB3','#11FC9A','#02CE79','#029356','#015733']
 export const GREY = ['#F2F2F2','#D6D5D5','#AEAEAE','#929292','#777777','#5C5C5C','#414141']
 
+export const marginHorizontal = 15
 
 export const page = StyleSheet.create ({
     main: {
         backgroundColor: '#F2F2F2',
         paddingVertical: 20,
-        paddingHorizontal: 15,
         height: '100%',
     },
     modal: {
@@ -20,15 +20,6 @@ export const page = StyleSheet.create ({
         paddingHorizontal: 20,
         borderRadius: 10,
     }
-})
-
-export const card = StyleSheet.create ({
-    basic: {
-        backgroundColor: 'white',
-        borderRadius: 15,
-        padding: 10,
-        marginBottom: 15
-    },
 })
 
 export const font = StyleSheet.create ({
@@ -44,19 +35,6 @@ export const font = StyleSheet.create ({
         letterSpacing: 2
     },
 })
-
-// export const shadow = StyleSheet.create ({
-//     big: {
-
-//     },
-//     medium: {
-
-//     },
-//     small: {
-
-//     }
-// })
-
 
 export const button = StyleSheet.create ({
     primaryLong: {

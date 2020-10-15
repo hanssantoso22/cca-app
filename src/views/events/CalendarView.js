@@ -1,15 +1,11 @@
 import React from 'react';
-import Navbar from '../../components/common/navigation/navbar/navbar'
 import { page, PURPLE, MING } from '../../components/common/styles'
-import { SafeAreaView, View, StyleSheet, Text } from 'react-native'
-import { Calendar, Agenda } from 'react-native-calendars'
+import { View, StyleSheet, Text } from 'react-native'
+import { Agenda } from 'react-native-calendars'
 import moment from 'moment'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 export default function reminders (props) {
-    const onMenuPress = () => {
-        props.navigation.openDrawer()
-    }
     const styles = StyleSheet.create({
         calendar: {
           marginBottom: 10,
@@ -66,21 +62,18 @@ export default function reminders (props) {
     }
 
     return (
-        <SafeAreaView style={page.main}>
-            <Navbar title="Reminders" pressed={onMenuPress}/>
-            <View style={page.main}>
-                <Agenda
-                        style={styles.calendar}
-                        hideExtraDays
-                        enableSwipeMonths={true}
-                        minDate={today}
-                        items={importantDates}
-                        renderItem={renderItem}
-                        theme={{
-                            agendaTodayColor: PURPLE[5],
-                        }}
-                />
-            </View>
-        </SafeAreaView>
+        <View style={page.main}>
+            <Agenda
+                    style={styles.calendar}
+                    hideExtraDays
+                    enableSwipeMonths={true}
+                    minDate={today}
+                    items={importantDates}
+                    renderItem={renderItem}
+                    theme={{
+                        agendaTodayColor: PURPLE[5],
+                    }}
+            />
+        </View>
     )
 }

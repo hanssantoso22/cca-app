@@ -4,7 +4,7 @@ import { page } from '../../components/common/styles'
 import { SafeAreaView, View, Text } from 'react-native'
 
 export default function clubs (props) {
-    onMenuPress = () => {
+    const onMenuPress = () => {
         props.navigation.openDrawer()
     }
     return (

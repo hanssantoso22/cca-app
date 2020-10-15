@@ -31,10 +31,9 @@ export default function SideDrawer (props) {
         {id:0, menu:'HOME', icon:'home', navScreen:'HomeScreen'},
         {id:1, menu:'EVENTS', icon:'event', navScreen:'EventsScreen'},
         {id:2, menu:'REMINDERS', icon:'notifications_none', navScreen:'RemindersScreen'},
-        {id:3, menu:'CLUBS', icon:'people_outline', navScreen:'ClubsScreen'},
-        {id:4, menu:'MANAGE CCA', icon:'emoji_flags', navScreen:'ManageCCAScreen'},
-        {id:5, menu:'ARCHIVES', icon:'history', navScreen:'ArchivesScreen'},
-        {id:6, menu:'LOGOUT', icon:'exit_to_app', navScreen:'LogoutScreen'},
+        {id:3, menu:'MANAGE CCA', icon:'emoji_flags', navScreen:'ManageCCAScreen'},
+        {id:4, menu:'ARCHIVES', icon:'history', navScreen:'ArchivesScreen'},
+        {id:5, menu:'LOGOUT', icon:'exit_to_app', navScreen:'LogoutScreen'},
     ]
     const renderFlatList = () => (
         <FlatList scrollEnabled = {(screenHeight >= 667) ? false : true}

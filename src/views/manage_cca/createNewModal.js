@@ -7,6 +7,9 @@ import { AppLoading } from 'expo'
 import { FlatList, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import CheckBoxItem from '../../components/manage_cca/checkboxItem'
 import PrimaryButton from '../../components/common/buttons/PrimaryLong'
+import { selectItemInModal } from '../../redux/reducers/manageCCASlice'
+import { selectedItem } from '../../redux/store/store'
+import { useDispatch, useSelector } from 'react-redux';
 
 
 const createNewModal = (props) => {
@@ -14,7 +17,8 @@ const createNewModal = (props) => {
         Lato_700Bold,
         'MaterialIcons-Regular': require('../../assets/fonts/MaterialIcons-Regular.ttf')
     })
-    const [checked, setChecked] = useState(null)
+    const dispatch = useDispatch()
+    const checked = useSelector(selectedItem)
     const styles = StyleSheet.create ({
         title: {
             fontFamily: 'Lato_700Bold',
@@ -31,10 +35,10 @@ const createNewModal = (props) => {
     ]
     const selectItem = (label) => {
         if (label == 'Event'){
-            setChecked('Event')
+            dispatch(selectItemInModal('Event'))
         }
         else {
-            setChecked('Announcement')
+            dispatch(selectItemInModal('Announcement'))
         }
     }
     if (!isLoaded) {
@@ -52,12 +56,11 @@ const createNewModal = (props) => {
                                         )}
                     />
                     <View style={{marginTop:5}}>
-                        <PrimaryButton text="Create" fontSize={20} /> 
+                        <PrimaryButton text="Create" fontSize={20} pressHandler={props.submit.bind(this,checked)} /> 
                     </View>
                 </View>    
             </Modal>
         )
     }   
 }
-
 export default createNewModal
