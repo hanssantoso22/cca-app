@@ -10,7 +10,9 @@ export default function EventsTab (props) {
         {id: 2, name: 'Subcommittee Recruitment Talk', organizer: 'EEE Club'}
     ]
     const onClickHandler = (eventID) => {
-        return null
+        props.navigation.navigate('EditEventScreen',{
+            eventID
+        })
     }
     return (
         <View style={page.main}>

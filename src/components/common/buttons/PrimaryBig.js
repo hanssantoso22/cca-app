@@ -5,7 +5,7 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { useFonts, Lato_700Bold} from '@expo-google-fonts/lato'
 import { AppLoading } from 'expo'
 
-export default function (props) {
+export default function ({ fontSize, pressHandler, text }) {
     const [isLoaded] = useFonts ({
         Lato_700Bold
     })
@@ -15,15 +15,14 @@ export default function (props) {
             color: 'white'
         }
     })
-    const fontSize = props.fontSize
     if (!isLoaded) {
         return (<AppLoading />)
     }
     else {
         return (
-            <TouchableWithoutFeedback onPress={props.pressHandler}>
-                <View style={button.primaryLong}>
-                    <Text style={{...styles.label, fontSize:fontSize}}>{props.text}</Text>
+            <TouchableWithoutFeedback onPress={pressHandler}>
+                <View style={button.primaryBig}>
+                    <Text style={{...styles.label, fontSize:fontSize}}>{text}</Text>
                 </View>
             </TouchableWithoutFeedback>
         )

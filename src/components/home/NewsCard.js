@@ -43,7 +43,7 @@ export default function NewsCard (props) {
         }
     })
     return (
-        <TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={props.pressed}>
             <View style={styles.card}>
                 <View style={styles.thumbnail}>
                     <Image source={props.imgSource} />

@@ -6,7 +6,7 @@ import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import { AppLoading } from 'expo'
 import { FlatList, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import CheckBoxItem from '../../components/manage_cca/checkboxItem'
-import PrimaryButton from '../../components/common/buttons/PrimaryLong'
+import PrimaryButton from '../../components/common/buttons/PrimaryBig'
 import { selectItemInModal } from '../../redux/reducers/manageCCASlice'
 import { selectedItem } from '../../redux/store/store'
 import { useDispatch, useSelector } from 'react-redux';

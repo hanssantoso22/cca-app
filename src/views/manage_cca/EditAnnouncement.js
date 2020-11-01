@@ -19,6 +19,7 @@ export default function home (props) {
     const onBackPress = () => {
         props.navigation.goBack()
     }
+    const { announcementID } = props.route.params
     const styles = StyleSheet.create ({
         card: {
             borderRadius: 15,
@@ -59,7 +60,7 @@ export default function home (props) {
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={page.main}>
-                <SubNavbar title='Create Announcement' pressed={onBackPress} />
+                <SubNavbar title='Edit Announcement' pressed={onBackPress} />
                 <View style={page.main}>
                     <Text style={styles.pageTitle}>Announcement Details</Text>
                     <View style={styles.card}>

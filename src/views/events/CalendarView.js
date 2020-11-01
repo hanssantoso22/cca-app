@@ -1,11 +1,11 @@
 import React from 'react';
-import { page, PURPLE, MING } from '../../components/common/styles'
+import { page, PURPLE, MING, marginHorizontal } from '../../components/common/styles'
 import { View, StyleSheet, Text } from 'react-native'
 import { Agenda } from 'react-native-calendars'
 import moment from 'moment'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
-export default function reminders (props) {
+export default function EventsCalendarView (props) {
     const styles = StyleSheet.create({
         calendar: {
           marginBottom: 10,
@@ -32,8 +32,8 @@ export default function reminders (props) {
       });
     const today = moment().format('YYYY-MM-DD')
     const importantDates = {
-        '2020-10-11': [{name: 'Test', height: 80, time: '09:00'},{name: 'Test3', height: 80, time: '09:00'}],
-        '2020-10-15': [{name: 'Test2', height: 80, time: '09:00'}],
+        '2020-10-25': [{id: 0, name: 'Test', height: 80, time: '09:00'},{id: 1, name: 'Test3', height: 80, time: '09:00'}],
+        '2020-10-27': [{id: 2, name: 'Test2', height: 80, time: '09:00'}],
     }
     const timeToString = (time) => {
         const date = new Date(time)
@@ -53,8 +53,8 @@ export default function reminders (props) {
     const renderItem = (item) => {
         return (
             <TouchableWithoutFeedback
-            style={[styles.item, {height: item.height}]} 
-            onPress={() => Alert.alert(item.name)}
+                style={[styles.item, {height: item.height}]} 
+                onPress={() => props.navigation.navigate('EventsDetails',{eventID: item.id})}
             >
                 <Text>{item.name}</Text>
             </TouchableWithoutFeedback>
@@ -62,7 +62,7 @@ export default function reminders (props) {
     }
 
     return (
-        <View style={page.main}>
+        <View style={{...page.main, paddingHorizontal: marginHorizontal}}>
             <Agenda
                     style={styles.calendar}
                     hideExtraDays

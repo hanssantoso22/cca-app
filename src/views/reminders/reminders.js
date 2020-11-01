@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from '../../components/common/navigation/navbar/navbar'
-import { page, PURPLE, MING } from '../../components/common/styles'
+import { page, PURPLE, MING, marginHorizontal } from '../../components/common/styles'
 import { SafeAreaView, View, StyleSheet, Text } from 'react-native'
 import { Calendar, Agenda } from 'react-native-calendars'
 import moment from 'moment'
@@ -36,8 +36,8 @@ export default function reminders (props) {
       });
     const today = moment().format('YYYY-MM-DD')
     const importantDates = {
-        '2020-10-11': [{name: 'Test', height: 80, time: '09:00'},{name: 'Test3', height: 80, time: '09:00'}],
-        '2020-10-15': [{name: 'Test2', height: 80, time: '09:00'}],
+        '2020-10-26': [{id: 0,name: 'Test', height: 80, time: '09:00'},{id:1, name: 'Test3', height: 80, time: '09:00'}],
+        '2020-10-30': [{id: 2,name: 'Test2', height: 80, time: '09:00'}],
     }
     const timeToString = (time) => {
         const date = new Date(time)
@@ -58,7 +58,7 @@ export default function reminders (props) {
         return (
             <TouchableWithoutFeedback
             style={[styles.item, {height: item.height}]} 
-            onPress={() => Alert.alert(item.name)}
+            onPress={() => props.navigation.navigate('ReminderDetails',{eventID: item.id})}
             >
                 <Text>{item.name}</Text>
             </TouchableWithoutFeedback>
@@ -68,7 +68,7 @@ export default function reminders (props) {
     return (
         <SafeAreaView style={page.main}>
             <Navbar title="Reminders" pressed={onMenuPress}/>
-            <View style={page.main}>
+            <View style={{...page.main, paddingHorizontal: marginHorizontal}}>
                 <Agenda
                         style={styles.calendar}
                         hideExtraDays

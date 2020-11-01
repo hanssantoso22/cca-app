@@ -21,6 +21,8 @@ export default function navbar (props) {
             fontFamily: 'Lato_700Bold',
             color: 'white',
             fontSize: 16,
+            justifyContent: 'center',
+            textAlign: 'center'
         },
         padding: {
             flex: 1,
@@ -52,7 +54,7 @@ export default function navbar (props) {
                     <Text style={styles.backButton} onPress={props.pressed}>arrow_back_ios</Text>
                 </View>
                 <View style={styles.titleWrapper}>
-                    <Text style={styles.title}>{props.title}</Text>
+                    <Text numberOfLines={1} ellipsizeMode='tail' style={styles.title}>{props.title}</Text>
                 </View>
                 <View style={styles.padding}>
                     

@@ -7,6 +7,7 @@ export const GREEN = ['#D4FFEE','#88FECC','#4CFDB3','#11FC9A','#02CE79','#029356
 export const GREY = ['#F2F2F2','#D6D5D5','#AEAEAE','#929292','#777777','#5C5C5C','#414141']
 
 export const marginHorizontal = 15
+export const marginHorizontalText = 30
 
 export const page = StyleSheet.create ({
     main: {
@@ -24,7 +25,7 @@ export const page = StyleSheet.create ({
 
 export const font = StyleSheet.create ({
     articleTitle: {
-        fontSize: 24,
+        fontSize: 20,
         lineHeight: 30,
         color: GREY[6]
     },
@@ -32,12 +33,15 @@ export const font = StyleSheet.create ({
         fontSize: 16,
         lineHeight: 25,
         color: GREY[6],
-        letterSpacing: 2
+        letterSpacing: 1
     },
+    link: {
+        color: MING[5]
+    }
 })
 
 export const button = StyleSheet.create ({
-    primaryLong: {
+    primaryBig: {
         borderRadius: 8,
         paddingVertical: 12,
         width: '100%',
@@ -45,14 +49,23 @@ export const button = StyleSheet.create ({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    secondary: {
-        borderRadius: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 15,
+    primarySmall: {
+        borderRadius: 5,
+        paddingVertical: 8,
+        width: '100%',
+        backgroundColor: PURPLE[5],
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    secondarySmall: {
+        borderRadius: 5,
+        paddingVertical: 8,
+        width: '100%',
         backgroundColor: 'transparent',
         borderWidth: 1, 
-        borderColor: '#6004B6',
-        color: PURPLE[5]
+        borderColor: PURPLE[5],
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     dangerPrimary: {
         borderRadius: 10,
@@ -104,4 +117,16 @@ export const checkboxCard = StyleSheet.create ({
         minHeight: 50,
         marginBottom: 15,
     }
+})
+export const RNPicker = StyleSheet.create({
+    inputIOS: {
+        borderRadius: 4,
+        borderWidth: 1,
+        borderColor: GREY[2],
+        color: GREY[5],
+        fontSize: 16,
+        paddingHorizontal: 12,
+        paddingVertical: 16,
+        marginBottom: 20,
+    },
 })

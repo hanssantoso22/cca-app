@@ -21,6 +21,7 @@ export default function home (props) {
     const loaded = isLoaded
     const [showPicker, setShowPicker] = useState(false)
     const [date, setDate] = useState(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`))
+    const { eventID } = props.route.params 
     const onBackPress = () => {
         props.navigation.goBack()
     }
@@ -88,7 +89,7 @@ export default function home (props) {
     return (
         <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss(); setShowPicker(false)}}>
             <SafeAreaView style={page.main}>
-                <SubNavbar title='Create Event' pressed={onBackPress} />
+                <SubNavbar title='Edit Event' pressed={onBackPress} />
                 <ScrollView>
                     <View style={page.main}>
                         <Text style={styles.pageTitle}>Event Details</Text>
