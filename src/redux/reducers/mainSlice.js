@@ -4,8 +4,8 @@ export const drawerSlice = createSlice({
     name: 'active_screen',
     initialState: {
         activeScreen: 'HomeScreen',
-        isAdmin: true,
-        isLoggedIn: true,
+        isAdmin: false,
+        isLoggedIn: false,
     },
     reducers: {
         navigateToPage (state, action) {

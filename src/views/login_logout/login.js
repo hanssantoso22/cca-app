@@ -1,7 +1,7 @@
 import React from 'react';
-import { page } from '../../components/common/styles'
+import { PURPLE } from '../../components/common/styles'
 import { SafeAreaView, StyleSheet, Button } from 'react-native'
-import { useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux'
 import { login } from '../../redux/reducers/mainSlice'
 
 export default function Login (props) {
@@ -15,7 +15,9 @@ export default function Login (props) {
     const styles = StyleSheet.create({
         mainContainer: {
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            backgroundColor: PURPLE[5],
+            height: '100%',
         }
     })
     return (

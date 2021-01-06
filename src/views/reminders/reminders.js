@@ -36,8 +36,8 @@ export default function reminders (props) {
       });
     const today = moment().format('YYYY-MM-DD')
     const importantDates = {
-        '2020-10-26': [{id: 0,name: 'Test', height: 80, time: '09:00'},{id:1, name: 'Test3', height: 80, time: '09:00'}],
-        '2020-10-30': [{id: 2,name: 'Test2', height: 80, time: '09:00'}],
+        '2020-11-06': [{id: 0,name: 'Test', height: 80, time: '09:00'},{id:1, name: 'Test3', height: 80, time: '09:00'}],
+        '2020-11-08': [{id: 2,name: 'Test2', height: 80, time: '09:00'}],
     }
     const timeToString = (time) => {
         const date = new Date(time)

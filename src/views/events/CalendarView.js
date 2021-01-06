@@ -32,8 +32,8 @@ export default function EventsCalendarView (props) {
       });
     const today = moment().format('YYYY-MM-DD')
     const importantDates = {
-        '2020-10-25': [{id: 0, name: 'Test', height: 80, time: '09:00'},{id: 1, name: 'Test3', height: 80, time: '09:00'}],
-        '2020-10-27': [{id: 2, name: 'Test2', height: 80, time: '09:00'}],
+        '2020-11-07': [{id: 0, name: 'Test', height: 80, time: '09:00'},{id: 1, name: 'Test3', height: 80, time: '09:00'}],
+        '2020-11-06': [{id: 2, name: 'Test2', height: 80, time: '09:00'}],
     }
     const timeToString = (time) => {
         const date = new Date(time)

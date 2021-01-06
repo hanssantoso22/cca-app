@@ -4,6 +4,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Dimensions } from 'react-native'
 
+//COMPONENTS FOR NON-ADMIN USERS
 import HomeScreen from '../../views/home/home'
 import ArticleDetailScreen from '../../views/home/ArticleDetailPage'
 import EventsScreen from '../../views/events/events'
@@ -23,11 +24,18 @@ import LoginScreen from '../../views/login_logout/login'
 import CreateAccountScreen from '../../views/login_logout/createNewAccount'
 import DrawerMenu from '../common/navigation/sideDrawer/sideDrawer'
 
-import { isLoggedIn } from '../../redux/store/store'
+//COMPONENTS FOR ADMIN
+import UserListScreen from '../../views/admin/UserList'
+import UserDetailsScreen from '../../views/admin/UserDetails'
+import AdminDrawerMenu from '../common/navigation/sideDrawer/AdminSideDrawer'
+
+
+import { isLoggedIn, isAdmin } from '../../redux/store/store'
 import { useSelector } from 'react-redux'
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
+// NON-ADMIN
 const DrawerStack = createDrawerNavigator()
 const HomeStack = createStackNavigator()
 const EventsStack = createStackNavigator()
@@ -74,11 +82,40 @@ const ArchivesStackScreen = () => (
 )
 const LogoutStackScreen = () => (LogoutScreen)
 
+// ADMIN ACCESS
+const AdminDrawerStack = createDrawerNavigator()
+const AdminManageUsersStack = createStackNavigator()
+const AdminManageCCAStack = createStackNavigator()
+
+const AdminManageUsersStackScreen = () => (
+    <AdminManageUsersStack.Navigator>
+        <AdminManageUsersStack.Screen name="UserListScreen" component={UserListScreen} options={{headerShown: false}}/>
+        <AdminManageUsersStack.Screen name="UserDetailsScreen" component={UserDetailsScreen} options={{headerShown: false}}/>
+    </AdminManageUsersStack.Navigator>
+)
+const AdminManageCCAStackScreen = () => (
+    <AdminManageCCAStack.Navigator>
+        <AdminManageCCAStack.Screen name="CCAListScreen" component={CCAListScreen} options={{headerShown: false}}/>
+        <AdminManageCCAStack.Screen name="CCADetailsScreen" component={CCADetailsScreen} options={{headerShown: false}}/>
+    </AdminManageCCAStack.Navigator>
+)
+
 const RootController = () => {
     const isAuth = useSelector(isLoggedIn)
+    const isAdminStatus = useSelector(isAdmin)
     return (
     <NavigationContainer>
-        {isAuth ? (
+        {isAuth ? isAdminStatus ? (
+            <AdminDrawerStack.Navigator initialRouteName="AdminManageUsersStackScreen"
+                drawerBackgroundColor= "white"
+                drawerContent= {props => <AdminDrawerMenu {...props}/>}
+                drawerLockMode= "locked-closed"
+                disableGestures= {true}
+                drawerWidth= {screenWidth - 60} >
+                <AdminManageUsersStack.Screen name="AdminManageUserScreen" component={AdminManageUsersStackScreen} />
+                <AdminManageCCAStack.Screen name="AdminManageCCAScreen" component={AdminManageCCAStackScreen} />
+            </AdminDrawerStack.Navigator>
+        ) : (
             <DrawerStack.Navigator initialRouteName="HomeStackScreen"
                         drawerBackgroundColor= "white"
                         drawerContent= {props => <DrawerMenu {...props}/>}
@@ -94,8 +131,8 @@ const RootController = () => {
             </DrawerStack.Navigator>
         ) : (
             <AuthStack.Navigator initialRouteName="AuthStackScreen">
-                <AuthStack.Screen name="LoginScreen" component={LoginScreen} />
-                <AuthStack.Screen name="CreateAccount" component={props => <CreateAccountScreen {...props} />} />
+                <AuthStack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown: false}}/>
+                <AuthStack.Screen name="CreateAccount" component={props => <CreateAccountScreen {...props} />} options={{headerShown: false}}/>
             </AuthStack.Navigator>
         ) }
         

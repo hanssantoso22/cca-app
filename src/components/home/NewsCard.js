@@ -3,6 +3,7 @@ import { GREY } from '../common/styles'
 import { View, Text, StyleSheet, Image } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import Dummy1 from '../../assets/dummy/image005.jpg'
 
 export default function NewsCard (props) {
     const [isLoaded] = useFonts({
@@ -22,7 +23,18 @@ export default function NewsCard (props) {
             shadowRadius: 8,
         },
         thumbnail: {
+            flex: 1,
             height: 150,
+            width: '100%',
+            borderRadius: 15,
+        },
+        image: {
+            flex: 1,
+            height: null,
+            width: null,
+            resizeMode: 'cover',
+            borderTopLeftRadius: 15,
+            borderTopRightRadius: 15,
         },
         description: {
             paddingVertical: 15,
@@ -46,7 +58,7 @@ export default function NewsCard (props) {
         <TouchableWithoutFeedback onPress={props.pressed}>
             <View style={styles.card}>
                 <View style={styles.thumbnail}>
-                    <Image source={props.imgSource} />
+                    <Image style={styles.image} source={Dummy1} />
                 </View>
                 <View style={styles.description}>
                     <Text style={styles.newsTitle} ellipsizeMode='tail' numberOfLines={2}>{props.title}</Text>

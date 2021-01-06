@@ -33,20 +33,10 @@ export default function DateTimePickerInput ( { label, onChangeText, onChangePic
         },
     })
     const normalDateFormatParser = (dateObject) => {
-        console.log(dateObject)
         const dateString = dateObject.toString()
-        const normalDate = moment(dateString).format('DD MMMM YYYY')
+        const normalDate = moment(dateString).format('DD MMMM YYYY HH:mmA')
         return normalDate
     }
-    const normalTimeFormatParser = (dateObject) => {
-        const dateString = dateObject.toString()
-        const normalDate = moment(dateString).format('HH:mm')
-        return normalDate
-    }
-    // const onPickerChange = (event, selectedDate) => {
-    //     const currentDate = selectedDate || date
-    //     setDate(currentDate)
-    // }
     return (
         <View>
             <Text style={styles.inputLabel}>{label}</Text>
