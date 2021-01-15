@@ -1,21 +1,15 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, SafeAreaView } from 'react-native';
 import RootController from './src/components/drawer/RootController'
 import { Provider } from 'react-redux'
-import store from './src/redux/store/store'
+import store, { persistor } from './src/redux/store/store'
+import { PersistGate } from 'redux-persist/integration/react'
 
 export default function App() {
   return (
     <Provider store={store}>
-      <RootController />
+      <PersistGate loading={null} persistor={persistor}>
+        <RootController />
+      </PersistGate>
     </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'black'
-  },
-});

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, SafeAreaView, Dimensions } from 'react-native'
 import { Avatar, Accessory } from 'react-native-elements'
 import { FlatList } from 'react-native-gesture-handler'
 import ItemCard from './itemCard'
-import { navigateToPage, login } from '../../../../redux/reducers/mainSlice'
+import { navigateToPage, logout } from '../../../../redux/reducers/mainSlice'
 import { isAdmin } from '../../../../redux/store/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
@@ -15,7 +15,7 @@ export default function SideDrawer (props) {
 
     const navigateToScreen  = (navScreen) => {
         if (navScreen=='LogoutScreen') {
-            dispatch (login())
+            dispatch (logout())
             return 0
         }
         props.navigation.navigate(navScreen)

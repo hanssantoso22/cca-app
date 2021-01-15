@@ -25,9 +25,13 @@ import CreateAccountScreen from '../../views/login_logout/createNewAccount'
 import DrawerMenu from '../common/navigation/sideDrawer/sideDrawer'
 
 //COMPONENTS FOR ADMIN
-import UserListScreen from '../../views/admin/UserList'
-import UserDetailsScreen from '../../views/admin/UserDetails'
+import UserListScreen from '../../views/admin/UserManagement/UserList'
+import UserDetailsScreen from '../../views/admin/UserManagement/UserDetails'
 import AdminDrawerMenu from '../common/navigation/sideDrawer/AdminSideDrawer'
+import CCAListScreen from '../../views/admin/CCAManagement/CCAList'
+import CCADetailsScreen from '../../views/admin/CCAManagement/CCADetails'
+import AddNewCCAScreen from '../../views/admin/CCAManagement/CreateNewCCA'
+import SelectManagersScreen from '../../views/admin/CCAManagement/SelectManagersPage'
 
 
 import { isLoggedIn, isAdmin } from '../../redux/store/store'
@@ -97,6 +101,8 @@ const AdminManageCCAStackScreen = () => (
     <AdminManageCCAStack.Navigator>
         <AdminManageCCAStack.Screen name="CCAListScreen" component={CCAListScreen} options={{headerShown: false}}/>
         <AdminManageCCAStack.Screen name="CCADetailsScreen" component={CCADetailsScreen} options={{headerShown: false}}/>
+        <AdminManageCCAStack.Screen name="AddNewCCAScreen" component={AddNewCCAScreen} options={{headerShown: false}}/>
+        <AdminManageCCAStack.Screen name="SelectManagersScreen" component={SelectManagersScreen} options={{headerShown: false}}/>
     </AdminManageCCAStack.Navigator>
 )
 

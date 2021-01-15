@@ -55,7 +55,7 @@ export default function navbar (props) {
                     <Text style={styles.title}>{props.title}</Text>
                 </View>
                 <View style={styles.padding}>
-                    {props.title=='Manage CCA'?<Text style={styles.addButton} onPress={props.add}>add</Text>:null}
+                    {props.title=='Manage CCA' ?<Text style={styles.addButton} onPress={props.add}>add</Text>:null}
                 </View>
             </View>
         )

@@ -4,8 +4,9 @@ import Picker from 'react-native-picker-select'
 import { GREY, MING } from '../styles'
 import { useFonts, Lato_400Regular} from '@expo-google-fonts/lato'
 import DropdownIcon from '../RNPicker/RNPickerIcon'
+import { useLinkProps } from '@react-navigation/native'
 
-export default function PickerInput ( { label, selectedValue, onValueChange, items } ) {
+export default function PickerInput ( { label, onValueChange, items, value } ) {
     const [isLoaded] = useFonts ({
         Lato_400Regular
     })
@@ -36,8 +37,8 @@ export default function PickerInput ( { label, selectedValue, onValueChange, ite
             <Text style={styles.inputLabel}>{label}</Text>
             <Picker
                 style={pickerSelectStyles}
-                selectedValue={selectedValue}
                 onValueChange={onValueChange}
+                value={value}
                 items={items}
                 Icon={DropdownIcon}
             />

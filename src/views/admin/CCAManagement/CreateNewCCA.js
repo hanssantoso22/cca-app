@@ -1,21 +1,25 @@
-import React from 'react';
-import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
-import { page, GREY, marginHorizontal } from '../../components/common/styles'
-import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import React from 'react'
+import { ScrollView, StyleSheet, SafeAreaView, View, TouchableWithoutFeedback, Text, Keyboard } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
+import { page, GREY, MING, marginHorizontal } from '../../../components/common/styles'
+import SubNavbar from '../../../components/common/navigation/navbar/SubNavbar'
+import { useDispatch, useSelector } from 'react-redux'
+import { editSelectedUsers } from '../../../redux/reducers/AdminSlice'
 import { useForm, Controller } from 'react-hook-form'
-import CustomTextInput from '../../components/common/forms/TextInput'
-import MultiLineInput from '../../components/common/forms/MultiLineInput'
-import CustomPicker from '../../components/common/forms/Picker'
-import PrimaryButton from '../../components/common/buttons/PrimarySmall'
-import SecondaryButton from '../../components/common/buttons/SecondarySmall'
+import CustomTextInput from '../../../components/common/forms/TextInput'
+import MultiLineInput from '../../../components/common/forms/MultiLineInput'
+import PrimaryButton from '../../../components/common/buttons/PrimarySmall'
+import SecondaryButton from '../../../components/common/buttons/SecondarySmall'
+import ColoredButton from '../../../components/common/buttons/ColoredButton'
+import ColorPalette from '../../../components/common/forms/ColorPalette'
 
-export default function CreateAnnouncement (props) {
+export default function CreateNewCCA (props) {
     const [isLoaded] = useFonts({
         Lato_400Regular,
         Lato_700Bold
     })
     const loaded = isLoaded
+    const dispatch = useDispatch()
     const onBackPress = () => {
         props.navigation.goBack()
     }
@@ -42,24 +46,39 @@ export default function CreateAnnouncement (props) {
             marginBottom: marginHorizontal,
         },
         inputLabel: {
-            fontFamily: 'Lato_400Regular'
-        }
+            fontSize: 13,
+            fontFamily: 'Lato_400Regular',
+            color: GREY[3],
+            marginBottom: 10
+        },
+        hyperlink: {
+            fontSize: 13,
+            fontFamily: 'Lato_400Regular',
+            color: MING[5],
+            marginBottom: 10
+        },
+        selectedItemsContainer: {
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            marginBottom: 15,
+        },
     })
-    const CCAs = [
-        {label: 'EEE Club', value: 'EEE Club'},
-        {label: 'Garage @EEE', value: 'Garage @EEE'},
-        {label: 'MLDA @EEE', value: 'MLDA @EEE'}
-    ]
-    //CHANGE CCA ID BELOW WITH THE REAL ONE
-    const visibility = [
-        {label: 'Public', value: 'Public'},
-        {label: 'Member Only', value: 'INSERT CCA ID'}
-    ]
+    const selectedUsers = useSelector(state => state.admin.selectedUsers)
+    const selectManagersHandler = () => {
+        props.navigation.navigate('SelectManagersScreen')
+    }
+    const removeItemHandler = (managerName) => {
+        let tempArray = [...selectedUsers]
+        const index = selectedUsers.indexOf(managerName)
+        delete tempArray[index]
+        tempArray = tempArray.filter((item) => item!=undefined)
+        dispatch(editSelectedUsers({selectedUsers: tempArray}))
+    }
     const defaultValues = {
-        announcementTitle: '', 
-        content: '', 
-        organizer: '', 
-        visibility: ''
+        ccaName: '',
+        description: '',
+        managers: '',  
+        color: ''
     }
     const { control, handleSubmit, reset, setValue } = useForm({ defaultValues })
     const onSubmit = data => {
@@ -67,50 +86,36 @@ export default function CreateAnnouncement (props) {
     }
     const resetHandler = ()=> {
         reset(defaultValues)
-        setValue("organizer","")
-        setValue("visibility","")
+        dispatch(editSelectedUsers({selectedUsers: []}))
         console.log('reset')
     }
 
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={page.main}>
-                <SubNavbar title='Create Announcement' pressed={onBackPress} />
+                <SubNavbar title='Create New CCA' pressed={onBackPress} />
+                <ScrollView>
                 <View style={page.main}>
-                    <Text style={styles.pageTitle}>Announcement Details</Text>
+                    <Text style={styles.pageTitle}>CCA Details</Text>
                     <View style={styles.card}>
                         <Controller
                             control={control}
                             render= {({ onChange, value }) => (
                                 <CustomTextInput
-                                    label='Announcement Title'
+                                    label='CCA Name'
                                     onChangeText={text=>{onChange(text)}}
                                     value={value}
-                                    maxLength={40}
                                     type='name'
                                 />
                             )}
-                            name="announcementTitle"
-                            defaultValue=""
-                        />
-                        <Controller
-                            control={control}
-                            render= {({ onChange, value }) => (
-                                <CustomPicker 
-                                    items={CCAs} 
-                                    label='CCA'
-                                    value={value}
-                                    onValueChange={item=>{onChange(item)}}
-                                />
-                            )}
-                            name="organizer"
+                            name="ccaName"
                             defaultValue=""
                         />
                         <Controller
                             control={control}
                             render= {({ onChange, value }) => (
                                 <MultiLineInput
-                                    label='Content'
+                                    label='Description'
                                     onChangeText={text=>{onChange(text)}}
                                     value={value}
                                     multiline={true}
@@ -118,20 +123,29 @@ export default function CreateAnnouncement (props) {
                                     type='name'
                                 />
                             )}
-                            name="content"
+                            name="description"
                             defaultValue=""
                         />
+                        <View style={{flexDirection: 'row'}}>
+                            <Text style={styles.inputLabel}>Managers: &nbsp;&nbsp;</Text>
+                            <TouchableWithoutFeedback onPress={selectManagersHandler}>
+                                <Text style={styles.hyperlink} >Edit Managers</Text>
+                            </TouchableWithoutFeedback>
+                        </View>
+                        <View style={styles.selectedItemsContainer}>
+                            {selectedUsers != [] && selectedUsers.map((user,index) => (
+                                <ColoredButton key={index} text={user} onPress={removeItemHandler.bind(this,user)} />
+                            ))}
+                        </View>
                         <Controller
                             control={control}
                             render= {({ onChange, value }) => (
-                                <CustomPicker 
-                                    items={visibility} 
-                                    label='Visibility'
-                                    value={value} 
-                                    onValueChange={item=>{onChange(item)}}
+                                <ColorPalette 
+                                    onChange={color => onChange(color)}
+                                    value={value}
                                 />
                             )}
-                            name="visibility"
+                            name="color"
                             defaultValue=""
                         />
                         <View style={{flexDirection: 'row', width: '100%'}}>
@@ -144,6 +158,7 @@ export default function CreateAnnouncement (props) {
                         </View>
                     </View>
                 </View>
+                </ScrollView>
             </SafeAreaView>
         </TouchableWithoutFeedback>
         

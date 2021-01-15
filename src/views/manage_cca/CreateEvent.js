@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import { page, GREY, marginHorizontal } from '../../components/common/styles'
 import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native'
@@ -13,6 +13,7 @@ import CustomPicker from '../../components/common/forms/Picker'
 import DateTimePicker from '../../components/common/forms/DateTimePicker'
 import PrimaryButton from '../../components/common/buttons/PrimarySmall'
 import SecondaryButton from '../../components/common/buttons/SecondarySmall'
+import { setNestedObjectValues } from 'formik';
 
 
 export default function home (props) {
@@ -61,22 +62,28 @@ export default function home (props) {
         {label: 'Garage @EEE', value: 'Garage @EEE'},
         {label: 'MLDA @EEE', value: 'MLDA @EEE'}
     ]
+    // REPLACE CCA ID WITH THE REAL ONE
     const audience = [
         {label: 'Public', value: 'Public'},
-        {label: 'Internal', value: 'Internal'}
+        {label: 'Member Only', value: 'CCA ID'}
+    ]
+    const allowedParticipants = [
+        {label: 'Public', value: 'Public'},
+        {label: 'Member Only', value: 'CCA ID'}
     ]
     const startDate = useSelector(state => state.createEventSlice.startDate)
     const endDate = useSelector(state => state.createEventSlice.endDate)
 
     const defaultValues = {
         eventName: "",
-        eventStartDate: startDate,
-        eventEndDate: startDate,
-        eventDescription: "",
-        eventOrganizer: "",
-        eventAudience: "",
+        startTime: startDate,
+        endTime: startDate,
+        description: "",
+        organizer: "",
+        visibility: "",
+        allowedParticipants: "",
     }
-    const { control, handleSubmit, reset } = useForm({
+    const { control, handleSubmit, reset, setValue } = useForm({
         defaultValues
     })
     const onSubmit = data => {
@@ -84,6 +91,10 @@ export default function home (props) {
     }
     const resetHandler = ()=> {
         reset(defaultValues)
+        setValue("allowedParticipants","")
+        setValue("organizer","")
+        setValue("visibility","")
+        setValue("allowedParticipants","")
         console.log('reset')
     }
 
@@ -108,6 +119,7 @@ export default function home (props) {
                                     />
                                   )}
                                   name="eventName"
+                                  defaultValue=""
                             />
                             <Controller
                                 control={control}
@@ -124,7 +136,8 @@ export default function home (props) {
                                         }}
                                     />
                                   )}
-                                  name="eventStartDate"
+                                  name="startTime"
+                                  defaultValue={startDate}
                             />
                             <Controller
                                 control={control}
@@ -141,7 +154,8 @@ export default function home (props) {
                                         }}
                                     />
                                   )}
-                                  name="eventEndDate"
+                                  name="endTime"
+                                  defaultValue={startDate}
                             />
                             <Controller
                                 control={control}
@@ -155,7 +169,8 @@ export default function home (props) {
                                         type='name'
                                     />
                                   )}
-                                  name="eventDescription"
+                                  name="description"
+                                  defaultValue=""
                             />
                             <Controller
                                 control={control}
@@ -167,19 +182,34 @@ export default function home (props) {
                                         onValueChange={item=>{onChange(item)}}
                                     />
                                   )}
-                                  name="eventOrganizer"
+                                  name="organizer"
+                                  defaultValue=""
                             />
                             <Controller
                                 control={control}
                                 render= {({ onChange, value }) => (
                                     <CustomPicker 
                                         items={audience} 
-                                        label='Audience'
+                                        label='Visibility'
                                         value={value} 
                                         onValueChange={item=>{onChange(item)}}
                                     />
                                   )}
-                                  name="eventAudience"
+                                  name="visibility"
+                                  defaultValue=""
+                            />
+                            <Controller
+                                control={control}
+                                render= {({ onChange, value }) => (
+                                    <CustomPicker 
+                                        items={allowedParticipants} 
+                                        label='Allowed Participants'
+                                        value={value} 
+                                        onValueChange={item=>{onChange(item)}}
+                                    />
+                                  )}
+                                  name="allowedParticipants"
+                                  defaultValue=""
                             />
                             <View style={{flexDirection: 'row', width: '100%'}}>
                                 <View style={{paddingRight: 10, flex: 1}}>

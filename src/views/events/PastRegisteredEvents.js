@@ -22,7 +22,7 @@ export default function PastRegisteredEvents (props) {
     }
     const attendedHandler = (eventID) => {
         setDisplayModal(false)
-        props.navigation.navigate('PastEventRating',{eventID: eventID})
+        props.navigation.navigate('PastEventRating',{eventID})
     }
     const closeModalHandler = () => {
         setDisplayModal(false)

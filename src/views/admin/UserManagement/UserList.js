@@ -1,8 +1,8 @@
 import React from 'react'
 import { SafeAreaView } from 'react-native'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
-import { page, PURPLE, MING, GREY } from '../../components/common/styles'
-import Navbar from '../../components/common/navigation/navbar/navbar'
+import { page, PURPLE, MING, GREY } from '../../../components/common/styles'
+import Navbar from '../../../components/common/navigation/navbar/navbar'
 
 
 export default function UserList (props) {
@@ -13,7 +13,7 @@ export default function UserList (props) {
     }
     return (
         <SafeAreaView style={page.main}>
-            <Navbar title="Users" pressed={onMenuPress} />
+            <Navbar title="Manage User" pressed={onMenuPress} />
         </SafeAreaView>
     )
 }

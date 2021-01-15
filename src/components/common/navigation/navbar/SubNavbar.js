@@ -26,6 +26,7 @@ export default function navbar (props) {
         },
         padding: {
             flex: 1,
+            flexDirection: 'row',
             paddingLeft: 20,
         },
         titleWrapper: {
@@ -42,6 +43,11 @@ export default function navbar (props) {
             color: 'white',
             fontSize: 30,
             textAlign: 'center'
+        },
+        backButtonDesc: {
+            color: 'white',
+            fontFamily: 'Lato_700Bold',
+            fontSize: 16,
         }
     })
     if (!isLoaded) {
@@ -51,7 +57,7 @@ export default function navbar (props) {
         return (
             <View style={styles.container}>
                 <View style={styles.padding}>
-                    <Text style={styles.backButton} onPress={props.pressed}>arrow_back_ios</Text>
+                    {props.back ? <Text onPress={props.pressed} style={styles.backButtonDesc}>{props.back}</Text> : <Text onPress={props.pressed} style={styles.backButton}>arrow_back_ios</Text>}
                 </View>
                 <View style={styles.titleWrapper}>
                     <Text numberOfLines={1} ellipsizeMode='tail' style={styles.title}>{props.title}</Text>
