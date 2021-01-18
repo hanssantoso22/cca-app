@@ -1,13 +1,13 @@
 import React from 'react'
 import { View, Text, StyleSheet, SafeAreaView, Dimensions } from 'react-native'
-import { Avatar, Accessory } from 'react-native-elements'
-import { FlatList } from 'react-native-gesture-handler'
+import { Avatar } from 'react-native-elements'
+import { FlatList, TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import ItemCard from './itemCard'
 import { navigateToPage, logout } from '../../../../redux/reducers/mainSlice'
 import { useDispatch } from 'react-redux'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import { AppLoading } from 'expo'
-import { GREY } from '../../styles'
+import { MING } from '../../styles'
 
 export default function SideDrawer (props) {
     const dispatch = useDispatch()
@@ -18,7 +18,9 @@ export default function SideDrawer (props) {
             return 0
         }
         props.navigation.navigate(navScreen)
-        dispatch (navigateToPage(navScreen))
+        if (navScreen != 'ProfileScreen') {
+            dispatch (navigateToPage(navScreen))
+        }
         
     }
     const [isLoaded] = useFonts({
@@ -35,18 +37,13 @@ export default function SideDrawer (props) {
     ]
     const renderFlatList = () => (
         <FlatList scrollEnabled = {(screenHeight >= 667) ? false : true}
-                    data = {menus}
-                    keyExtractor = {item => item.id.toString()}
-                    renderItem = {({ item }) => {
-                                        // if (item.menu == 'MANAGE CCA' && !adminStatus) {
-                                        //     return null
-                                        // }
-                                        // else {
-                                            return (
-                                                <ItemCard pressed={()=>navigateToScreen(item.navScreen)} icon={item.icon} menu={item.menu} navScreen={item.navScreen}/>
-                                            )
-                                        // }
-                                }}
+            data = {menus}
+            keyExtractor = {item => item.id.toString()}
+            renderItem = {({ item }) => {
+                            return (
+                                <ItemCard pressed={()=>navigateToScreen(item.navScreen)} icon={item.icon} menu={item.menu} navScreen={item.navScreen}/>
+                            ) 
+                        }}
         />
 
     )
@@ -58,7 +55,7 @@ export default function SideDrawer (props) {
         userName: {
             fontFamily: 'Lato_700Bold',
             fontSize: 20,
-            color: GREY[4],
+            color: MING[5],
             textAlign: 'center',
             lineHeight: 30,
         }
@@ -69,9 +66,12 @@ export default function SideDrawer (props) {
     else {
         return (
             <SafeAreaView>
-                <Avatar rounded size="large" />
-                <Accessory />
-                <View style={styles.nameContainer}><Text style={styles.userName}>Laurensius Hans Santoso</Text></View>
+                <TouchableWithoutFeedback onPress={navigateToScreen.bind(this,'ProfileScreen')}>
+                    <View style={styles.nameContainer}>
+                        <Avatar rounded size="large" title='LH'/>
+                        <Text style={styles.userName}>Laurensius Hans Santoso</Text>
+                    </View>
+                </TouchableWithoutFeedback>
                 <View>
                     {renderFlatList()}
                 </View>

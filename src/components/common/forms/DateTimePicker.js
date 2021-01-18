@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Text, StyleSheet, TextInput, View, Dimensions } from 'react-native'
-import { GREY, MING } from '../styles'
+import { GREY } from '../styles'
 import { useFonts, Lato_400Regular} from '@expo-google-fonts/lato'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import moment from 'moment'
@@ -34,7 +34,7 @@ export default function DateTimePickerInput ( { label, onChangeText, onChangePic
     })
     const normalDateFormatParser = (dateObject) => {
         const dateString = dateObject.toString()
-        const normalDate = moment(dateString).format('DD MMMM YYYY HH:mmA')
+        const normalDate = moment(dateString).format('DD MMMM YYYY hh:mm A')
         return normalDate
     }
     return (

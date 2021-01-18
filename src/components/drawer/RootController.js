@@ -6,6 +6,7 @@ import { Dimensions } from 'react-native'
 
 //COMPONENTS FOR NON-ADMIN USERS
 import HomeScreen from '../../views/home/home'
+import ProfileScreen from '../../views/profile/ProfilePage'
 import ArticleDetailScreen from '../../views/home/ArticleDetailPage'
 import EventsScreen from '../../views/events/events'
 import EventDetailsPage from '../../views/events/EventDetailsPage'
@@ -41,6 +42,7 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 // NON-ADMIN
 const DrawerStack = createDrawerNavigator()
+const ProfileStack = createStackNavigator()
 const HomeStack = createStackNavigator()
 const EventsStack = createStackNavigator()
 const RemindersStack = createStackNavigator()
@@ -49,6 +51,11 @@ const ArchivesStack = createStackNavigator()
 const LogoutStack = createStackNavigator()
 const AuthStack = createStackNavigator()
 
+const ProfileStackScreen = () => (
+    <ProfileStack.Navigator>
+        <ProfileStack.Screen name="Profile" component={ProfileScreen} options={{headerShown: false}} />
+    </ProfileStack.Navigator>
+)
 const HomeStackScreen = () => (
     <HomeStack.Navigator>
         <HomeStack.Screen name='Home' component={HomeScreen} options={{headerShown: false}}/>
@@ -134,6 +141,7 @@ const RootController = () => {
                 <ManageCCAStack.Screen name="ManageCCAScreen" component={ManageCCAStackScreen} />
                 <ArchivesStack.Screen name="ArchivesScreen" component={ArchivesStackScreen} />
                 <LogoutStack.Screen name="LogoutScreen" component={LoginScreen} />
+                <ProfileStack.Screen name="ProfileScreen" component={ProfileStackScreen} />
             </DrawerStack.Navigator>
         ) : (
             <AuthStack.Navigator initialRouteName="AuthStackScreen">

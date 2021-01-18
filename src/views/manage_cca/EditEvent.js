@@ -3,8 +3,10 @@ import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import { page, GREY, marginHorizontal } from '../../components/common/styles'
 import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
-import { Formik } from 'formik'
+import { useForm, Controller } from 'react-hook-form'
+import { changeStartDate, changeEndDate } from '../../redux/reducers/CreateEventSlice'
 import moment from 'moment'
+import { useSelector, useDispatch } from 'react-redux'
 import CustomTextInput from '../../components/common/forms/TextInput'
 import MultiLineInput from '../../components/common/forms/MultiLineInput'
 import CustomPicker from '../../components/common/forms/Picker'
@@ -19,25 +21,10 @@ export default function home (props) {
         Lato_700Bold
     })
     const loaded = isLoaded
-    const [showPicker, setShowPicker] = useState(false)
-    const [date, setDate] = useState(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`))
-    const { eventID } = props.route.params 
-    const onBackPress = () => {
-        props.navigation.goBack()
-    }
-    const displayPickerHandler = () => {
-        setShowPicker(true)
-    }
-    const normalDateFormatParser = (dateObject) => {
-        const dateString = dateObject.toString()
-        const normalDate = moment(dateString).format('DD MMMM YYYY')
-        return normalDate
-    }
-    const normalTimeFormatParser = (dateObject) => {
-        const dateString = dateObject.toString()
-        const normalDate = moment(dateString).format('HH:mm')
-        return normalDate
-    }
+    const dispatch = useDispatch()
+    const [showStartPicker, setShowStartPicker] = useState(false)
+    const [showEndPicker, setShowEndPicker] = useState(false)
+    const { eventID } = props.route.params
     const styles = StyleSheet.create ({
         card: {
             borderRadius: 15,
@@ -62,97 +49,203 @@ export default function home (props) {
         },
         inputLabel: {
             fontFamily: 'Lato_400Regular'
-        },
-
-        
+        }, 
     })
+    const onBackPress = () => {
+        props.navigation.goBack()
+    }
+    
     const CCAs = [
         {label: 'EEE Club', value: 'EEE Club'},
         {label: 'Garage @EEE', value: 'Garage @EEE'},
         {label: 'MLDA @EEE', value: 'MLDA @EEE'}
     ]
+    // REPLACE CCA ID WITH THE REAL ONE
     const audience = [
         {label: 'Public', value: 'Public'},
-        {label: 'Internal', value: 'Internal'}
+        {label: 'Member Only', value: 'CCA ID'}
     ]
-    const initialValues = {
-        eventName: '', 
-        date: date, 
-        time: '', 
-        venue: '', 
-        meetingLink: '', 
-        decription: '', 
-        CCAName: '', 
-        audience: ''
+    const allowedParticipants = [
+        {label: 'Public', value: 'Public'},
+        {label: 'Member Only', value: 'CCA ID'}
+    ]
+    const startDate = useSelector(state => state.createEventSlice.startDate)
+    const endDate = useSelector(state => state.createEventSlice.endDate)
+
+    const defaultValues = {
+        eventName: "",
+        startTime: startDate,
+        endTime: startDate,
+        venue: "",
+        link: "",
+        description: "",
+        organizer: "",
+        visibility: "",
+        allowedParticipants: "",
+    }
+    const { control, handleSubmit, reset, setValue } = useForm({
+        defaultValues
+    })
+    const onSubmit = data => {
+        console.log('Data: ',data)
+    }
+    const resetHandler = ()=> {
+        reset(defaultValues)
+        setValue("allowedParticipants","")
+        setValue("organizer","")
+        setValue("visibility","")
+        setValue("allowedParticipants","")
+        console.log('reset')
     }
 
     return (
-        <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss(); setShowPicker(false)}}>
+        <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss(); setShowStartPicker(false); setShowEndPicker(false)}}>
             <SafeAreaView style={page.main}>
                 <SubNavbar title='Edit Event' pressed={onBackPress} />
                 <ScrollView>
                     <View style={page.main}>
-                        <Text style={styles.pageTitle}>Event Details</Text>
+                    <Text style={styles.pageTitle}>Event Details</Text>
                         <View style={styles.card}>
-                            <Formik
-                                initialValues={initialValues}
-                                onSubmit = {(values,actions)=>{
-                                    console.log(values)
-                                }}
-                            >
-                                {({ handleChange, handleReset, handleSubmit, values, setFieldValue }) => (
-                                    <View style={{width: '100%'}}>
-                                        <CustomTextInput
-                                            label='Event Name'
-                                            onChangeText={handleChange('eventName')}
-                                            value={values.eventName}
-                                            maxLength={40}
-                                            type='name'
-                                        />
-                                        <DateTimePicker
-                                            label='Date'
-                                            onChangePicker={itemValue=>{
-                                                const val = moment(itemValue).format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)                
-                                                setFieldValue('date',val)
-                                                console.log(values.date)
-                                            }}
-                                            onChangeText={handleChange('date')}
-                                            value={values.date}
-                                            mode='date'
-                                            onFocus={displayPickerHandler}
-                                            showPicker={showPicker}
-                                        />
-                                        <MultiLineInput
-                                            label='Content'
-                                            onChangeText={handleChange('content')}
-                                            value={values.content}
-                                            multiline={true}
-                                            maxLength={500}
-                                            type='name'
-                                        />
-                                        <CustomPicker 
-                                            items={CCAs} 
-                                            label='CCA'
-                                            selectedValue={values.CCAName} 
-                                            onValueChange={itemValue => setFieldValue('CCAName', itemValue)}
-                                        />
-                                        <CustomPicker 
-                                            items={audience} 
-                                            label='Audience'
-                                            selectedValue={values.audience} 
-                                            onValueChange={itemValue => setFieldValue('audience', itemValue)}
-                                        />
-                                        <View style={{flexDirection: 'row', width: '100%'}}>
-                                            <View style={{paddingRight: 10, flex: 1}}>
-                                                <SecondaryButton fontSize={16} text="Clear Input" pressHandler={()=>reset()}/>
-                                            </View>
-                                            <View style={{paddingLeft: 10, flex: 1}}>
-                                                <PrimaryButton fontSize={16} text="Submit" pressHandler={handleSubmit}/>
-                                            </View>
-                                        </View>
-                                    </View>
-                                )}
-                            </Formik>
+                        <View style={{width: '100%'}}>
+                            <Controller
+                                control={control}
+                                render= {({ onChange, value }) => (
+                                    <CustomTextInput
+                                        label='Event Name'
+                                        onChangeText={text=>{onChange(text)}}
+                                        value={value}
+                                        maxLength={40}
+                                        type='name'
+                                    />
+                                  )}
+                                  name="eventName"
+                                  defaultValue=""
+                            />
+                            <Controller
+                                control={control}
+                                render= {() => (
+                                    <DateTimePicker
+                                        label='Start Date'
+                                        mode='datetime'
+                                        value={startDate}
+                                        onFocus={()=>setShowStartPicker(true)}
+                                        showPicker={showStartPicker}
+                                        onChangePicker={(event,itemValue) => {
+                                            const val = moment(itemValue).format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)                
+                                            dispatch(changeStartDate(val))
+                                        }}
+                                    />
+                                  )}
+                                  name="startTime"
+                                  defaultValue={startDate}
+                            />
+                            <Controller
+                                control={control}
+                                render= {() => (
+                                    <DateTimePicker
+                                        label='End Date'
+                                        mode='datetime'
+                                        value={endDate}
+                                        onFocus={()=>setShowEndPicker(true)}
+                                        showPicker={showEndPicker}
+                                        onChangePicker={(event,itemValue) => {
+                                            const val = moment(itemValue).format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)                
+                                            dispatch(changeEndDate(val))
+                                        }}
+                                    />
+                                  )}
+                                  name="endTime"
+                                  defaultValue={startDate}
+                            />
+                            <Controller
+                                control={control}
+                                render= {({ onChange, value }) => (
+                                    <CustomTextInput
+                                        label='Venue'
+                                        onChangeText={text=>{onChange(text)}}
+                                        value={value}
+                                        type='name'
+                                    />
+                                  )}
+                                name="venue"
+                                defaultValue=""
+                            />
+                            <Controller
+                                control={control}
+                                render= {({ onChange, value }) => (
+                                    <CustomTextInput
+                                        label='Link'
+                                        onChangeText={text=>{onChange(text)}}
+                                        value={value}
+                                        type='name'
+                                    />
+                                  )}
+                                name="link"
+                                defaultValue=""
+                            />
+                            <Controller
+                                control={control}
+                                render= {({ onChange, value }) => (
+                                    <MultiLineInput
+                                        label='Content'
+                                        onChangeText={text=>{onChange(text)}}
+                                        value={value}
+                                        multiline={true}
+                                        maxLength={500}
+                                        type='name'
+                                    />
+                                  )}
+                                  name="description"
+                                  defaultValue=""
+                            />
+                            <Controller
+                                control={control}
+                                render= {({ onChange, value }) => (
+                                    <CustomPicker 
+                                        items={CCAs} 
+                                        label='CCA'
+                                        value={value}
+                                        onValueChange={item=>{onChange(item)}}
+                                    />
+                                  )}
+                                  name="organizer"
+                                  defaultValue=""
+                            />
+                            <Controller
+                                control={control}
+                                render= {({ onChange, value }) => (
+                                    <CustomPicker 
+                                        items={audience} 
+                                        label='Visibility'
+                                        value={value} 
+                                        onValueChange={item=>{onChange(item)}}
+                                    />
+                                  )}
+                                  name="visibility"
+                                  defaultValue=""
+                            />
+                            <Controller
+                                control={control}
+                                render= {({ onChange, value }) => (
+                                    <CustomPicker 
+                                        items={allowedParticipants} 
+                                        label='Allowed Participants'
+                                        value={value} 
+                                        onValueChange={item=>{onChange(item)}}
+                                    />
+                                  )}
+                                  name="allowedParticipants"
+                                  defaultValue=""
+                            />
+                            <View style={{flexDirection: 'row', width: '100%'}}>
+                                <View style={{paddingRight: 10, flex: 1}}>
+                                    <SecondaryButton fontSize={16} text="Clear Input" pressHandler={resetHandler}/>
+                                </View>
+                                <View style={{paddingLeft: 10, flex: 1}}>
+                                    <PrimaryButton fontSize={16} text="Submit" pressHandler={handleSubmit(onSubmit)}/>
+                                </View>
+                            </View>
+                        </View>
                         </View>
                     </View>
                 </ScrollView>

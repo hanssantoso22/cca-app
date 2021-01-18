@@ -67,12 +67,13 @@ export const button = StyleSheet.create ({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    dangerPrimary: {
-        borderRadius: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 15,
+    dangerPrimaryBig: {
+        borderRadius: 8,
+        paddingVertical: 12,
+        width: '100%',
         backgroundColor: RED[6],
-        color: 'white'
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     dangerSecondary: {
         borderRadius: 10,

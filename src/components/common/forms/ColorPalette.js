@@ -38,7 +38,7 @@ export default function ({ onChange, value }) {
         <View style={styles.container}>
             <View style={{flexDirection: 'row'}}>
                 <Text style={styles.inputLabel}>Color (for calendar view):&nbsp;&nbsp;</Text>
-                <Text style={styles.hyperlink} onPress={() => setShowPicker(!showPicker)}>Show color picker</Text>
+                <Text style={styles.hyperlink} onPress={() => setShowPicker(!showPicker)}>{!showPicker ? 'Show color picker' : 'Hide color picker'}</Text>
             </View>
             {showPicker && (
                 <ColorPalette

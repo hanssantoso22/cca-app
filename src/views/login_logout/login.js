@@ -16,11 +16,11 @@ export default function Login (props) {
     const dispatch = useDispatch()
     const { control, handleSubmit } = useForm()
     const onSubmit = async data => {
-        dispatch(login({
-            token: 'dummy',
-            admin: false,
-        }))
-        // dispatch(verifyLogin(data.email,data.password))
+        // dispatch(login({
+        //     token: 'dummy',
+        //     admin: false,
+        // }))
+        dispatch(verifyLogin(data.email,data.password))
     }
     const createNewAccountHandler = () => {
         props.navigation.push('CreateAccount')

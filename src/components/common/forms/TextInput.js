@@ -46,6 +46,7 @@ export default function CustomTextInput ( { label, onChangeText, value, maxLengt
                 type={type}
                 onBlur={onBlur}
                 onFocus={onFocus}
+                secureTextEntry={type=='password'}
             />
         </View>
     )

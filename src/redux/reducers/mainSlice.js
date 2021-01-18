@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { URL } from '../../api/config'
+import { URL, authenticate } from '../../api/config'
 import axios from 'axios'
-import customAxios from '../../api/config'
 import store from '../store/store'
+import AsyncStorage from '@react-native-community/async-storage'
 
 export const drawerSlice = createSlice({
     name: 'active_screen',
@@ -23,7 +23,6 @@ export const drawerSlice = createSlice({
             state.isLoggedIn = true
             state.token = action.payload.token
             state.isAdmin = action.payload.admin
-
         },
         logoutAccount (state,action) {
             state.isLoggedIn = false
@@ -58,12 +57,17 @@ export const signUp = (data) => async dispatch => {
 }
 export const logout = () => async dispatch => {
     try {
-        const token = await customAxios.get('/users/logout')
+        await AsyncStorage.clear()
+        .then ((res) => {
+            console.log('Flush successful')
+        })
+        .catch ((err) => {
+            console.log('Flush unsuccessful')
+        })
+        const token = await axios.get(`${URL}/users/logout`, authenticate(store.getState().main.token))
         dispatch(logoutAccount())
-        console.log('Logout successful!')
     } catch (err) {
-        console.log('Logout failed!',err)
-        console.log(store.getState().main.token)
+        console.log('Logout failed!',err.request)
     }
 }
 export const { navigateToPage, login, logoutAccount } = drawerSlice.actions

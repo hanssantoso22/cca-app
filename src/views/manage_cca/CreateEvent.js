@@ -13,8 +13,6 @@ import CustomPicker from '../../components/common/forms/Picker'
 import DateTimePicker from '../../components/common/forms/DateTimePicker'
 import PrimaryButton from '../../components/common/buttons/PrimarySmall'
 import SecondaryButton from '../../components/common/buttons/SecondarySmall'
-import { setNestedObjectValues } from 'formik';
-
 
 export default function home (props) {
     const [isLoaded] = useFonts({
@@ -78,6 +76,8 @@ export default function home (props) {
         eventName: "",
         startTime: startDate,
         endTime: startDate,
+        venue: "",
+        link: "",
         description: "",
         organizer: "",
         visibility: "",
@@ -156,6 +156,32 @@ export default function home (props) {
                                   )}
                                   name="endTime"
                                   defaultValue={startDate}
+                            />
+                            <Controller
+                                control={control}
+                                render= {({ onChange, value }) => (
+                                    <CustomTextInput
+                                        label='Venue'
+                                        onChangeText={text=>{onChange(text)}}
+                                        value={value}
+                                        type='name'
+                                    />
+                                  )}
+                                name="venue"
+                                defaultValue=""
+                            />
+                            <Controller
+                                control={control}
+                                render= {({ onChange, value }) => (
+                                    <CustomTextInput
+                                        label='Link'
+                                        onChangeText={text=>{onChange(text)}}
+                                        value={value}
+                                        type='name'
+                                    />
+                                  )}
+                                name="link"
+                                defaultValue=""
                             />
                             <Controller
                                 control={control}
