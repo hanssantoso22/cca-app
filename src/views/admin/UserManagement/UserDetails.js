@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ScrollView, View, Text, StyleSheet, SafeAreaView } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import { page, marginHorizontal, GREY } from '../../../components/common/styles'
@@ -6,9 +6,15 @@ import SubNavbar from '../../../components/common/navigation/navbar/SubNavbar'
 import DangerButton from '../../../components/common/buttons/DangerBig'
 import DeleteUserModal from './DeleteUserModal'
 
+import axios from 'axios'
+import {URL, authenticate} from '../../../api/config'
+import store from '../../../redux/store/store'
+
 export default function UserList (props) {
     const [isLoaded] = useFonts({Lato_700Bold, Lato_400Regular})
     const loaded = isLoaded
+    const { _id } = props.route.params
+    const [user, setUser] = useState({})
     const [showModal, setShowModal] = useState(false)
     const styles = StyleSheet.create({
         card: {
@@ -53,21 +59,13 @@ export default function UserList (props) {
             fontFamily: 'Lato_400Regular',
             fontSize: 14,
             color: GREY[6],
+            lineHeight: 20,
         },
         valueContainer: {
             flex: 2,
             paddingLeft: 15,
         },
     })
-    const userList = [
-        {id: 0, fname: 'Laurensius Hans Santoso 1', year:'4', faculty: 'EEE', email: 'dummy1@e.ntu.edu.sg', role: 'student', managedCCAs: ['EEE Club','MLDA @EEE'], joinedCCAs: []},
-        {id: 1, fname: 'Hans', year:'4', faculty: 'EEE', email: 'dummy1@e.ntu.edu.sg', role: 'student'},
-        {id: 2, fname: 'Laurensius Hans Santoso 3', year:'4', faculty: 'EEE', email: 'dummy1@e.ntu.edu.sg', role: 'student'},
-        {id: 3, fname: 'Laurensius Hans Santoso 4', year:'4', faculty: 'EEE', email: 'dummy1@e.ntu.edu.sg', role: 'student'}
-    ]
-    const { id } = props.route.params
-    let user = userList.filter((user) => user.id == id)
-    user = user[0]
     const onBackPress = () => {
         props.navigation.goBack()
     }
@@ -77,10 +75,26 @@ export default function UserList (props) {
     const closeModalHandler = () => {
         setShowModal(false)
     }
-    const confirmDeleteHandler = (userID) => {
-        setShowModal(false)
-        props.navigation.goBack()
+    const confirmDeleteHandler = async (userID) => {
+        try {
+            const deletedUser = await axios.delete(`${URL}/user/${userID}/delete`, authenticate(store.getState().main.token))
+            setShowModal(false)
+            props.navigation.goBack()
+        } catch (err) {
+            console.log(err)
+        }
     }
+    useEffect(()=>{
+        async function loadUser () {
+            try {
+                const res = await axios.get(`${URL}/user/${_id}`, authenticate(store.getState().main.token))
+                setUser(res.data)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        loadUser() 
+    },[])
     return (
         <SafeAreaView style={page.main}>
             <SubNavbar title={user.fname} pressed={onBackPress} />
@@ -127,7 +141,7 @@ export default function UserList (props) {
                                     <Text style={styles.fieldName}>Joined CCAs:</Text>
                                 </View>
                                 <View style={styles.valueContainer}>
-                                    <Text>{user.joinedCCAs.join(', ')}</Text>
+                                    <Text style={styles.value}>{user.joinedCCAs.join(', ')}</Text>
                                 </View>
                             </View>
                             )
@@ -150,7 +164,7 @@ export default function UserList (props) {
             <View style={styles.bottomContainer}>
                 <DangerButton text="Delete User" fontSize={20} pressHandler={onDeleteHandler} />
             </View>
-            <DeleteUserModal isModalVisible={showModal} closeModal={closeModalHandler} cancelHandler={closeModalHandler} confirmHandler={confirmDeleteHandler} userID={id} />
+            <DeleteUserModal isModalVisible={showModal} closeModal={closeModalHandler} cancelHandler={closeModalHandler} confirmHandler={confirmDeleteHandler} userID={_id} />
         </SafeAreaView>
     )
 }

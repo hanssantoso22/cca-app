@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, SafeAreaView, ScrollView, Text, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import { page, RED, MING, GREY, marginHorizontal } from '../../../components/common/styles'
@@ -14,13 +14,21 @@ import ColoredButton from '../../../components/common/buttons/ColoredButton'
 import ColorPalette from '../../../components/common/forms/ColorPalette'
 import DeleteCCAModal from './DeleteCCAModal'
 import ResetManagerModal from './ResetManagerModal'
+import ResetMemberModal from './ResetMemberModal'
+
+import axios from 'axios'
+import {URL, authenticate} from '../../../api/config'
+import store from '../../../redux/store/store'
 
 export default function CCADetails (props) {
     const [isLoaded] = useFonts({Lato_700Bold})
+    const [CCA, setCCA] = useState({})
     const [resetManager, setResetManager] = useState(false)
-    const [showResetModal, setShowResetModal] = useState(false)
+    const [showResetModal, setShowResetModal] = useState(false) //reset managers
+    const [showResetMemberModal, setShowResetMemberModal] = useState(false) //reset members
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const loaded = isLoaded
+    const { _id } = props.route.params
     const dispatch = useDispatch()
     const styles = StyleSheet.create({
         card: {
@@ -71,23 +79,46 @@ export default function CCADetails (props) {
             flexWrap: 'wrap',
             marginBottom: 15,
         },
+        manager: {
+            fontSize: 16,
+            fontFamily: 'Lato_400Regular',
+            color: GREY[4],
+            marginBottom: 5
+        }
     })
     const onBackPress = () => {
         props.navigation.goBack()
+        dispatch(editSelectedUsers({selectedUsers: [], selectedUserIds: []}))
     }
     const selectedUsers = useSelector(state => state.admin.selectedUsers)
+    const selectedUserIds = useSelector(state => state.admin.selectedUserIds)
     const selectManagersHandler = () => {
         props.navigation.navigate('SelectManagersScreen')
     }
     const removeItemHandler = (managerName) => {
         let tempArray = [...selectedUsers]
+        let tempArray2 = [...selectedUserIds]
         const index = selectedUsers.indexOf(managerName)
         delete tempArray[index]
+        delete tempArray2[index]
         tempArray = tempArray.filter((item) => item!=undefined)
-        dispatch(editSelectedUsers({selectedUsers: tempArray}))
+        tempArray2 = tempArray2.filter((item) => item!=undefined)
+        dispatch(editSelectedUsers({selectedUsers: tempArray, selectedUserIds: tempArray2}))
     }
     const onSubmit = (data) => {
-        props.navigation.navigate('CCAListScreen')
+        data.managers = store.getState().admin.selectedUserIds
+        console.log(data)
+        async function submitData () {
+            try {
+                const res = await axios.patch(`${URL}/CCA/${_id}/edit`, data, authenticate(store.getState().main.token))
+                console.log(res.data)
+                dispatch(editSelectedUsers({selectedUsers: [], selectedUserIds: []}))
+                props.navigation.goBack()
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        submitData()
     }
     //Reset manager handlers
     const resetManagerHandler = () => {
@@ -97,8 +128,36 @@ export default function CCADetails (props) {
         setShowResetModal(false)
     }
     const confirmResetManagerHandler = (ccaID) => {
-        setShowResetModal(false)
-        setResetManager(true)
+        async function confirmResetManager () {
+            try {
+                const res = await axios.patch(`${URL}/CCA/${ccaID}/resetManager`, {}, authenticate(store.getState().main.token))
+                setShowResetModal(false)
+                setResetManager(true)
+                props.navigation.goBack()
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        confirmResetManager()
+    }
+    //Reset member handlers
+    const resetMemberHandler = () => {
+        setShowResetMemberModal(true)
+    }
+    const closeResetMemberModal = () => {
+        setShowResetMemberModal(false)
+    }
+    const confirmResetMemberHandler = (ccaID) => {
+        async function confirmResetMember () {
+            try {
+                const res = await axios.patch(`${URL}/CCA/${ccaID}/resetMember`, {}, authenticate(store.getState().main.token))
+                setShowResetMemberModal(false)
+                props.navigation.goBack()
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        confirmResetMember()
     }
     //Delete CCA handlers
     const deleteHandler = () => {
@@ -108,21 +167,42 @@ export default function CCADetails (props) {
         setShowDeleteModal(false)
     }
     const confirmDeleteHandler = ccaID => {
-        setShowDeleteModal(false)
-        props.navigation.navigate('CCAListScreen')
+        async function deleteCCA () {
+            console.log('Token:',store.getState().main.token)
+            try {
+                const res = await axios.delete(`${URL}/CCA/${ccaID}/delete`, authenticate(store.getState().main.token))
+                setShowDeleteModal(false)
+                props.navigation.goBack()
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        deleteCCA()
     }
-    const { id } = props.route.params
-    const CCAs = [
-        {id: 0, label: 'EEE Club', value: 'EEE Club'},
-        {id: 1, label: 'Garage @EEE', value: 'Garage @EEE'},
-        {id: 2, label: 'MLDA @EEE', value: 'MLDA @EEE'}
-    ]
-    const CCA = CCAs.find((item) => item.id == id)
-    const { control, handleSubmit } = useForm()
+    const defaultValues = {
+        ccaName: '',
+        description: '',
+        managers: '',
+        color: '',
+    }
+    const { control, handleSubmit, reset } = useForm({ defaultValues })
+    useEffect (() => {
+        async function loadCCA() {
+            try {
+                const res = await axios.get(`${URL}/CCA/${_id}`, authenticate(store.getState().main.token))
+                setCCA(res.data)
+                reset(res.data)
+                if (res.data.managers.length == 0) setResetManager(true)
+            } catch (err) {
+                console.log('Error',err)
+            }
+        }
+        loadCCA()
+    }, [reset])
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <SafeAreaView style={page.main}>
-            <SubNavbar title={CCA.label} pressed={onBackPress} />
+            <SubNavbar title={CCA.ccaName} pressed={onBackPress} />
             <ScrollView>
             <View style={{marginTop: marginHorizontal}}>
                 <Text style={styles.pageTitle}>CCA Details</Text>
@@ -138,7 +218,7 @@ export default function CCADetails (props) {
                             />
                         )}
                         name="ccaName"
-                        defaultValue=""
+                        defaultValue={CCA.ccaName}
                     />
                     <Controller
                         control={control}
@@ -153,7 +233,7 @@ export default function CCADetails (props) {
                             />
                         )}
                         name="description"
-                        defaultValue=""
+                        defaultValue={CCA.description}
                     />
                     <View style={{flexDirection: 'row'}}>
                         <Text style={styles.inputLabel}>Managers: &nbsp;&nbsp;</Text>
@@ -166,6 +246,28 @@ export default function CCADetails (props) {
                             </TouchableWithoutFeedback>)
                         }
                     </View>
+                    {CCA.managers && CCA.managers.length > 0 && CCA.managers.map((managerDetails, index) => {
+                        return (
+                            <Text key={index} style={styles.manager}>{`${index+1}. ${managerDetails.fname} / ${managerDetails.year}`}</Text>
+                        )
+                    })}
+                    {CCA.members && CCA.members.length > 0 &&
+                        <> 
+                        <View style={{flexDirection: 'row'}}>
+                            <Text style={styles.inputLabel}>Members: &nbsp;&nbsp;</Text>
+                            <TouchableWithoutFeedback onPress={resetMemberHandler}>
+                                <Text style={styles.redHyperlink} >Reset Members</Text>
+                            </TouchableWithoutFeedback>  
+                        </View>
+                        <View>
+                            {CCA.members.map((memberDetails, index) => {
+                                return (
+                                    <Text key={index} style={styles.manager}>{`${index+1}. ${memberDetails.fname} / ${memberDetails.year}`}</Text>
+                                )
+                            })}
+                        </View>
+                        </>
+                    }
                     <View style={styles.selectedItemsContainer}>
                         {selectedUsers != [] && selectedUsers.map((user,index) => (
                             <ColoredButton key={index} text={user} onPress={removeItemHandler.bind(this,user)} />
@@ -180,7 +282,7 @@ export default function CCADetails (props) {
                             />
                         )}
                         name="color"
-                        defaultValue=""
+                        defaultValue={CCA.color}
                     />
                     <View style={{flexDirection: 'row', width: '100%'}}>
                         <View style={{paddingRight: 10, flex: 1}}>
@@ -193,8 +295,9 @@ export default function CCADetails (props) {
                 </View>
             </View>
             </ScrollView>
-            <ResetManagerModal isModalVisible={showResetModal} closeModal={closeResetModal} confirmHandler={confirmResetManagerHandler} cancelHandler={closeResetModal} ccaID={id} />
-            <DeleteCCAModal isModalVisible={showDeleteModal} closeModal={closeDeleteModal} confirmHandler={confirmDeleteHandler} cancelHandler={closeDeleteModal} ccaID={id} />
+            <ResetManagerModal isModalVisible={showResetModal} closeModal={closeResetModal} confirmHandler={confirmResetManagerHandler} cancelHandler={closeResetModal} ccaID={_id} />
+            <ResetMemberModal isModalVisible={showResetMemberModal} closeModal={closeResetMemberModal} confirmHandler={confirmResetMemberHandler} cancelHandler={closeResetMemberModal} ccaID={_id} />
+            <DeleteCCAModal isModalVisible={showDeleteModal} closeModal={closeDeleteModal} confirmHandler={confirmDeleteHandler} cancelHandler={closeDeleteModal} ccaID={_id} />
         </SafeAreaView>
         </TouchableWithoutFeedback>
     )

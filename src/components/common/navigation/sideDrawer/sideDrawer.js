@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, SafeAreaView, Dimensions } from 'react-native'
 import { Avatar } from 'react-native-elements'
 import { FlatList, TouchableWithoutFeedback } from 'react-native-gesture-handler'
@@ -8,8 +8,12 @@ import { useDispatch } from 'react-redux'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import { AppLoading } from 'expo'
 import { MING } from '../../styles'
+import axios from 'axios'
+import {URL, authenticate} from '../../../../api/config'
+import store from '../../../../redux/store/store' 
 
 export default function SideDrawer (props) {
+    const [user, setUser] = useState('')
     const dispatch = useDispatch()
 
     const navigateToScreen  = (navScreen) => {
@@ -60,6 +64,17 @@ export default function SideDrawer (props) {
             lineHeight: 30,
         }
     })
+    useEffect(()=>{
+        async function loadUser () {
+            try {
+                const res = await axios.get(`${URL}/users/profile/basic`, authenticate(store.getState().main.token))
+                setUser(res.data)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        loadUser() 
+    },[])
     if (!isLoaded) {
         return (<AppLoading />)
     }
@@ -69,7 +84,7 @@ export default function SideDrawer (props) {
                 <TouchableWithoutFeedback onPress={navigateToScreen.bind(this,'ProfileScreen')}>
                     <View style={styles.nameContainer}>
                         <Avatar rounded size="large" title='LH'/>
-                        <Text style={styles.userName}>Laurensius Hans Santoso</Text>
+                        <Text style={styles.userName}>{user.fname}</Text>
                     </View>
                 </TouchableWithoutFeedback>
                 <View>

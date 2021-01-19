@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ScrollView, View, Text, StyleSheet, SafeAreaView } from 'react-native'
 import { Avatar } from 'react-native-elements'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
@@ -6,15 +6,19 @@ import { page, marginHorizontal, GREY, MING } from '../../components/common/styl
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import { useForm, Controller } from 'react-hook-form'
 import CustomTextInput from '../../components/common/forms/TextInput'
-import MultiLineInput from '../../components/common/forms/MultiLineInput'
 import CustomPicker from '../../components/common/forms/Picker'
 import PrimaryButton from '../../components/common/buttons/PrimarySmall'
 import SecondaryButton from '../../components/common/buttons/SecondarySmall'
+
+import axios from 'axios'
+import {URL, authenticate} from '../../api/config'
+import store from '../../redux/store/store'
 
 export default function ProfilePage (props) {
     const [isLoaded] = useFonts({Lato_700Bold, Lato_400Regular})
     const loaded = isLoaded
     const [isChangingPassword, setIsChangingPassword] = useState(false)
+    const [user, setUser] = useState('')
     const styles = StyleSheet.create({
         card: {
             borderRadius: 15,
@@ -75,17 +79,32 @@ export default function ProfilePage (props) {
     const onBackPress = () => {
         props.navigation.goBack()
     }
-    const user = {id: 0, fname: 'Laurensius Hans Santoso 1', year:'4', faculty: 'EEE', email: 'dummy1@e.ntu.edu.sg', role: 'student', managedCCAs: ['EEE Club','MLDA @EEE'], joinedCCAs: []}
+    // const user = {id: 0, fname: 'Laurensius Hans Santoso 1', year:'4', faculty: 'EEE', email: 'dummy1@e.ntu.edu.sg', role: 'student', managedCCAs: ['EEE Club','MLDA @EEE'], joinedCCAs: []}
     const years = [
         {label: 'Year 1', value: '1'},
         {label: 'Year 2', value: '2'},
         {label: 'Year 3', value: '3'},
         {label: 'Year 4', value: '4'}
     ]
-    const { control, handleSubmit, reset, setValue } = useForm()
+    const { control, handleSubmit, reset } = useForm({ defaultValues: {
+        year: '',
+    }})
     const onSubmit = data => {
         console.log('Data: ',data)
     }
+    useEffect(()=>{
+        async function loadUser () {
+            try {
+                const res = await axios.get(`${URL}/users/profile`, authenticate(store.getState().main.token))
+                delete res.data.password
+                setUser(res.data)
+                reset(res.data)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        loadUser() 
+    },[reset])
     return (
         <SafeAreaView style={page.main}>
             <SubNavbar title={user.fname} pressed={onBackPress} />
@@ -110,7 +129,7 @@ export default function ProfilePage (props) {
                                 />
                                 )}
                             name="year"
-                            defaultValue=""
+                            defaultValue={user.year}
                         />
                         {user.joinedCCAs && user.joinedCCAs.length > 0 && (
                             <>

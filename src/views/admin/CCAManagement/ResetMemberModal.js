@@ -49,8 +49,8 @@ const createNewModal = ({ isModalVisible, closeModal, confirmHandler, cancelHand
         return (
             <Modal isVisible={isModalVisible} onBackdropPress={closeModal}>
                 <View style={{...page.modal, paddingHorizontal: 25}}>
-                    <Text style={styles.title}>Are you sure to reset CCA managers?</Text>
-                    <Text style={styles.subtitle}>This operation can't be undo</Text>
+                    <Text style={styles.title}>Are you sure to reset CCA members?</Text>
+                    <Text style={styles.subtitle}>This operation also resets CCA managers and can't be undo.</Text>
                     <View style={{marginTop:25, marginBottom: 10}}>
                         <View style={{flexDirection: 'row'}}>
                             <View style={styles.buttonContainer}>

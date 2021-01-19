@@ -9,6 +9,9 @@ import NameCard from '../../../components/admin/NameCard'
 import ColoredButton from '../../../components/common/buttons/ColoredButton'
 import TextInput from '../../../components/common/forms/TextInputNoLabel'
 
+import axios from 'axios'
+import {URL, authenticate} from '../../../api/config'
+import store from '../../../redux/store/store'
 
 export default function (props) {
     const [isLoaded] = useFonts({Lato_700Bold})
@@ -32,39 +35,55 @@ export default function (props) {
     }
     const dispatch = useDispatch()
     const selectedUsers = useSelector(state => state.admin.selectedUsers)
-    const onCardPress = (managerName) => {
+    const selectedUserIds = useSelector(state => state.admin.selectedUserIds)
+    const onCardPress = (managerName, managerID) => {
         let tempArray = [...selectedUsers]
+        let tempArray2 = [...selectedUserIds]
         if (selectedUsers.includes(managerName)) {
             const index = selectedUsers.indexOf(managerName)
             delete tempArray[index]
+            delete tempArray2[index]
             tempArray = tempArray.filter((item) => item!=undefined)
+            tempArray2 = tempArray2.filter((item) => item!=undefined)
         }
         else {
             tempArray = tempArray.concat(managerName)
+            tempArray2 = tempArray2.concat(managerID)
         }
-        dispatch(editSelectedUsers({selectedUsers: tempArray}))
+        dispatch(editSelectedUsers({selectedUsers: tempArray, selectedUserIds: tempArray2}))
     }
     const removeItemHandler = (managerName) => {
         let tempArray = [...selectedUsers]
+        let tempArray2 = [...selectedUserIds]
         const index = selectedUsers.indexOf(managerName)
         delete tempArray[index]
+        delete tempArray2[index]
         tempArray = tempArray.filter((item) => item!=undefined)
-        dispatch(editSelectedUsers({selectedUsers: tempArray}))
+        tempArray2 = tempArray2.filter((item) => item!=undefined)
+        dispatch(editSelectedUsers({selectedUsers: tempArray, selectedUserIds: tempArray2}))
     }
     const onKeywordChange = (value) => {
         setKeyword(value)
         const filtered = users.filter(user => user.fname.includes(value))
         setFilteredUsers(filtered)
     }
-    const userList = [
-        {id: 0, fname: 'Laurensius Hans Santoso 1', year:'4', faculty: 'EEE'},
-        {id: 1, fname: 'Hans', year:'4', faculty: 'EEE'},
-        {id: 2, fname: 'Laurensius Hans Santoso 3', year:'4', faculty: 'EEE'},
-        {id: 3, fname: 'Laurensius Hans Santoso 4', year:'4', faculty: 'EEE'}
-    ]
+    // const userList = [
+    //     {id: 0, fname: 'Laurensius Hans Santoso 1', year:'4', faculty: 'EEE'},
+    //     {id: 1, fname: 'Hans', year:'4', faculty: 'EEE'},
+    //     {id: 2, fname: 'Laurensius Hans Santoso 3', year:'4', faculty: 'EEE'},
+    //     {id: 3, fname: 'Laurensius Hans Santoso 4', year:'4', faculty: 'EEE'}
+    // ]
     useEffect (() => {
-        setUsers(userList)
-        setFilteredUsers(userList)
+        async function loadUsers() {
+            try {
+                const res = await axios.get(`${URL}/users`, authenticate(store.getState().main.token))
+                setUsers(res.data)
+                setFilteredUsers(res.data)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        loadUsers()
     }, [])
     return (
         <SafeAreaView style={page.main}>
@@ -88,7 +107,7 @@ export default function (props) {
                     data={filteredUsers}
                     keyExtractor={(item)=>item.id}
                     renderItem={({ item })=> (
-                        <NameCard name={item.fname} faculty={item.faculty} year={item.year} onPress={onCardPress.bind(this,item.fname)} checked={selectedUsers.includes(item.fname)}/>
+                        <NameCard name={item.fname} faculty={item.faculty} year={item.year} onPress={onCardPress.bind(this,item.fname,item._id)} checked={selectedUsers.includes(item.fname)}/>
                     )}
                 />
             </View>

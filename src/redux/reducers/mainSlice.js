@@ -20,6 +20,9 @@ export const drawerSlice = createSlice({
             if (action.payload.admin) {
                 state.activeScreen = 'AdminManageUserScreen'
             }
+            else {
+                state.activeScreen = 'HomeScreen'
+            }
             state.isLoggedIn = true
             state.token = action.payload.token
             state.isAdmin = action.payload.admin

@@ -13,6 +13,10 @@ import SecondaryButton from '../../../components/common/buttons/SecondarySmall'
 import ColoredButton from '../../../components/common/buttons/ColoredButton'
 import ColorPalette from '../../../components/common/forms/ColorPalette'
 
+import axios from 'axios'
+import {URL, authenticate} from '../../../api/config'
+import store from '../../../redux/store/store'
+
 export default function CreateNewCCA (props) {
     const [isLoaded] = useFonts({
         Lato_400Regular,
@@ -22,6 +26,7 @@ export default function CreateNewCCA (props) {
     const dispatch = useDispatch()
     const onBackPress = () => {
         props.navigation.goBack()
+        dispatch(editSelectedUsers({selectedUsers: [], selectedUserIds: []}))
     }
     const styles = StyleSheet.create ({
         card: {
@@ -64,15 +69,19 @@ export default function CreateNewCCA (props) {
         },
     })
     const selectedUsers = useSelector(state => state.admin.selectedUsers)
+    const selectedUserIds = useSelector(state => state.admin.selectedUserIds)
     const selectManagersHandler = () => {
         props.navigation.navigate('SelectManagersScreen')
     }
     const removeItemHandler = (managerName) => {
         let tempArray = [...selectedUsers]
+        let tempArray2 = [...selectedUserIds]
         const index = selectedUsers.indexOf(managerName)
         delete tempArray[index]
+        delete tempArray2[index]
         tempArray = tempArray.filter((item) => item!=undefined)
-        dispatch(editSelectedUsers({selectedUsers: tempArray}))
+        tempArray2 = tempArray2.filter((item) => item!=undefined)
+        dispatch(editSelectedUsers({selectedUsers: tempArray, selectedUserIds: tempArray2}))
     }
     const defaultValues = {
         ccaName: '',
@@ -82,11 +91,22 @@ export default function CreateNewCCA (props) {
     }
     const { control, handleSubmit, reset, setValue } = useForm({ defaultValues })
     const onSubmit = data => {
-        console.log('Data: ',data)
+        data.managers = store.getState().admin.selectedUserIds
+        async function submitData () {
+            try {
+                const res = await axios.post(`${URL}/CCAs/create`, data, authenticate(store.getState().main.token))
+                console.log(res.data)
+                dispatch(editSelectedUsers({selectedUsers: tempArray, selectedUserIds: tempArray2}))
+                props.navigation.goBack()
+            } catch (err) {
+
+            }
+        }
+        submitData()
     }
     const resetHandler = ()=> {
         reset(defaultValues)
-        dispatch(editSelectedUsers({selectedUsers: []}))
+        dispatch(editSelectedUsers({selectedUsers: [], selectedUserIds: []}))
         console.log('reset')
     }
 
