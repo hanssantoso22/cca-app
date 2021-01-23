@@ -24,10 +24,10 @@ export default function ManageCCA (props) {
     }
     const createNewHandler = (checked) => {
         if (checked == 'Event') {
-            props.navigation.push('CreateEventScreen')
+            props.navigation.navigate('CreateEventScreen')
         }
         else {
-            props.navigation.push('CreateAnnouncementScreen')
+            props.navigation.navigate('CreateAnnouncementScreen')
         }
         dispatch(toggleModal())
         dispatch(selectItemInModal(null))

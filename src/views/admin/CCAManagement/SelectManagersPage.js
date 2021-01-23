@@ -64,15 +64,9 @@ export default function (props) {
     }
     const onKeywordChange = (value) => {
         setKeyword(value)
-        const filtered = users.filter(user => user.fname.includes(value))
+        const filtered = users.filter(user => user.fname.toLowerCase().includes(value.toLowerCase()))
         setFilteredUsers(filtered)
     }
-    // const userList = [
-    //     {id: 0, fname: 'Laurensius Hans Santoso 1', year:'4', faculty: 'EEE'},
-    //     {id: 1, fname: 'Hans', year:'4', faculty: 'EEE'},
-    //     {id: 2, fname: 'Laurensius Hans Santoso 3', year:'4', faculty: 'EEE'},
-    //     {id: 3, fname: 'Laurensius Hans Santoso 4', year:'4', faculty: 'EEE'}
-    // ]
     useEffect (() => {
         async function loadUsers() {
             try {

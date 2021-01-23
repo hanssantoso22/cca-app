@@ -89,17 +89,16 @@ export default function CreateNewCCA (props) {
         managers: '',  
         color: ''
     }
-    const { control, handleSubmit, reset, setValue } = useForm({ defaultValues })
+    const { control, handleSubmit, reset } = useForm({ defaultValues })
     const onSubmit = data => {
         data.managers = store.getState().admin.selectedUserIds
         async function submitData () {
             try {
                 const res = await axios.post(`${URL}/CCAs/create`, data, authenticate(store.getState().main.token))
-                console.log(res.data)
-                dispatch(editSelectedUsers({selectedUsers: tempArray, selectedUserIds: tempArray2}))
+                dispatch(editSelectedUsers({selectedUsers: [], selectedUserIds: []}))
                 props.navigation.goBack()
             } catch (err) {
-
+                console.log(err)
             }
         }
         submitData()

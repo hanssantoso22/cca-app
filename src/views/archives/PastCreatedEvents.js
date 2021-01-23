@@ -10,7 +10,7 @@ export default function PastCreatedEvents (props) {
         {id: 2, name: 'Subcommittee Recruitment Talk', organizer: 'EEE Club', read: false}
     ]
     const onPressHandler = (eventID) => {
-        props.navigation.push('EventReview',{
+        props.navigation.navigate('EventReview',{
             eventID,
         })
     }

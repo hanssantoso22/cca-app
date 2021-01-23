@@ -23,7 +23,7 @@ export default function Login (props) {
         dispatch(verifyLogin(data.email,data.password))
     }
     const createNewAccountHandler = () => {
-        props.navigation.push('CreateAccount')
+        props.navigation.navigate('CreateAccount')
     }
     const styles = StyleSheet.create({
         mainContainer: {

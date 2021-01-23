@@ -168,7 +168,6 @@ export default function CCADetails (props) {
     }
     const confirmDeleteHandler = ccaID => {
         async function deleteCCA () {
-            console.log('Token:',store.getState().main.token)
             try {
                 const res = await axios.delete(`${URL}/CCA/${ccaID}/delete`, authenticate(store.getState().main.token))
                 setShowDeleteModal(false)
@@ -251,6 +250,11 @@ export default function CCADetails (props) {
                             <Text key={index} style={styles.manager}>{`${index+1}. ${managerDetails.fname} / ${managerDetails.year}`}</Text>
                         )
                     })}
+                    <View style={styles.selectedItemsContainer}>
+                        {selectedUsers != [] && selectedUsers.map((user,index) => (
+                            <ColoredButton key={index} text={user} onPress={removeItemHandler.bind(this,user)} />
+                        ))}
+                    </View>
                     {CCA.members && CCA.members.length > 0 &&
                         <> 
                         <View style={{flexDirection: 'row'}}>
@@ -268,11 +272,6 @@ export default function CCADetails (props) {
                         </View>
                         </>
                     }
-                    <View style={styles.selectedItemsContainer}>
-                        {selectedUsers != [] && selectedUsers.map((user,index) => (
-                            <ColoredButton key={index} text={user} onPress={removeItemHandler.bind(this,user)} />
-                        ))}
-                    </View>
                     <Controller
                         control={control}
                         render= {({ onChange, value }) => (

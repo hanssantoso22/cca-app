@@ -7,7 +7,7 @@ import { navigateToPage, logout } from '../../../../redux/reducers/mainSlice'
 import { useDispatch } from 'react-redux'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import { AppLoading } from 'expo'
-import { MING } from '../../styles'
+import { MING, GREY } from '../../styles'
 import axios from 'axios'
 import {URL, authenticate} from '../../../../api/config'
 import store from '../../../../redux/store/store' 
@@ -44,10 +44,13 @@ export default function SideDrawer (props) {
             data = {menus}
             keyExtractor = {item => item.id.toString()}
             renderItem = {({ item }) => {
-                            return (
-                                <ItemCard pressed={()=>navigateToScreen(item.navScreen)} icon={item.icon} menu={item.menu} navScreen={item.navScreen}/>
-                            ) 
-                        }}
+                if (item.menu == 'MANAGE CCA' && user.role=='student') {
+                    return null
+                }       
+                return (
+                        <ItemCard pressed={()=>navigateToScreen(item.navScreen)} icon={item.icon} menu={item.menu} navScreen={item.navScreen}/>
+                    ) 
+                }}
         />
 
     )
@@ -67,14 +70,14 @@ export default function SideDrawer (props) {
     useEffect(()=>{
         async function loadUser () {
             try {
-                const res = await axios.get(`${URL}/users/profile/basic`, authenticate(store.getState().main.token))
+                const res = await axios.get(`${URL}/users/profile`, authenticate(store.getState().main.token))
                 setUser(res.data)
             } catch (err) {
                 console.log(err)
             }
         }
         loadUser() 
-    },[])
+    },[user])
     if (!isLoaded) {
         return (<AppLoading />)
     }
@@ -83,7 +86,15 @@ export default function SideDrawer (props) {
             <SafeAreaView>
                 <TouchableWithoutFeedback onPress={navigateToScreen.bind(this,'ProfileScreen')}>
                     <View style={styles.nameContainer}>
-                        <Avatar rounded size="large" title='LH'/>
+                        <Avatar 
+                            rounded 
+                            size={110} 
+                            containerStyle={{marginVertical: 20}} 
+                            icon={user.avatar == null ? {name: 'user-circle-o', type:'font-awesome', color: GREY[2], size: 90} : null}
+                            source={user.avatar != null ? {
+                                uri: `data:image/png;base64,${user.avatar}`
+                            } : null}
+                        />
                         <Text style={styles.userName}>{user.fname}</Text>
                     </View>
                 </TouchableWithoutFeedback>

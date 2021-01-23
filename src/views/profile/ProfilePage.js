@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { ScrollView, View, Text, StyleSheet, SafeAreaView } from 'react-native'
+import { ScrollView, View, Text, StyleSheet, SafeAreaView, TouchableWithoutFeedback } from 'react-native'
+import * as ImagePicker from 'expo-image-picker'
+import FormData from 'form-data'
+import mime from 'mime'
 import { Avatar } from 'react-native-elements'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
-import { page, marginHorizontal, GREY, MING } from '../../components/common/styles'
+import { page, marginHorizontal, GREY, MING, RED } from '../../components/common/styles'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import { useForm, Controller } from 'react-hook-form'
 import CustomTextInput from '../../components/common/forms/TextInput'
@@ -12,11 +15,14 @@ import SecondaryButton from '../../components/common/buttons/SecondarySmall'
 
 import axios from 'axios'
 import {URL, authenticate} from '../../api/config'
+import { useDispatch } from 'react-redux'
+import { logout, navigateToPage } from '../../redux/reducers/mainSlice'
 import store from '../../redux/store/store'
 
 export default function ProfilePage (props) {
     const [isLoaded] = useFonts({Lato_700Bold, Lato_400Regular})
     const loaded = isLoaded
+    const dispatch = useDispatch()
     const [isChangingPassword, setIsChangingPassword] = useState(false)
     const [user, setUser] = useState('')
     const styles = StyleSheet.create({
@@ -36,7 +42,7 @@ export default function ProfilePage (props) {
         },
         nameContainer: {
             alignItems: 'center',
-            marginVertical: 15,
+            marginBottom: 15,
         },
         userName: {
             fontFamily: 'Lato_700Bold',
@@ -58,6 +64,12 @@ export default function ProfilePage (props) {
             color: MING[5],
             marginBottom: 15
         },
+        redHyperlink: {
+            fontSize: 13,
+            fontFamily: 'Lato_400Regular',
+            color: RED[5],
+            marginBottom: 15
+        },
         bottomContainer: {
             flexDirection: 'column-reverse',
             paddingHorizontal: 15,
@@ -74,10 +86,22 @@ export default function ProfilePage (props) {
             color: GREY[5],
             marginTop: 5,
             marginBottom: 15,
+            lineHeight: 25,
         },
     })
+    const navigateToScreen  = (navScreen) => {
+        if (navScreen=='LogoutScreen') {
+            dispatch (logout())
+            return 0
+        }
+        props.navigation.navigate(navScreen)
+        if (navScreen != 'ProfileScreen') {
+            dispatch (navigateToPage(navScreen))
+        }
+        
+    }
     const onBackPress = () => {
-        props.navigation.goBack()
+        navigateToScreen('HomeScreen')
     }
     // const user = {id: 0, fname: 'Laurensius Hans Santoso 1', year:'4', faculty: 'EEE', email: 'dummy1@e.ntu.edu.sg', role: 'student', managedCCAs: ['EEE Club','MLDA @EEE'], joinedCCAs: []}
     const years = [
@@ -89,8 +113,63 @@ export default function ProfilePage (props) {
     const { control, handleSubmit, reset } = useForm({ defaultValues: {
         year: '',
     }})
+    const removePhotoHandler = () => {
+        async function removePhoto () {
+            try {
+                const res = await axios.patch(`${URL}/users/profile/removeAvatar`, {}, authenticate(store.getState().main.token))
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        removePhoto()
+    }
+    const pickImageHandler = () => {
+        async function pickImage () {
+            try {
+                const formData = new FormData()
+                let result = await ImagePicker.launchImageLibraryAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.All,
+                    allowsEditing: true,
+                    aspect: [1, 1],
+                    quality: 0.3,
+                })
+                if (result.cancelled==false) {
+                    formData.append('avatar', {
+                        uri: result.uri,
+                        type: mime.getType(result.uri),
+                        name: result.uri.split('/').pop()
+                    })
+                    const res = await axios.patch(`${URL}/users/profile/changeAvatar`, formData, {headers: {
+                        Authorization: `Bearer ${store.getState().main.token}`,
+                        'Content-Type': 'multipart/form-data'
+                    }})
+                }
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        pickImage()
+    }
     const onSubmit = data => {
-        console.log('Data: ',data)
+        async function submitData () {
+            try {
+                //NEED TO VALIDATE PASSWORD AND CONFIRM PASSWORD ARE THE SAME
+                if (data.password == '' ) {
+                    delete data.password
+                    delete data.confirmPassword
+                }
+                if (data.password && data.password!='') delete data.confirmPassword
+                const res = await axios.patch(`${URL}/users/profile/edit`, data, authenticate(store.getState().main.token))
+                if (data.password && data.password!='') {
+                    navigateToScreen('LogoutScreen')
+                } else {
+                    navigateToScreen('HomeScreen')
+                }
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        submitData()
     }
     useEffect(()=>{
         async function loadUser () {
@@ -104,14 +183,31 @@ export default function ProfilePage (props) {
             }
         }
         loadUser() 
-    },[reset])
+    },[reset, user])
     return (
         <SafeAreaView style={page.main}>
             <SubNavbar title={user.fname} pressed={onBackPress} />
             <ScrollView>
                 <View style={page.main}>
                     <View style={styles.nameContainer}>
-                        <Avatar rounded size="large" title='LH'/>
+                        <Avatar 
+                            rounded 
+                            size={110} 
+                            containerStyle={{marginBottom: 20}} 
+                            icon={user.avatar == null ? {name: 'user-circle-o', type:'font-awesome', color: GREY[2], size: 90} : null}
+                            source={user.avatar != null ? {
+                                uri: `data:image/png;base64,${user.avatar}`
+                            } : null}
+                        >
+                            <TouchableWithoutFeedback onPress={pickImageHandler}>
+                                <Avatar.Accessory size={20} icon={{name: 'edit', type:'material-icons', color: GREY[2]}} />
+                            </TouchableWithoutFeedback>
+                        </Avatar>
+                        {user.avatar!=null && 
+                        <TouchableWithoutFeedback onPress={removePhotoHandler}>
+                            <Text style={styles.redHyperlink}>Remove Photo</Text>
+                        </TouchableWithoutFeedback>
+                        }
                         <Text style={styles.userName}>{user.fname}</Text>
                         <Text style={styles.email}>{user.email}</Text>
                         <Text style={styles.email}>{user.faculty}</Text>
