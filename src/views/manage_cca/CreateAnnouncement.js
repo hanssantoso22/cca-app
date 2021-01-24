@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react'
+import * as ImagePicker from 'expo-image-picker'
+import FormData from 'form-data'
+import mime from 'mime'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import { page, GREY, marginHorizontal } from '../../components/common/styles'
-import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import { useForm, Controller } from 'react-hook-form'
 import CustomTextInput from '../../components/common/forms/TextInput'
@@ -9,6 +12,11 @@ import MultiLineInput from '../../components/common/forms/MultiLineInput'
 import CustomPicker from '../../components/common/forms/Picker'
 import PrimaryButton from '../../components/common/buttons/PrimarySmall'
 import SecondaryButton from '../../components/common/buttons/SecondarySmall'
+import ImageUploader from '../../components/common/forms/ImageUploader'
+
+import axios from 'axios'
+import { URL, authenticate } from '../../api/config'
+import store from '../../redux/store/store'
 
 export default function CreateAnnouncement (props) {
     const [isLoaded] = useFonts({
@@ -16,6 +24,8 @@ export default function CreateAnnouncement (props) {
         Lato_700Bold
     })
     const loaded = isLoaded
+    const [imageURI, setImageURI] = useState(null)
+    const [CCAs, setCCAs] = useState([])
     const onBackPress = () => {
         props.navigation.goBack()
     }
@@ -45,15 +55,10 @@ export default function CreateAnnouncement (props) {
             fontFamily: 'Lato_400Regular'
         }
     })
-    const CCAs = [
-        {label: 'EEE Club', value: 'EEE Club'},
-        {label: 'Garage @EEE', value: 'Garage @EEE'},
-        {label: 'MLDA @EEE', value: 'MLDA @EEE'}
-    ]
     //CHANGE CCA ID BELOW WITH THE REAL ONE
     const visibility = [
-        {label: 'Public', value: 'Public'},
-        {label: 'Member Only', value: 'INSERT CCA ID'}
+        {label: 'Public', value: []},
+        ...CCAs
     ]
     const defaultValues = {
         announcementTitle: '', 
@@ -62,20 +67,68 @@ export default function CreateAnnouncement (props) {
         visibility: ''
     }
     const { control, handleSubmit, reset, setValue } = useForm({ defaultValues })
-    const onSubmit = data => {
-        console.log('Data: ',data)
+    const onSubmit = async data => {
+        try {
+            const res = await axios.post(`${URL}/announcements/create`, data, authenticate(store.getState().main.token))
+            if (imageURI!=null) {
+                const formData = new FormData()
+                formData.append('image', {
+                    uri: imageURI,
+                    type: mime.getType(imageURI),
+                    name: imageURI.split('/').pop(),
+                })
+                const announcementID = res.data._id
+                const res2 = await axios.patch(`${URL}/announcement/${announcementID}/uploadImage`, formData, {headers: {
+                    Authorization: `Bearer ${store.getState().main.token}`,
+                    'Content-Type': 'multipart/form-data'
+                }})
+            }
+            props.navigation.goBack()
+        }
+        catch (err) {
+            console.log(err)
+        }
     }
     const resetHandler = ()=> {
         reset(defaultValues)
         setValue("organizer","")
         setValue("visibility","")
+        setImageURI(null)
         console.log('reset')
     }
-
+    const pickImageHandler = async () => {
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                quality: 0.8,
+            })
+            if (result.cancelled==false) {
+                setImageURI(result.uri)
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    useEffect(() => {
+        async function loadManagedCCA () {
+            try {
+                const res = await axios.get(`${URL}/users/managedCCAs`, authenticate(store.getState().main.token))
+                const ccaArray = res.data.map((CCA) => {
+                    return {label: CCA.ccaName, value: new Array(CCA._id)}
+                })
+                setCCAs(ccaArray)
+            } catch (err) {
+                console.log('Retrieve CCA failed', err)
+            }
+        }
+        loadManagedCCA()
+    }, [])
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={page.main}>
                 <SubNavbar title='Create Announcement' pressed={onBackPress} />
+                <ScrollView>
                 <View style={page.main}>
                     <Text style={styles.pageTitle}>Announcement Details</Text>
                     <View style={styles.card}>
@@ -134,6 +187,7 @@ export default function CreateAnnouncement (props) {
                             name="visibility"
                             defaultValue=""
                         />
+                        <ImageUploader label="Upload Image: " pickImageHandler={pickImageHandler} imageURI={imageURI} removeImageHandler={()=>setImageURI(null)} />
                         <View style={{flexDirection: 'row', width: '100%'}}>
                             <View style={{paddingRight: 10, flex: 1}}>
                                 <SecondaryButton fontSize={16} text="Clear Input" pressHandler={resetHandler}/>
@@ -144,6 +198,7 @@ export default function CreateAnnouncement (props) {
                         </View>
                     </View>
                 </View>
+                </ScrollView>
             </SafeAreaView>
         </TouchableWithoutFeedback>
         

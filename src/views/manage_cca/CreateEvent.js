@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'
+import * as ImagePicker from 'expo-image-picker'
+import FormData from 'form-data'
+import mime from 'mime'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import { page, GREY, marginHorizontal } from '../../components/common/styles'
 import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native'
@@ -13,6 +16,11 @@ import CustomPicker from '../../components/common/forms/Picker'
 import DateTimePicker from '../../components/common/forms/DateTimePicker'
 import PrimaryButton from '../../components/common/buttons/PrimarySmall'
 import SecondaryButton from '../../components/common/buttons/SecondarySmall'
+import ImageUploader from '../../components/common/forms/ImageUploader'
+
+import axios from 'axios'
+import { URL, authenticate } from '../../api/config'
+import store from '../../redux/store/store'
 
 export default function home (props) {
     const [isLoaded] = useFonts({
@@ -21,7 +29,8 @@ export default function home (props) {
     })
     const loaded = isLoaded
     const dispatch = useDispatch()
-    
+    const [CCAs, setCCAs] = useState([])
+    const [imageURI, setImageURI] = useState(null)
     const [showStartPicker, setShowStartPicker] = useState(false)
     const [showEndPicker, setShowEndPicker] = useState(false)
     const onBackPress = () => {
@@ -55,19 +64,14 @@ export default function home (props) {
 
         
     })
-    const CCAs = [
-        {label: 'EEE Club', value: 'EEE Club'},
-        {label: 'Garage @EEE', value: 'Garage @EEE'},
-        {label: 'MLDA @EEE', value: 'MLDA @EEE'}
-    ]
     // REPLACE CCA ID WITH THE REAL ONE
     const audience = [
-        {label: 'Public', value: 'Public'},
-        {label: 'Member Only', value: 'CCA ID'}
+        {label: 'Public', value: []},
+        ...CCAs
     ]
     const allowedParticipants = [
-        {label: 'Public', value: 'Public'},
-        {label: 'Member Only', value: 'CCA ID'}
+        {label: 'Public', value: []},
+        ...CCAs
     ]
     const startDate = useSelector(state => state.createEventSlice.startDate)
     const endDate = useSelector(state => state.createEventSlice.endDate)
@@ -86,8 +90,27 @@ export default function home (props) {
     const { control, handleSubmit, reset, setValue } = useForm({
         defaultValues
     })
-    const onSubmit = data => {
-        console.log('Data: ',data)
+    const onSubmit = async data => {
+        try {
+            const res = await axios.post(`${URL}/events/create`, data, authenticate(store.getState().main.token))
+            if (imageURI!=null) {
+                const formData = new FormData()
+                formData.append('image', {
+                    uri: imageURI,
+                    type: mime.getType(imageURI),
+                    name: imageURI.split('/').pop(),
+                })
+                const eventID = res.data._id
+                const res2 = await axios.patch(`${URL}/event/${eventID}/uploadImage`, formData, {headers: {
+                    Authorization: `Bearer ${store.getState().main.token}`,
+                    'Content-Type': 'multipart/form-data'
+                }})
+            }
+            props.navigation.goBack()
+        }
+        catch (err) {
+            console.log(err)
+        }
     }
     const resetHandler = ()=> {
         reset(defaultValues)
@@ -95,9 +118,37 @@ export default function home (props) {
         setValue("organizer","")
         setValue("visibility","")
         setValue("allowedParticipants","")
+        setImageURI(null)
         console.log('reset')
     }
-
+    const pickImageHandler = async () => {
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                quality: 0.8,
+            })
+            if (result.cancelled==false) {
+                setImageURI(result.uri)
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    useEffect(() => {
+        async function loadManagedCCA () {
+            try {
+                const res = await axios.get(`${URL}/users/managedCCAs`, authenticate(store.getState().main.token))
+                const ccaArray = res.data.map((CCA) => {
+                    return {label: CCA.ccaName, value: [CCA._id]}
+                })
+                setCCAs(ccaArray)
+            } catch (err) {
+                console.log('Retrieve CCA failed', err)
+            }
+        }
+        loadManagedCCA()
+    }, [])
     return (
         <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss(); setShowStartPicker(false); setShowEndPicker(false)}}>
             <SafeAreaView style={page.main}>
@@ -237,6 +288,7 @@ export default function home (props) {
                                   name="allowedParticipants"
                                   defaultValue=""
                             />
+                            <ImageUploader label="Upload Image: " pickImageHandler={pickImageHandler} imageURI={imageURI} removeImageHandler={()=>setImageURI(null)} />
                             <View style={{flexDirection: 'row', width: '100%'}}>
                                 <View style={{paddingRight: 10, flex: 1}}>
                                     <SecondaryButton fontSize={16} text="Clear Input" pressHandler={resetHandler}/>

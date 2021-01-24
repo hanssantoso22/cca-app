@@ -5,7 +5,6 @@ import { SafeAreaView, View, FlatList } from 'react-native'
 import NewsCard from '../../components/home/NewsCard'
 import axios from 'axios'
 import { URL, authenticate } from '../../api/config'
-// import axios from '../../api/config'
 import store from '../../redux/store/store'
 
 export default function home (props) {
@@ -17,10 +16,8 @@ export default function home (props) {
     useEffect(() => {
         async function fetchData() {
             try {
-                console.log(store.getState().main)
                 const response = await axios.get(`${URL}/announcements`, authenticate(store.getState().main.token))
                 const data = response.data
-                console.log('Loading successful!',response.headers)
                 setAnnouncements(data)
             } catch (err) {
                 console.log('Loading Failed',err.request,store.getState().main.token)

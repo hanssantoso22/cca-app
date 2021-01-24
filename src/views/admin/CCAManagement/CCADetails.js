@@ -111,7 +111,6 @@ export default function CCADetails (props) {
         async function submitData () {
             try {
                 const res = await axios.patch(`${URL}/CCA/${_id}/edit`, data, authenticate(store.getState().main.token))
-                console.log(res.data)
                 dispatch(editSelectedUsers({selectedUsers: [], selectedUserIds: []}))
                 props.navigation.goBack()
             } catch (err) {

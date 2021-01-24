@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { ScrollView, View, Text, StyleSheet, SafeAreaView, TouchableWithoutFeedback } from 'react-native'
+import React, { useState, useEffect, useCallback } from 'react'
+import { ScrollView, RefreshControl, View, Text, StyleSheet, SafeAreaView, TouchableWithoutFeedback } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import FormData from 'form-data'
 import mime from 'mime'
@@ -12,6 +12,7 @@ import CustomTextInput from '../../components/common/forms/TextInput'
 import CustomPicker from '../../components/common/forms/Picker'
 import PrimaryButton from '../../components/common/buttons/PrimarySmall'
 import SecondaryButton from '../../components/common/buttons/SecondarySmall'
+import RemoveAvatarModal from './RemoveAvatarModal'
 
 import axios from 'axios'
 import {URL, authenticate} from '../../api/config'
@@ -24,7 +25,11 @@ export default function ProfilePage (props) {
     const loaded = isLoaded
     const dispatch = useDispatch()
     const [isChangingPassword, setIsChangingPassword] = useState(false)
+    const [showRemoveAvatarModal, setShowRemoveAvatarModal] = useState(false)
+    const [isPhotoChanged, setIsPhotoChanged] = useState(false)
     const [user, setUser] = useState('')
+    const [refreshing, setRefreshing] = useState(false);
+
     const styles = StyleSheet.create({
         card: {
             borderRadius: 15,
@@ -89,6 +94,11 @@ export default function ProfilePage (props) {
             lineHeight: 25,
         },
     })
+    const wait = (timeout) => {
+        return new Promise(resolve => {
+          setTimeout(resolve, timeout);
+        });
+    }
     const navigateToScreen  = (navScreen) => {
         if (navScreen=='LogoutScreen') {
             dispatch (logout())
@@ -113,7 +123,14 @@ export default function ProfilePage (props) {
     const { control, handleSubmit, reset } = useForm({ defaultValues: {
         year: '',
     }})
+    //Remove Avatar Handler
     const removePhotoHandler = () => {
+        setShowRemoveAvatarModal(true)
+    }
+    const closeRemoveAvatarModal = () => {
+        setShowRemoveAvatarModal(false)
+    }
+    const confirmRemoveAvatarHandler = () => {
         async function removePhoto () {
             try {
                 const res = await axios.patch(`${URL}/users/profile/removeAvatar`, {}, authenticate(store.getState().main.token))
@@ -122,6 +139,8 @@ export default function ProfilePage (props) {
             }
         }
         removePhoto()
+        setIsPhotoChanged(!isPhotoChanged)
+        setShowRemoveAvatarModal(false)
     }
     const pickImageHandler = () => {
         async function pickImage () {
@@ -143,6 +162,7 @@ export default function ProfilePage (props) {
                         Authorization: `Bearer ${store.getState().main.token}`,
                         'Content-Type': 'multipart/form-data'
                     }})
+                    setIsPhotoChanged(!isPhotoChanged)
                 }
             } catch (err) {
                 console.log(err)
@@ -171,6 +191,18 @@ export default function ProfilePage (props) {
         }
         submitData()
     }
+    const onRefresh = useCallback(async () => {
+        try {
+            const res = await axios.get(`${URL}/users/profile`, authenticate(store.getState().main.token))
+            delete res.data.password
+            setUser(res.data)
+            reset(res.data)
+        } catch (err) {
+            console.log(err)
+        }
+        setRefreshing(true);
+        wait(500).then(() => setRefreshing(false));
+      }, [refreshing])
     useEffect(()=>{
         async function loadUser () {
             try {
@@ -182,12 +214,16 @@ export default function ProfilePage (props) {
                 console.log(err)
             }
         }
-        loadUser() 
-    },[reset, user])
+        loadUser()
+        setIsPhotoChanged(false)
+    },[reset, isPhotoChanged])
     return (
         <SafeAreaView style={page.main}>
             <SubNavbar title={user.fname} pressed={onBackPress} />
-            <ScrollView>
+            <ScrollView refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+            >
                 <View style={page.main}>
                     <View style={styles.nameContainer}>
                         <Avatar 
@@ -284,6 +320,7 @@ export default function ProfilePage (props) {
                     </View>
                 </View>
             </ScrollView>
+            <RemoveAvatarModal isModalVisible={showRemoveAvatarModal} closeModal={closeRemoveAvatarModal} confirmHandler={confirmRemoveAvatarHandler} cancelHandler={closeRemoveAvatarModal} />
         </SafeAreaView>
     )
 }
