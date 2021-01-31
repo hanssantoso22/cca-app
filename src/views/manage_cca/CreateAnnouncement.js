@@ -83,7 +83,10 @@ export default function CreateAnnouncement (props) {
                     'Content-Type': 'multipart/form-data'
                 }})
             }
-            props.navigation.goBack()
+            props.navigation.reset({
+                index: 0,
+                routes: [{'name': 'ManageCCAScreen'}]
+            })
         }
         catch (err) {
             console.log(err)
@@ -101,7 +104,8 @@ export default function CreateAnnouncement (props) {
             let result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
                 allowsEditing: true,
-                quality: 0.8,
+                maxWidth: 1000,
+                maxHeight: 1000,
             })
             if (result.cancelled==false) {
                 setImageURI(result.uri)

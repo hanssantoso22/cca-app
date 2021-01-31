@@ -59,7 +59,6 @@ export default function CreatedAnnouncementCard (props) {
         <View style={styles.card}>
             <View style={styles.eventNameContainer}>
                 <Text style={styles.eventName} ellipsizeMode='tail' numberOfLines={1} >{props.name}</Text>
-                <Text style={styles.shortDescription} ellipsizeMode='tail' numberOfLines={1} >by {props.organizer}</Text>
             </View>
             <TouchableWithoutFeedback style={styles.indicatorContainer} onPress={props.edit}>
                 <Text style={styles.icon}>edit</Text>

@@ -7,7 +7,7 @@ import { AppLoading } from 'expo'
 import PrimaryButton from '../../components/common/buttons/PrimarySmall'
 import SecondaryButton from '../../components/common/buttons/SecondarySmall'
 
-const createNewModal = ({ isModalVisible, closeModal, confirmHandler, cancelHandler, announcementID }) => {
+const createNewModal = ({ isModalVisible, closeModal, confirmHandler, cancelHandler, eventID }) => {
     const [isLoaded] = useFonts({
         Lato_700Bold,
         Lato_400Regular,
@@ -41,14 +41,14 @@ const createNewModal = ({ isModalVisible, closeModal, confirmHandler, cancelHand
         return (
             <Modal isVisible={isModalVisible} onBackdropPress={closeModal}>
                 <View style={{...page.modal, paddingHorizontal: 25}}>
-                    <Text style={styles.title}>Are you sure to delete the announcement?</Text>
+                    <Text style={styles.title}>Are you sure to delete the event?</Text>
                     <View style={{marginTop:25, marginBottom: 10}}>
                         <View style={{flexDirection: 'row'}}>
                             <View style={styles.buttonContainer}>
                                 <SecondaryButton text="Cancel" fontSize={16} pressHandler={cancelHandler} style={styles.secondaryDanger} />
                             </View>
                             <View style={styles.buttonContainer}>
-                                <PrimaryButton text="Yes, just delete" fontSize={16} pressHandler={confirmHandler.bind(this,announcementID)} style={styles.primaryDanger} />
+                                <PrimaryButton text="Yes, just delete" fontSize={16} pressHandler={confirmHandler.bind(this,eventID)} style={styles.primaryDanger} />
                             </View>
                         </View>
                     </View>

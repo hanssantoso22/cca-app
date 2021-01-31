@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Text, StyleSheet, View, TouchableWithoutFeedback, Image } from 'react-native'
 import { GREY, MING, RED } from '../styles'
 import { useFonts, Lato_400Regular} from '@expo-google-fonts/lato'
 
-export default function ImageUploader ({ label, pickImageHandler, removeImageHandler, imageURI }) {
+export default function ImageUploader ({ label, pickImageHandler, removeImageHandler, imageURI, uploaded }) {
     const [isLoaded] = useFonts ({
         Lato_400Regular
     })
@@ -45,7 +45,13 @@ export default function ImageUploader ({ label, pickImageHandler, removeImageHan
         thumbnail: {
             resizeMode: 'contain',
             height: 200,
-        }
+        },
+        imageUploadedLabel: {
+            fontSize: 13,
+            fontFamily: 'Lato_400Regular',
+            color: GREY[3],
+            marginBottom: 15
+        },
     })
     const onBlur = () => {
         setContainerBorderColor(GREY[2])
@@ -57,13 +63,13 @@ export default function ImageUploader ({ label, pickImageHandler, removeImageHan
         <View>
             <View style={{flexDirection: 'row'}}>
                 <Text style={styles.inputLabel}>{label}</Text>
-                {imageURI == null ? 
-                    <TouchableWithoutFeedback onPress={pickImageHandler}>
-                        <Text style={styles.hyperlink}>Pick image</Text>
-                    </TouchableWithoutFeedback>
-                :
+                {imageURI != null || uploaded == true? 
                     <TouchableWithoutFeedback onPress={removeImageHandler}>
                         <Text style={styles.redHyperlink}>Remove image</Text>
+                    </TouchableWithoutFeedback>
+                :
+                    <TouchableWithoutFeedback onPress={pickImageHandler}>
+                        <Text style={styles.hyperlink}>Pick image</Text>
                     </TouchableWithoutFeedback>
                 }
             </View>
@@ -71,6 +77,9 @@ export default function ImageUploader ({ label, pickImageHandler, removeImageHan
                 <View style={styles.previewContainer}>
                     <Image source={{uri: imageURI}} style={styles.thumbnail} />
                 </View>
+            }
+            {uploaded == true && 
+                <Text style={styles.imageUploadedLabel}>Image Uploaded</Text>
             }
         </View>
     )

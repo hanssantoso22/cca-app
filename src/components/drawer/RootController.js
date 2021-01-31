@@ -23,6 +23,8 @@ import ArchivesScreen from '../../views/archives/archives'
 import EventReviewPage from '../../views/archives/EventReviewPage'
 import LoginScreen from '../../views/login_logout/login'
 import CreateAccountScreen from '../../views/login_logout/createNewAccount'
+import ForgotPassScreen from '../../views/login_logout/ForgotPass'
+import ForgotPassVerificationScreen from '../../views/login_logout/ForgotPassVerification'
 import DrawerMenu from '../common/navigation/sideDrawer/sideDrawer'
 
 //COMPONENTS FOR ADMIN
@@ -147,6 +149,8 @@ const RootController = () => {
             <AuthStack.Navigator initialRouteName="AuthStackScreen">
                 <AuthStack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown: false}}/>
                 <AuthStack.Screen name="CreateAccount" component={props => <CreateAccountScreen {...props} />} options={{headerShown: false}}/>
+                <AuthStack.Screen name="ForgotPassScreen" component={ForgotPassScreen} options={{headerShown: false}}/>
+                <AuthStack.Screen name="ForgotPassVerificationScreen" component={ForgotPassVerificationScreen} options={{headerShown: false}}/>
             </AuthStack.Navigator>
         ) }
         

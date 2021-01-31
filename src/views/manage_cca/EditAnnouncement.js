@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react'
+import * as ImagePicker from 'expo-image-picker'
+import FormData from 'form-data'
+import mime from 'mime'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import { page, GREY, marginHorizontal } from '../../components/common/styles'
-import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import { useForm, Controller } from 'react-hook-form'
 import CustomTextInput from '../../components/common/forms/TextInput'
@@ -9,17 +12,27 @@ import MultiLineInput from '../../components/common/forms/MultiLineInput'
 import CustomPicker from '../../components/common/forms/Picker'
 import PrimaryButton from '../../components/common/buttons/PrimarySmall'
 import SecondaryButton from '../../components/common/buttons/SecondarySmall'
+import ImageUploader from '../../components/common/forms/ImageUploader'
 
-export default function home (props) {
+import axios from 'axios'
+import { URL, authenticate } from '../../api/config'
+import store from '../../redux/store/store'
+
+export default function CreateAnnouncement (props) {
     const [isLoaded] = useFonts({
         Lato_400Regular,
         Lato_700Bold
     })
     const loaded = isLoaded
+    const [imageURI, setImageURI] = useState(null)
+    const [imageUploaded, setImageUploaded] = useState(false)
+    const [imageChanged, setImageChanged] = useState(false)
+    const [announcement, setAnnouncement] = useState({})
+    const [CCAs, setCCAs] = useState([])
+    const { announcementID } = props.route.params
     const onBackPress = () => {
         props.navigation.goBack()
     }
-    const { announcementID } = props.route.params
     const styles = StyleSheet.create ({
         card: {
             borderRadius: 15,
@@ -46,39 +59,103 @@ export default function home (props) {
             fontFamily: 'Lato_400Regular'
         }
     })
-    const CCAs = [
-        {label: 'EEE Club', value: 'EEE Club'},
-        {label: 'Garage @EEE', value: 'Garage @EEE'},
-        {label: 'MLDA @EEE', value: 'MLDA @EEE'}
-    ]
     //CHANGE CCA ID BELOW WITH THE REAL ONE
     const visibility = [
-        {label: 'Public', value: 'Public'},
-        {label: 'Member Only', value: 'INSERT CCA ID'}
+        {label: 'Public', value: []},
+        ...CCAs
     ]
+    const { control, handleSubmit, reset, setValue } = useForm({ announcement })
+    const onSubmit = async data => {
+        try {
+            const res = await axios.patch(`${URL}/announcement/${announcementID}/edit`, data, authenticate(store.getState().main.token))
+            //Upload new image
+            if (imageURI!=null && imageChanged == true) {
+                const formData = new FormData()
+                formData.append('image', {
+                    uri: imageURI,
+                    type: mime.getType(imageURI),
+                    name: imageURI.split('/').pop(),
+                })
+                const res2 = await axios.patch(`${URL}/announcement/${announcementID}/uploadImage`, formData, {headers: {
+                    Authorization: `Bearer ${store.getState().main.token}`,
+                    'Content-Type': 'multipart/form-data'
+                }})
+            }
+            // Remove existing image
+            if (imageURI == null && imageChanged == true) {
+                const res3 = await axios.delete(`${URL}/announcement/${announcementID}/deleteImage`, authenticate(store.getState().main.token))
+            }
+            props.navigation.reset({
+                index: 0,
+                routes: [{'name': 'ManageCCAScreen'}]
+            })
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
     const defaultValues = {
         announcementTitle: '', 
         content: '', 
         organizer: '', 
         visibility: ''
     }
-    const { control, handleSubmit, reset, setValue } = useForm({ defaultValues })
-    const onSubmit = data => {
-        console.log('Data: ',data)
-    }
     const resetHandler = ()=> {
         reset(defaultValues)
         setValue("organizer","")
         setValue("visibility","")
+        setImageURI(null)
+        setImageUploaded(false)
         console.log('reset')
     }
-
+    const pickImageHandler = async () => {
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                maxWidth: 1000,
+                maxHeight: 1000,
+            })
+            if (result.cancelled==false) {
+                setImageURI(result.uri)
+                setImageChanged(true)
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    const removeImageHandler = () => {
+        setImageURI(null)
+        setImageChanged(true)
+        setImageUploaded(false)
+    }
+    useEffect(() => {
+        async function loadManagedCCA () {
+            try {
+                const res = await axios.get(`${URL}/users/managedCCAs`, authenticate(store.getState().main.token))
+                const res2 = await axios.get(`${URL}/announcement/${announcementID}/details`, authenticate(store.getState().main.token))
+                const ccaArray = res.data.map((CCA) => {
+                    return {label: CCA.ccaName, value: new Array(CCA._id)}
+                })
+                setCCAs(ccaArray)
+                setAnnouncement(res2.data)
+                if (!Object.keys(res2.data).includes('image')) {
+                    setImageUploaded(true)
+                }
+                reset(res2.data)
+            } catch (err) {
+                console.log('Retrieve CCA failed', err)
+            }
+        }
+        loadManagedCCA()
+    }, [reset])
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={page.main}>
                 <SubNavbar title='Edit Announcement' pressed={onBackPress} />
+                <ScrollView>
                 <View style={page.main}>
-                <Text style={styles.pageTitle}>Announcement Details</Text>
+                    <Text style={styles.pageTitle}>Announcement Details</Text>
                     <View style={styles.card}>
                         <Controller
                             control={control}
@@ -92,7 +169,7 @@ export default function home (props) {
                                 />
                             )}
                             name="announcementTitle"
-                            defaultValue=""
+                            defaultValue={announcement.announcementTitle}
                         />
                         <Controller
                             control={control}
@@ -105,7 +182,7 @@ export default function home (props) {
                                 />
                             )}
                             name="organizer"
-                            defaultValue=""
+                            defaultValue={announcement.organizer}
                         />
                         <Controller
                             control={control}
@@ -120,7 +197,7 @@ export default function home (props) {
                                 />
                             )}
                             name="content"
-                            defaultValue=""
+                            defaultValue={announcement.content}
                         />
                         <Controller
                             control={control}
@@ -133,18 +210,20 @@ export default function home (props) {
                                 />
                             )}
                             name="visibility"
-                            defaultValue=""
+                            defaultValue={announcement.visibility}
                         />
+                        <ImageUploader label="Upload Image: " pickImageHandler={pickImageHandler} imageURI={imageURI} removeImageHandler={removeImageHandler} uploaded={imageUploaded}/>
                         <View style={{flexDirection: 'row', width: '100%'}}>
                             <View style={{paddingRight: 10, flex: 1}}>
                                 <SecondaryButton fontSize={16} text="Clear Input" pressHandler={resetHandler}/>
                             </View>
                             <View style={{paddingLeft: 10, flex: 1}}>
-                                <PrimaryButton fontSize={16} text="Submit" pressHandler={handleSubmit(onSubmit)}/>
+                                <PrimaryButton fontSize={16} text="Save Changes" pressHandler={handleSubmit(onSubmit)}/>
                             </View>
                         </View>
                     </View>
                 </View>
+                </ScrollView>
             </SafeAreaView>
         </TouchableWithoutFeedback>
         

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react'
 import * as ImagePicker from 'expo-image-picker'
 import FormData from 'form-data'
 import mime from 'mime'
+import moment from 'moment'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import { page, GREY, marginHorizontal } from '../../components/common/styles'
 import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import { useForm, Controller } from 'react-hook-form'
-import moment from 'moment'
 import { useSelector, useDispatch } from 'react-redux'
 import { changeStartDate, changeEndDate } from '../../redux/reducers/CreateEventSlice'
 import CustomTextInput from '../../components/common/forms/TextInput'
@@ -106,7 +106,12 @@ export default function home (props) {
                     'Content-Type': 'multipart/form-data'
                 }})
             }
-            props.navigation.goBack()
+            dispatch(changeStartDate(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)))
+            dispatch(changeEndDate(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)))
+            props.navigation.reset({
+                index: 0,
+                routes: [{'name': 'ManageCCAScreen'}]
+            })
         }
         catch (err) {
             console.log(err)
@@ -119,14 +124,16 @@ export default function home (props) {
         setValue("visibility","")
         setValue("allowedParticipants","")
         setImageURI(null)
-        console.log('reset')
+        dispatch(changeStartDate(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)))
+        dispatch(changeEndDate(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)))
     }
     const pickImageHandler = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
                 allowsEditing: true,
-                quality: 0.8,
+                maxWidth: 1000,
+                maxHeight: 1000,
             })
             if (result.cancelled==false) {
                 setImageURI(result.uri)

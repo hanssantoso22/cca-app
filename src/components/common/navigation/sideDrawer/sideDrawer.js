@@ -46,6 +46,9 @@ export default function SideDrawer (props) {
             renderItem = {({ item }) => {
                 if (item.menu == 'MANAGE CCA' && user.role=='student') {
                     return null
+                }
+                if (item.menu == 'ARCHIVES' && user.role=='student') {
+                    return null
                 }       
                 return (
                         <ItemCard pressed={()=>navigateToScreen(item.navScreen)} icon={item.icon} menu={item.menu} navScreen={item.navScreen}/>

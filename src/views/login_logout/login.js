@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { PURPLE, MING } from '../../components/common/styles'
-import { useFonts, Lato_400Regular} from '@expo-google-fonts/lato'
+import { useFonts, Lato_400Regular, Lato_700Bold } from '@expo-google-fonts/lato'
 import { useForm, Controller } from 'react-hook-form'
 import PrimaryButton from '../../components/common/buttons/PrimaryBig'
 import TextInput from '../../components/common/forms/TextInputNoLabel'
@@ -10,7 +10,8 @@ import { verifyLogin, login } from '../../redux/reducers/mainSlice'
 
 export default function Login (props) {
     const [isLoaded] = useFonts ({
-        Lato_400Regular
+        Lato_400Regular,
+        Lato_700Bold
     })
     const loaded = isLoaded
     const dispatch = useDispatch()
@@ -24,6 +25,9 @@ export default function Login (props) {
     }
     const createNewAccountHandler = () => {
         props.navigation.navigate('CreateAccount')
+    }
+    const forgotPasswordHandler = () => {
+        props.navigation.navigate('ForgotPassScreen')
     }
     const styles = StyleSheet.create({
         mainContainer: {
@@ -43,11 +47,18 @@ export default function Login (props) {
         signUpButton: {
             color: MING[2],
             fontSize: 13,
-            fontFamily: 'Lato_400Regular',
+            fontFamily: 'Lato_700Bold',
+            letterSpacing: 0,
+            marginTop: 20,
+            textAlign: 'center',
+        },
+        forgotPasswordButton: {
+            color: MING[2],
+            fontSize: 13,
+            fontFamily: 'Lato_700Bold',
             textTransform: 'uppercase',
-            letterSpacing: 3,
-            marginTop: 15,
-            textDecorationLine: 'underline',
+            letterSpacing: 2,
+            marginTop: 20,
             textAlign: 'center',
         }
     })
@@ -82,9 +93,18 @@ export default function Login (props) {
                         defaultValue=""
                     />
                     <PrimaryButton pressHandler={handleSubmit(onSubmit)} text="Login" fontSize={16} style={{backgroundColor: MING[1], color: MING[6], ...styles.buttonFont}} />
-                    <TouchableWithoutFeedback onPress={createNewAccountHandler}>
-                        <Text style={styles.signUpButton}>Sign Up</Text>
+                    <TouchableWithoutFeedback onPress={forgotPasswordHandler}>
+                        <Text style={styles.forgotPasswordButton}>Forgot Password?</Text>
                     </TouchableWithoutFeedback>
+                        <Text style={{flexDirection: 'row', marginTop: 15}}>
+                            <Text style={styles.signUpButton}>Don't have an account?&nbsp;&nbsp;&nbsp;</Text>
+                            <TouchableWithoutFeedback onPress={createNewAccountHandler}>
+                                <Text style={{...styles.signUpButton, textDecorationLine: 'underline'}}>Sign Up</Text>
+                            </TouchableWithoutFeedback>
+                        </Text>
+                </View>
+                <View style={styles.bottomBar}>
+                    
                 </View>
             </SafeAreaView>
         </TouchableWithoutFeedback>
