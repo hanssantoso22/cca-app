@@ -49,6 +49,14 @@ export const button = StyleSheet.create ({
         justifyContent: 'center',
         alignItems: 'center'
     },
+    primaryBigDisabled: {
+        borderRadius: 8,
+        paddingVertical: 12,
+        width: '100%',
+        backgroundColor: GREY[1],
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     primarySmall: {
         borderRadius: 5,
         paddingVertical: 8,

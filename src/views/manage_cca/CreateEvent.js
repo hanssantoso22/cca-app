@@ -73,13 +73,11 @@ export default function home (props) {
         {label: 'Public', value: []},
         ...CCAs
     ]
-    const startDate = useSelector(state => state.createEventSlice.startDate)
-    const endDate = useSelector(state => state.createEventSlice.endDate)
 
     const defaultValues = {
         eventName: "",
-        startTime: startDate,
-        endTime: startDate,
+        startTime: moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`),
+        endTime: moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`),
         venue: "",
         link: "",
         description: "",
@@ -92,6 +90,9 @@ export default function home (props) {
     })
     const onSubmit = async data => {
         try {
+            data.startTime = store.getState().createEvent.startDate
+            data.endTime = store.getState().createEvent.endDate
+            console.log(data)
             const res = await axios.post(`${URL}/events/create`, data, authenticate(store.getState().main.token))
             if (imageURI!=null) {
                 const formData = new FormData()
@@ -106,8 +107,6 @@ export default function home (props) {
                     'Content-Type': 'multipart/form-data'
                 }})
             }
-            dispatch(changeStartDate(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)))
-            dispatch(changeEndDate(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)))
             props.navigation.reset({
                 index: 0,
                 routes: [{'name': 'ManageCCAScreen'}]
@@ -145,6 +144,8 @@ export default function home (props) {
     useEffect(() => {
         async function loadManagedCCA () {
             try {
+                dispatch(changeStartDate(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)))
+                dispatch(changeEndDate(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)))
                 const res = await axios.get(`${URL}/users/managedCCAs`, authenticate(store.getState().main.token))
                 const ccaArray = res.data.map((CCA) => {
                     return {label: CCA.ccaName, value: [CCA._id]}
@@ -185,17 +186,18 @@ export default function home (props) {
                                     <DateTimePicker
                                         label='Start Date'
                                         mode='datetime'
-                                        value={startDate}
+                                        value={store.getState().createEvent.startDate}
                                         onFocus={()=>setShowStartPicker(true)}
                                         showPicker={showStartPicker}
                                         onChangePicker={(event,itemValue) => {
+                                            console.log(itemValue)
                                             const val = moment(itemValue).format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)                
                                             dispatch(changeStartDate(val))
                                         }}
                                     />
                                   )}
                                   name="startTime"
-                                  defaultValue={startDate}
+                                  defaultValue={store.getState().createEvent.startDate}
                             />
                             <Controller
                                 control={control}
@@ -203,17 +205,18 @@ export default function home (props) {
                                     <DateTimePicker
                                         label='End Date'
                                         mode='datetime'
-                                        value={endDate}
+                                        value={store.getState().createEvent.endDate}
                                         onFocus={()=>setShowEndPicker(true)}
                                         showPicker={showEndPicker}
                                         onChangePicker={(event,itemValue) => {
                                             const val = moment(itemValue).format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)                
                                             dispatch(changeEndDate(val))
+                                            console.log(store.getState().createEvent.endDate)
                                         }}
                                     />
                                   )}
                                   name="endTime"
-                                  defaultValue={startDate}
+                                  defaultValue={store.getState().createEvent.startDate}
                             />
                             <Controller
                                 control={control}

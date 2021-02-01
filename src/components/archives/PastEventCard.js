@@ -36,19 +36,12 @@ export default function PastEventCard (props) {
             fontSize: 16,
             marginVertical: 5,
         },
-        shortDescription: {
-            fontFamily: 'Lato_400Regular_Italic',
-            color: GREY[3],
-            fontSize: 14,
-            marginBottom: 5,
-        },
     })
     return (
         <TouchableWithoutFeedback onPress={props.pressed}>
             <View style={styles.card}>
                 <View style={styles.eventNameContainer}>
                     <Text style={styles.eventName} ellipsizeMode='tail' numberOfLines={1} >{props.name}</Text>
-                    <Text style={styles.shortDescription} ellipsizeMode='tail' numberOfLines={1} >by {props.organizer}</Text>
                 </View>
             </View>
         </TouchableWithoutFeedback>

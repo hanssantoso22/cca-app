@@ -10,6 +10,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import EventsScreen from './Events'
 import AnnouncementsScreen from './Announcements'
+import ManageMemberScreen from './ManageMembers'
 
 export default function ManageCCA (props) {
     const [isLoaded] = useFonts({Lato_700Bold})
@@ -51,7 +52,8 @@ export default function ManageCCA (props) {
                 }}
             >
                 <ManageCCATabs.Screen name="Events" component={EventsScreen} />
-                <ManageCCATabs.Screen name="Announcements" component={AnnouncementsScreen} />
+                <ManageCCATabs.Screen name="Announce-ments" component={AnnouncementsScreen} />
+                <ManageCCATabs.Screen name="Members" component={ManageMemberScreen} />
             </ManageCCATabs.Navigator>
             
             <ModalWindow isModalVisible={modalVisibility} closeModal={openAddModal} submit={createNewHandler}/>

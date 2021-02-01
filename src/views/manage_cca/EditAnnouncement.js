@@ -11,8 +11,10 @@ import CustomTextInput from '../../components/common/forms/TextInput'
 import MultiLineInput from '../../components/common/forms/MultiLineInput'
 import CustomPicker from '../../components/common/forms/Picker'
 import PrimaryButton from '../../components/common/buttons/PrimarySmall'
+import PrimaryBigButton from '../../components/common/buttons/PrimaryBig'
 import SecondaryButton from '../../components/common/buttons/SecondarySmall'
 import ImageUploader from '../../components/common/forms/ImageUploader'
+import ConfirmationModal from './ConfirmationModal'
 
 import axios from 'axios'
 import { URL, authenticate } from '../../api/config'
@@ -24,6 +26,7 @@ export default function CreateAnnouncement (props) {
         Lato_700Bold
     })
     const loaded = isLoaded
+    const [isModalVisible, setIsModalVisible] = useState(false)
     const [imageURI, setImageURI] = useState(null)
     const [imageUploaded, setImageUploaded] = useState(false)
     const [imageChanged, setImageChanged] = useState(false)
@@ -57,7 +60,11 @@ export default function CreateAnnouncement (props) {
         },
         inputLabel: {
             fontFamily: 'Lato_400Regular'
-        }
+        },
+        bottomBar: {
+            flexDirection: 'column-reverse',
+            padding: marginHorizontal
+        },
     })
     //CHANGE CCA ID BELOW WITH THE REAL ONE
     const visibility = [
@@ -128,6 +135,27 @@ export default function CreateAnnouncement (props) {
         setImageURI(null)
         setImageChanged(true)
         setImageUploaded(false)
+    }
+    //Mark as done handlers
+    const markAsDoneHandler = () => {
+        setIsModalVisible(true)
+    }
+    const confirmMarkAsDoneHandler = async (announcementID) => {
+        try {
+            const res = await axios.patch(`${URL}/announcement/${announcementID}/markDone`, {}, authenticate(store.getState().main.token))
+            if (announcement.image!=null) {
+                const res2 = await axios.delete(`${URL}/announcement/${announcementID}/deleteImage`, authenticate(store.getState().main.token))
+            }
+            props.navigation.reset({
+                index: 0,
+                routes: [{'name': 'ManageCCAScreen'}]
+            })
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    const closeModalHandler = () => {
+        setIsModalVisible(false)
     }
     useEffect(() => {
         async function loadManagedCCA () {
@@ -224,6 +252,10 @@ export default function CreateAnnouncement (props) {
                     </View>
                 </View>
                 </ScrollView>
+                <View style={styles.bottomBar}>
+                    <PrimaryBigButton fontSize={20} text="Mark as Obsolete" pressHandler={markAsDoneHandler.bind(this, announcementID)}/>
+                </View>
+                <ConfirmationModal isModalVisible={isModalVisible} confirmHandler={confirmMarkAsDoneHandler} closeModal={closeModalHandler} cancelHandler={closeModalHandler} id={announcementID} />
             </SafeAreaView>
         </TouchableWithoutFeedback>
         

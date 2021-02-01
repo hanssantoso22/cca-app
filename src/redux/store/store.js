@@ -39,7 +39,7 @@ const store = configureStore({
     reducer: {
         main: persistReducer(persistConfig, drawerSlice.reducer),
         manageCCA: manageCCASlice.reducer,
-        createEventSlice: CreateEventSlice.reducer,
+        createEvent: CreateEventSlice.reducer,
         admin: AdminSlice.reducer,
     },
     middleware: getDefaultMiddleware({

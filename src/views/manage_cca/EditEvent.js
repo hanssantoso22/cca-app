@@ -4,7 +4,7 @@ import FormData from 'form-data'
 import mime from 'mime'
 import moment from 'moment'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
-import { page, GREY, marginHorizontal } from '../../components/common/styles'
+import { page, GREY, MING, marginHorizontal } from '../../components/common/styles'
 import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import { useForm, Controller } from 'react-hook-form'
@@ -15,8 +15,11 @@ import MultiLineInput from '../../components/common/forms/MultiLineInput'
 import CustomPicker from '../../components/common/forms/Picker'
 import DateTimePicker from '../../components/common/forms/DateTimePicker'
 import PrimaryButton from '../../components/common/buttons/PrimarySmall'
+import PrimaryBigButton from '../../components/common/buttons/PrimaryBig'
+import PrimaryBigDisabledButton from '../../components/common/buttons/PrimaryBigDisabled'
 import SecondaryButton from '../../components/common/buttons/SecondarySmall'
 import ImageUploader from '../../components/common/forms/ImageUploader'
+import ConfirmationModal from './ConfirmationModal'
 
 import axios from 'axios'
 import { URL, authenticate } from '../../api/config'
@@ -31,6 +34,8 @@ export default function home (props) {
     const dispatch = useDispatch()
     const [CCAs, setCCAs] = useState([])
     const [event, setEvent] = useState({})
+    const [isModalVisible, setIsModalVisible] = useState(false)
+    const [hasLapsed, setHasLapsed] = useState(false)
     const [imageURI, setImageURI] = useState(null)
     const [imageUploaded, setImageUploaded] = useState(false)
     const [imageChanged, setImageChanged] = useState(false)
@@ -65,7 +70,16 @@ export default function home (props) {
         inputLabel: {
             fontFamily: 'Lato_400Regular'
         },
-
+        bottomBar: {
+            flexDirection: 'column-reverse',
+            padding: marginHorizontal
+        },
+        hyperlink: {
+            fontSize: 13,
+            fontFamily: 'Lato_400Regular',
+            color: MING[5],
+            marginBottom: 15
+        },
         
     })
     // REPLACE CCA ID WITH THE REAL ONE
@@ -77,10 +91,10 @@ export default function home (props) {
         {label: 'Public', value: []},
         ...CCAs
     ]
-    const startDate = useSelector(state => state.createEventSlice.startDate)
-    const endDate = useSelector(state => state.createEventSlice.endDate)
     const onSubmit = async data => {
         try {
+            data.startTime = store.getState().startDate
+            data.endTime = store.getState().endDate
             const res = await axios.patch(`${URL}/event/${eventID}/edit`, data, authenticate(store.getState().main.token))
             if (imageURI!=null && imageChanged == true) {
                 const formData = new FormData()
@@ -95,8 +109,6 @@ export default function home (props) {
                     'Content-Type': 'multipart/form-data'
                 }})
             }
-            dispatch(changeStartDate(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)))
-            dispatch(changeEndDate(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)))
             // Remove existing image
             if (imageURI == null && imageChanged == true) {
                 const res3 = await axios.delete(`${URL}/event/${eventID}/deleteImage`, authenticate(store.getState().main.token))
@@ -112,8 +124,8 @@ export default function home (props) {
     }
     const defaultValues = {
         eventName: "",
-        startTime: startDate,
-        endTime: startDate,
+        startTime: moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`),
+        endTime: moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`),
         venue: "",
         link: "",
         description: "",
@@ -155,6 +167,30 @@ export default function home (props) {
         setImageChanged(true)
         setImageUploaded(false)
     }
+    const viewParticipantHandler = (eventID) => {
+        props.navigation.navigate('ViewParticipantScreen', {eventID})
+    }
+    //Mark as done handlers
+    const markAsDoneHandler = () => {
+        setIsModalVisible(true)
+    }
+    const confirmMarkAsDoneHandler = async (eventID) => {
+        try {
+            const res = await axios.patch(`${URL}/event/${eventID}/markDone`, {}, authenticate(store.getState().main.token))
+            if (event.image!=null) {
+                const res2 = await axios.delete(`${URL}/event/${eventID}/deleteImage`, authenticate(store.getState().main.token))
+            }
+            props.navigation.reset({
+                index: 0,
+                routes: [{'name': 'ManageCCAScreen'}]
+            })
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    const closeModalHandler = () => {
+        setIsModalVisible(false)
+    }
     useEffect(() => {
         async function loadManagedCCA () {
             try {
@@ -165,6 +201,9 @@ export default function home (props) {
                 })
                 setCCAs(ccaArray)
                 setEvent(res2.data)
+                if (res2.data.startTime < moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)) {
+                    setHasLapsed(true)
+                }
                 dispatch(changeStartDate(res2.data.startTime))
                 dispatch(changeEndDate(res2.data.endTime))
                 if (!Object.keys(res2.data).includes('image')) {
@@ -206,7 +245,7 @@ export default function home (props) {
                                     <DateTimePicker
                                         label='Start Date'
                                         mode='datetime'
-                                        value={startDate}
+                                        value={store.getState().createEvent.startDate}
                                         onFocus={()=>setShowStartPicker(true)}
                                         showPicker={showStartPicker}
                                         onChangePicker={(event,itemValue) => {
@@ -216,7 +255,7 @@ export default function home (props) {
                                     />
                                   )}
                                   name="startTime"
-                                  defaultValue={event.startTime}
+                                  defaultValue={store.getState().createEvent.startDate}
                             />
                             <Controller
                                 control={control}
@@ -224,7 +263,7 @@ export default function home (props) {
                                     <DateTimePicker
                                         label='End Date'
                                         mode='datetime'
-                                        value={endDate}
+                                        value={store.getState().createEvent.endDate}
                                         onFocus={()=>setShowEndPicker(true)}
                                         showPicker={showEndPicker}
                                         onChangePicker={(event,itemValue) => {
@@ -234,7 +273,7 @@ export default function home (props) {
                                     />
                                   )}
                                   name="endTime"
-                                  defaultValue={event.endTime}
+                                  defaultValue={store.getState().createEvent.endDate}
                             />
                             <Controller
                                 control={control}
@@ -316,6 +355,9 @@ export default function home (props) {
                                   name="allowedParticipants"
                                   defaultValue={event.allowedParticipants}
                             />
+                            <TouchableWithoutFeedback onPress={viewParticipantHandler.bind(this, eventID)} >
+                                <Text style={styles.hyperlink}>View Participants</Text>
+                            </TouchableWithoutFeedback>
                             <ImageUploader label="Upload Image: " pickImageHandler={pickImageHandler} imageURI={imageURI} removeImageHandler={removeImageHandler} uploaded={imageUploaded} />
                             <View style={{flexDirection: 'row', width: '100%'}}>
                                 <View style={{paddingRight: 10, flex: 1}}>
@@ -330,6 +372,11 @@ export default function home (props) {
                         </View>
                     </View>
                 </ScrollView>
+                <View style={styles.bottomBar}>
+                    {hasLapsed ? <PrimaryBigButton fontSize={20} text="Mark as Done" pressHandler={markAsDoneHandler.bind(this, eventID)}/>
+                    : <PrimaryBigDisabledButton fontSize={20} text="Mark as Done" /> }
+                </View>
+                <ConfirmationModal isModalVisible={isModalVisible} confirmHandler={confirmMarkAsDoneHandler} closeModal={closeModalHandler} cancelHandler={closeModalHandler} id={eventID} />
             </SafeAreaView>
         </TouchableWithoutFeedback>
         

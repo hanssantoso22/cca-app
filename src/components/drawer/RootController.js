@@ -14,10 +14,12 @@ import PastEventRatingPage from '../../views/events/PastEventRatingPage'
 import RemindersScreen from '../../views/reminders/reminders'
 import ReminderDetailsPage from '../../views/reminders/ReminderDetailsPage'
 import ManageCCAScreen from '../../views/manage_cca/ManageCCA'
+import EditMemberScreen from '../../views/manage_cca/EditMembers'
 import CreateEventScreen from '../../views/manage_cca/CreateEvent'
 import CreateAnnouncementScreen from '../../views/manage_cca/CreateAnnouncement'
 import EditAnnouncementScreen from '../../views/manage_cca/EditAnnouncement'
 import EditEventScreen from '../../views/manage_cca/EditEvent'
+import ViewParticipantScreen from '../../views/manage_cca/ViewParticipants'
 import CreateNewModal from '../../views/manage_cca/createNewModal'
 import ArchivesScreen from '../../views/archives/archives'
 import EventReviewPage from '../../views/archives/EventReviewPage'
@@ -85,6 +87,8 @@ const ManageCCAStackScreen = () => (
         <ManageCCAStack.Screen name="CreateAnnouncementScreen" component={CreateAnnouncementScreen} options={{headerShown: false}}/>
         <ManageCCAStack.Screen name="EditAnnouncementScreen" component={EditAnnouncementScreen} options={{headerShown: false}}/>
         <ManageCCAStack.Screen name="EditEventScreen" component={EditEventScreen} options={{headerShown: false}}/>
+        <ManageCCAStack.Screen name="ViewParticipantScreen" component={ViewParticipantScreen} options={{headerShown: false}}/>
+        <ManageCCAStack.Screen name="EditMemberScreen" component={EditMemberScreen} options={{headerShown: false}}/>
     </ManageCCAStack.Navigator>
 )
 const ArchivesStackScreen = () => (

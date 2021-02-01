@@ -4,8 +4,8 @@ import moment from 'moment'
 export const CreateEventSlice = createSlice({
     name: 'event_schedule',
     initialState: {
-        startDate: moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`),
-        endDate: moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`),
+        startDate: '',
+        endDate: '',
     },
     reducers: {
         changeStartDate (state, action) {
