@@ -77,7 +77,7 @@ export default function PastCreatedEvents (props) {
             <FlatList data={pastEvents}
                         keyExtractor={(item)=>item.id}
                         renderItem={({ item })=> (
-                            <PastEventCard name={item.name} organizer={item.organizer} pressed={onPressHandler.bind(this,item.id)} />
+                            <PastEventCard name={item.eventName} pressed={onPressHandler.bind(this,item._id)} />
                         )}
             />
         </View>

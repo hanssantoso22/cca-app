@@ -68,12 +68,15 @@ export default function CreateAnnouncement (props) {
     })
     //CHANGE CCA ID BELOW WITH THE REAL ONE
     const visibility = [
-        {label: 'Public', value: []},
+        {label: 'Public', value: 0},
         ...CCAs
     ]
     const { control, handleSubmit, reset, setValue } = useForm({ announcement })
     const onSubmit = async data => {
         try {
+            if (data.visibility == 0) {
+                delete data.visibility
+            }
             const res = await axios.patch(`${URL}/announcement/${announcementID}/edit`, data, authenticate(store.getState().main.token))
             //Upload new image
             if (imageURI!=null && imageChanged == true) {
@@ -163,12 +166,15 @@ export default function CreateAnnouncement (props) {
                 const res = await axios.get(`${URL}/users/managedCCAs`, authenticate(store.getState().main.token))
                 const res2 = await axios.get(`${URL}/announcement/${announcementID}/details`, authenticate(store.getState().main.token))
                 const ccaArray = res.data.map((CCA) => {
-                    return {label: CCA.ccaName, value: new Array(CCA._id)}
+                    return {label: CCA.ccaName, value: CCA._id}
                 })
                 setCCAs(ccaArray)
                 setAnnouncement(res2.data)
                 if (!Object.keys(res2.data).includes('image')) {
                     setImageUploaded(true)
+                }
+                if (res2.data.visibility == null) {
+                    res2.data.visibility = 0
                 }
                 reset(res2.data)
             } catch (err) {

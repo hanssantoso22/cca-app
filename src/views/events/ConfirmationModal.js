@@ -56,7 +56,7 @@ const createNewModal = ({ isModalVisible, closeModal, submitHandler }) => {
                         </Text>
                     </View>
                     <View style={{marginTop:25, marginBottom: 10}}>
-                        <PrimaryButton text="Back to Events page" fontSize={16} pressHandler={submitHandler.bind(this)} /> 
+                        <PrimaryButton text="Back to Events page" fontSize={16} pressHandler={submitHandler}/> 
                     </View>
                 </View>    
             </Modal>

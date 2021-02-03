@@ -3,7 +3,7 @@ import { Text, StyleSheet, TextInput, View } from 'react-native'
 import { GREY, MING } from '../styles'
 import { useFonts, Lato_400Regular} from '@expo-google-fonts/lato'
 
-export default function CustomTextInput ( { label, onChangeText, value, maxLength, type, customStyle } ) {
+export default function CustomTextInput ( { label, onChangeText, value, maxLength, type, customStyle, editable } ) {
     const [isLoaded] = useFonts ({
         Lato_400Regular
     })
@@ -47,6 +47,7 @@ export default function CustomTextInput ( { label, onChangeText, value, maxLengt
                 onBlur={onBlur}
                 onFocus={onFocus}
                 secureTextEntry={type=='password'}
+                editable={editable}
             />
         </View>
     )

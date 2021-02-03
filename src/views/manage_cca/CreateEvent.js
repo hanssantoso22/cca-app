@@ -66,11 +66,11 @@ export default function home (props) {
     })
     // REPLACE CCA ID WITH THE REAL ONE
     const audience = [
-        {label: 'Public', value: []},
+        {label: 'Public', value: 0},
         ...CCAs
     ]
     const allowedParticipants = [
-        {label: 'Public', value: []},
+        {label: 'Public', value: 0},
         ...CCAs
     ]
 
@@ -90,6 +90,12 @@ export default function home (props) {
     })
     const onSubmit = async data => {
         try {
+            if (data.visibility == 0) {
+                delete data.visibility
+            }
+            if (data.allowedParticipants == 0) {
+                delete data.allowedParticipants
+            }
             data.startTime = store.getState().createEvent.startDate
             data.endTime = store.getState().createEvent.endDate
             console.log(data)
@@ -148,7 +154,7 @@ export default function home (props) {
                 dispatch(changeEndDate(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)))
                 const res = await axios.get(`${URL}/users/managedCCAs`, authenticate(store.getState().main.token))
                 const ccaArray = res.data.map((CCA) => {
-                    return {label: CCA.ccaName, value: [CCA._id]}
+                    return {label: CCA.ccaName, value: CCA._id}
                 })
                 setCCAs(ccaArray)
             } catch (err) {

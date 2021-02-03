@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, SafeAreaView, FlatList, StyleSheet } from 'react-native'
+import { View, SafeAreaView, FlatList, StyleSheet, ScrollView } from 'react-native'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import { useDispatch, useSelector } from 'react-redux'
 import { editSelectedUsers } from '../../redux/reducers/AdminSlice'
@@ -22,10 +22,15 @@ export default function (props) {
     const loaded = isLoaded
     const { ccaID } = props.route.params
     const styles = StyleSheet.create({
+        sectionScroll: {
+            maxHeight: 400,
+            paddingBottom: 15,
+        },
         selectedItemsContainer: {
             flexDirection: 'row',
             marginHorizontal,
-            flexWrap: 'wrap'
+            flexWrap: 'wrap',
+            paddingBottom: 15,
         },
         searchContainer: {
             marginHorizontal,
@@ -113,11 +118,13 @@ export default function (props) {
                         placeHolder="Search name..."
                     />
                 </View>
-                <View style={styles.selectedItemsContainer}>
-                    {selectedUsers != [] && selectedUsers.map((user,index) => (
-                        <ColoredButton key={index} text={user} onPress={removeItemHandler.bind(this,user)} />
-                    ))}
-                </View>
+                <ScrollView style={styles.sectionScroll}>
+                    <View style={styles.selectedItemsContainer}>
+                        {selectedUsers != [] && selectedUsers.map((user,index) => (
+                            <ColoredButton key={index} text={user} onPress={removeItemHandler.bind(this,user)} />
+                        ))}
+                    </View>
+                </ScrollView>
                 <FlatList 
                     data={filteredUsers}
                     keyExtractor={(item)=>item.id}

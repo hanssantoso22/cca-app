@@ -8,7 +8,7 @@ import { page, GREY, MING, marginHorizontal } from '../../components/common/styl
 import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import { useForm, Controller } from 'react-hook-form'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { changeStartDate, changeEndDate } from '../../redux/reducers/CreateEventSlice'
 import CustomTextInput from '../../components/common/forms/TextInput'
 import MultiLineInput from '../../components/common/forms/MultiLineInput'
@@ -84,15 +84,21 @@ export default function home (props) {
     })
     // REPLACE CCA ID WITH THE REAL ONE
     const audience = [
-        {label: 'Public', value: []},
+        {label: 'Public', value: 0},
         ...CCAs
     ]
     const allowedParticipants = [
-        {label: 'Public', value: []},
+        {label: 'Public', value: 0},
         ...CCAs
     ]
     const onSubmit = async data => {
         try {
+            if (data.visibility == 0) {
+                delete data.visibility
+            }
+            if (data.allowedParticipants == 0) {
+                delete data.allowedParticipants
+            }
             data.startTime = store.getState().startDate
             data.endTime = store.getState().endDate
             const res = await axios.patch(`${URL}/event/${eventID}/edit`, data, authenticate(store.getState().main.token))
@@ -197,7 +203,7 @@ export default function home (props) {
                 const res = await axios.get(`${URL}/users/managedCCAs`, authenticate(store.getState().main.token))
                 const res2 = await axios.get(`${URL}/event/${eventID}/details`, authenticate(store.getState().main.token))
                 const ccaArray = res.data.map((CCA) => {
-                    return {label: CCA.ccaName, value: [CCA._id]}
+                    return {label: CCA.ccaName, value: CCA._id}
                 })
                 setCCAs(ccaArray)
                 setEvent(res2.data)
@@ -208,6 +214,12 @@ export default function home (props) {
                 dispatch(changeEndDate(res2.data.endTime))
                 if (!Object.keys(res2.data).includes('image')) {
                     setImageUploaded(true)
+                }
+                if (res2.data.visibility == null) {
+                    res2.data.visibility = 0
+                }
+                if (res2.data.allowedParticipants == null) {
+                    res2.data.allowedParticipants = 0
                 }
                 reset(res2.data)
             } catch (err) {

@@ -57,7 +57,7 @@ export default function CreateAnnouncement (props) {
     })
     //CHANGE CCA ID BELOW WITH THE REAL ONE
     const visibility = [
-        {label: 'Public', value: []},
+        {label: 'Public', value: 0},
         ...CCAs
     ]
     const defaultValues = {
@@ -69,6 +69,9 @@ export default function CreateAnnouncement (props) {
     const { control, handleSubmit, reset, setValue } = useForm({ defaultValues })
     const onSubmit = async data => {
         try {
+            if (data.visibility == 0) {
+                delete data.visibility
+            }
             const res = await axios.post(`${URL}/announcements/create`, data, authenticate(store.getState().main.token))
             if (imageURI!=null) {
                 const formData = new FormData()
@@ -119,7 +122,7 @@ export default function CreateAnnouncement (props) {
             try {
                 const res = await axios.get(`${URL}/users/managedCCAs`, authenticate(store.getState().main.token))
                 const ccaArray = res.data.map((CCA) => {
-                    return {label: CCA.ccaName, value: new Array(CCA._id)}
+                    return {label: CCA.ccaName, value: CCA._id}
                 })
                 setCCAs(ccaArray)
             } catch (err) {

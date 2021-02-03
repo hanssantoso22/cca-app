@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'
+import moment from 'moment'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import { page, GREY, marginHorizontal, font } from '../../components/common/styles'
 import { SafeAreaView, View, Text, StyleSheet, ScrollView, FlatList } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import PrimaryButton from '../../components/common/buttons/PrimaryBig'
+import PrimaryDisabled from '../../components/common/buttons/PrimaryBigDisabled'
 import ConfirmationModal from './ConfirmationModal'
 
+import axios from 'axios'
+import {URL, authenticate} from '../../api/config'
+import store from '../../redux/store/store'
+
 export default function EventDetailsPage (props) {
+    const [details, setDetails] = useState({})
     const [isLoaded] = useFonts({
         'MaterialIcons-Regular': require('../../assets/fonts/MaterialIcons-Regular.ttf'),
         Lato_400Regular,
@@ -17,14 +24,11 @@ export default function EventDetailsPage (props) {
         props.navigation.goBack()
     }
     const { eventID } = props.route.params
-    const dummyEvents = [
-        {id:0, title: 'Deep Learning Week 2020 Industry Night',date: '28 October 2020',time: '20:00' ,venue: 'Online',link: 'https://ntu-sg.zoom.us/j/99056295240 (Password: 312264)', description:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'},
-        {id:1, title: 'NTUSU Election Day 2020',date: '28 October 2020',time: '20:00' ,venue: 'Online',link: 'https://ntu-sg.zoom.us/j/99056295240 (Password: 312264)', description:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'},
-        {id:2, title: 'Subcommittee Recruitment',date: '28 October 2020',time: '20:00' ,venue: 'Online',link: 'https://ntu-sg.zoom.us/j/99056295240 (Password: 312264)', description:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'}
-    ]
-    const eventDetails = dummyEvents.filter((item)=>eventID==item.id)
-    const details = eventDetails[0]
-    const schedDetails = {date: details.date, time: details.time, venue: details.venue, link: details.link}
+    const schedDetails = {
+        date: moment(details.startTime,`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`).format('DD MMM YYYY'), 
+        time: [moment(details.startTime,`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`).format('HH:mm'), moment(details.endTime, `${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`).format('HH:mm')], 
+        venue: details.venue == '' ? 'Online' : details.venue, 
+    }
     const styles = StyleSheet.create ({
         imageWrapper: {
             marginVertical: 5,
@@ -67,6 +71,15 @@ export default function EventDetailsPage (props) {
         for (const [key,value] of Object.entries(schedDetails)) {
             const isLink = key=='link'
             const labelStyle = !isLink?{...font.articleBody, paddingRight: 40}:{...font.articleBody, paddingRight: 40,...font.link}
+            if (key=='time') {
+                renderSchedDetails.push(
+                    <View style={{flexDirection: 'row', marginBottom: 20}}>
+                        <Text style={styles.materialIcon}>{icons[key]}</Text>
+                        <Text style={labelStyle}>{`${value[0]} - ${value[1]}`}</Text>
+                    </View>
+                )
+                continue
+            }
             renderSchedDetails.push(
                 <View style={{flexDirection: 'row', marginBottom: 20}}>
                     <Text style={styles.materialIcon}>{icons[key]}</Text>
@@ -79,18 +92,36 @@ export default function EventDetailsPage (props) {
     const closeModalHandler = () => {
         setDisplayModal(false)
     }
-    const registerHandler = () => {
-        setDisplayModal(true)
+    const registerHandler = async (eventID) => {
+        try {
+            const res = await axios.post(`${URL}/event/${eventID}/register`, {}, authenticate (store.getState().main.token))
+            setDisplayModal(true)
+        } catch (err) {
+            console.log(err)
+        }
     }
     const submitModalHandler = () => {
-        setDisplayModal(false)
-        props.navigation.navigate('Events')
+        props.navigation.reset({
+            index: 0,
+            routes: [{'name': 'Events'}]
+        })
     }
     listItems()
+    useEffect(() => {
+        async function loadEventDetails () {
+            try {
+                const res = await axios.get(`${URL}/event/${eventID}`, authenticate(store.getState().main.token))
+                setDetails(res.data)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        loadEventDetails()
+    }, [])
 
     return (
         <SafeAreaView style={page.main}>
-            <SubNavbar title={details.title} pressed={onBackPress} />
+            <SubNavbar title={details.eventName} pressed={onBackPress} />
             <ScrollView>
                 <View style={page.main}>
                     <View style={styles.imageWrapper}></View>
@@ -106,7 +137,13 @@ export default function EventDetailsPage (props) {
                 </View>
             </ScrollView>
             <View style={styles.registerButtonWrapper}>
-                <PrimaryButton fontSize={20} pressHandler={registerHandler} text='Register' />
+                {!details.canRegister ? 
+                    <PrimaryDisabled fontSize={20} text='Cannot Register' />
+                : details.registered ? 
+                    <PrimaryDisabled fontSize={20} text='Registered' />
+                :
+                    <PrimaryButton fontSize={20} pressHandler={registerHandler.bind(this, eventID)} text='Register' />
+                }
             </View>
             <ConfirmationModal isModalVisible={displayModal} closeModal={closeModalHandler} submitHandler={submitModalHandler} />
         </SafeAreaView>

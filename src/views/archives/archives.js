@@ -32,8 +32,8 @@ export default function Archives (props) {
                     inactiveTintColor: GREY[2]
                 }}
             >
-                <EventsTabs.Screen name={'Past\nAnnouncements'} component={PastCreatedAnnouncements} />
                 <EventsTabs.Screen name={'Past Events'} component={PastCreatedEvents} />
+                <EventsTabs.Screen name={'Past\nAnnouncements'} component={PastCreatedAnnouncements} />
             </EventsTabs.Navigator>
         </SafeAreaView>
     )

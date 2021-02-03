@@ -52,7 +52,7 @@ export default function ManageCCA (props) {
                 }}
             >
                 <ManageCCATabs.Screen name="Events" component={EventsScreen} />
-                <ManageCCATabs.Screen name="Announce-ments" component={AnnouncementsScreen} />
+                <ManageCCATabs.Screen name={"Announce-\nments"} component={AnnouncementsScreen} />
                 <ManageCCATabs.Screen name="Members" component={ManageMemberScreen} />
             </ManageCCATabs.Navigator>
             
