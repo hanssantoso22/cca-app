@@ -4,6 +4,7 @@ import FormData from 'form-data'
 import mime from 'mime'
 import moment from 'moment'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
+import WithLoading from '../../components/hoc/withLoading'
 import { page, GREY, MING, marginHorizontal } from '../../components/common/styles'
 import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
@@ -32,6 +33,7 @@ export default function home (props) {
     })
     const loaded = isLoaded
     const dispatch = useDispatch()
+    const [isLoading, setIsLoading] = useState(true)
     const [CCAs, setCCAs] = useState([])
     const [event, setEvent] = useState({})
     const [isModalVisible, setIsModalVisible] = useState(false)
@@ -222,6 +224,7 @@ export default function home (props) {
                     res2.data.allowedParticipants = 0
                 }
                 reset(res2.data)
+                setIsLoading(false)
             } catch (err) {
                 console.log('Retrieve CCA failed', err)
             }
@@ -232,6 +235,7 @@ export default function home (props) {
         <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss(); setShowStartPicker(false); setShowEndPicker(false)}}>
             <SafeAreaView style={page.main}>
                 <SubNavbar title='Edit Event' pressed={onBackPress} />
+                <WithLoading loadingMessage='Loading details...' isLoading={isLoading}>
                 <ScrollView>
                     <View style={page.main}>
                         <Text style={styles.pageTitle}>Event Details</Text>
@@ -388,6 +392,7 @@ export default function home (props) {
                     {hasLapsed ? <PrimaryBigButton fontSize={20} text="Mark as Done" pressHandler={markAsDoneHandler.bind(this, eventID)}/>
                     : <PrimaryBigDisabledButton fontSize={20} text="Mark as Done" /> }
                 </View>
+                </WithLoading>
                 <ConfirmationModal isModalVisible={isModalVisible} confirmHandler={confirmMarkAsDoneHandler} closeModal={closeModalHandler} cancelHandler={closeModalHandler} id={eventID} />
             </SafeAreaView>
         </TouchableWithoutFeedback>

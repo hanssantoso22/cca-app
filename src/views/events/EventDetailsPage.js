@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
+import WithLoading from '../../components/hoc/withLoading'
 import { page, GREY, marginHorizontal, font } from '../../components/common/styles'
 import { SafeAreaView, View, Text, StyleSheet, ScrollView, FlatList } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
@@ -13,6 +14,7 @@ import {URL, authenticate} from '../../api/config'
 import store from '../../redux/store/store'
 
 export default function EventDetailsPage (props) {
+    const [isLoading, setIsLoading] = useState(true)
     const [details, setDetails] = useState({})
     const [isLoaded] = useFonts({
         'MaterialIcons-Regular': require('../../assets/fonts/MaterialIcons-Regular.ttf'),
@@ -112,6 +114,7 @@ export default function EventDetailsPage (props) {
             try {
                 const res = await axios.get(`${URL}/event/${eventID}`, authenticate(store.getState().main.token))
                 setDetails(res.data)
+                setIsLoading(false)
             } catch (err) {
                 console.log(err)
             }
@@ -122,29 +125,31 @@ export default function EventDetailsPage (props) {
     return (
         <SafeAreaView style={page.main}>
             <SubNavbar title={details.eventName} pressed={onBackPress} />
-            <ScrollView>
-                <View style={page.main}>
-                    <View style={styles.imageWrapper}></View>
-                    <Text style={{...font.articleTitle,...styles.pageTitle}}>{details.title}</Text>
-                    <View style={styles.scheduleWrapper}>
-                        {renderSchedDetails}
+            <WithLoading isLoading={isLoading} loadingMessage='Loading details...'>
+                <ScrollView>
+                    <View style={page.main}>
+                        <View style={styles.imageWrapper}></View>
+                        <Text style={{...font.articleTitle,...styles.pageTitle}}>{details.title}</Text>
+                        <View style={styles.scheduleWrapper}>
+                            {renderSchedDetails}
+                        </View>
+                        <View style={styles.articleBodyWrapper}>
+                            <Text style={{...font.articleBody,...styles.articleFont}}>
+                                {details.description}
+                            </Text>
+                        </View>
                     </View>
-                    <View style={styles.articleBodyWrapper}>
-                        <Text style={{...font.articleBody,...styles.articleFont}}>
-                            {details.description}
-                        </Text>
-                    </View>
+                </ScrollView>
+                <View style={styles.registerButtonWrapper}>
+                    {!details.canRegister ? 
+                        <PrimaryDisabled fontSize={20} text='Cannot Register' />
+                    : details.registered ? 
+                        <PrimaryDisabled fontSize={20} text='Registered' />
+                    :
+                        <PrimaryButton fontSize={20} pressHandler={registerHandler.bind(this, eventID)} text='Register' />
+                    }
                 </View>
-            </ScrollView>
-            <View style={styles.registerButtonWrapper}>
-                {!details.canRegister ? 
-                    <PrimaryDisabled fontSize={20} text='Cannot Register' />
-                : details.registered ? 
-                    <PrimaryDisabled fontSize={20} text='Registered' />
-                :
-                    <PrimaryButton fontSize={20} pressHandler={registerHandler.bind(this, eventID)} text='Register' />
-                }
-            </View>
+            </WithLoading>
             <ConfirmationModal isModalVisible={displayModal} closeModal={closeModalHandler} submitHandler={submitModalHandler} />
         </SafeAreaView>
     )

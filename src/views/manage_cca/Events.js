@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { page, marginHorizontal } from '../../components/common/styles'
+import { page, marginHorizontal, GREY } from '../../components/common/styles'
 import { useFocusEffect } from '@react-navigation/native'
-import { View, StyleSheet, FlatList } from 'react-native'
+import { View, Text, StyleSheet, FlatList } from 'react-native'
+import WithLoading from '../../components/hoc/withLoading'
+import NoItemLoaded from '../../components/common/NoItemLoaded'
 import CreatedEventCard from '../../components/manage_cca/CreatedAnnouncementCard'
 import DeleteEventModal from './DeleteEventModal'
 import CustomPicker from '../../components/common/forms/Picker'
@@ -11,6 +13,7 @@ import {URL, authenticate} from '../../api/config'
 import store from '../../redux/store/store'
 
 export default function EventsTab (props) {
+    const [isLoading, setIsLoading] = useState(false)
     const [createdEvents, setCreatedEvents] = useState([])
     const [managedCCA, setManagedCCA] = useState([])
     const [selectedCCA, setSelectedCCA] = useState('')
@@ -19,7 +22,7 @@ export default function EventsTab (props) {
     const [selectedID, setSelectedID] = useState()
     const styles = StyleSheet.create({
         pickerContainer: {
-            marginHorizontal
+            marginHorizontal,
         }
     })
     const editHandler = (eventID) => {
@@ -54,7 +57,7 @@ export default function EventsTab (props) {
         if (cca != null) {
             setSelectedCCA(cca)
             setSelectedCCAid(cca)
-            console.log(selectedCCA)
+            setIsLoading(true)
         }
         else {
             setSelectedCCA('')
@@ -81,6 +84,7 @@ export default function EventsTab (props) {
                 try {
                     const res = await axios.get(`${URL}/CCA/${selectedCCAid}/pastEvents`, authenticate(store.getState().main.token))
                     setCreatedEvents(res.data)
+                    setIsLoading(false)
                 } catch (err) {
                     console.log(err)
                 }
@@ -100,12 +104,20 @@ export default function EventsTab (props) {
                             label  = 'Select CCA'
                 />
             </View>
-            <FlatList data={createdEvents}
+            <View style={{justifyContent: 'center', height: '100%', flex: 8}}>
+            <WithLoading isLoading={isLoading} loadingMessage='Loading events...'>
+            {createdEvents.length == 0 ? 
+                <NoItemLoaded color={GREY[2]} message={`Everything is loaded :)\nWanna create a new event? Click '+' button on the top right corner`} />
+            : 
+                <FlatList data={createdEvents}
                     keyExtractor={(item)=>item.id}
                     renderItem={({ item })=> (
                         <CreatedEventCard name={item.eventName} edit={editHandler.bind(this,item._id)} delete={deleteHandler.bind(this,item._id)} />
                     )}
-            />
+                />
+            }
+            </WithLoading>
+            </View>
             <DeleteEventModal isModalVisible={displayModal} closeModal={closeModalHandler} cancelHandler={cancelHandler} confirmHandler={confirmHandler} eventID={selectedID}/>
         </View>
     )

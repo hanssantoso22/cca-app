@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { page, marginHorizontal } from '../../components/common/styles'
+import { page, marginHorizontal, GREY } from '../../components/common/styles'
 import { View, StyleSheet, FlatList } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import CreatedAnnouncementCard from '../../components/manage_cca/CreatedAnnouncementCard'
 import DeleteAnnouncementModal from './DeleteAnnouncementModal'
 import CustomPicker from '../../components/common/forms/Picker'
+import WithLoading from '../../components/hoc/withLoading'
+import NoItemLoaded from '../../components/common/NoItemLoaded'
 
 import axios from 'axios'
 import {URL, authenticate} from '../../api/config'
 import store from '../../redux/store/store'
 
 export default function AnnouncementsTab (props) {
+    const [isLoading, setIsLoading] = useState(false)
     const [createdAnnouncements, setCreatedAnnouncements] = useState([])
     const [managedCCA, setManagedCCA] = useState([])
     const [selectedCCA, setSelectedCCA] = useState('')
@@ -54,7 +57,7 @@ export default function AnnouncementsTab (props) {
         if (cca != null) {
             setSelectedCCA(cca)
             setSelectedCCAid(cca)
-            console.log(selectedCCA)
+            setIsLoading(true)
         }
         else {
             setSelectedCCA('')
@@ -81,6 +84,7 @@ export default function AnnouncementsTab (props) {
                 try {
                     const res = await axios.get(`${URL}/CCA/${selectedCCAid}/pastAnnouncements`, authenticate(store.getState().main.token))
                     setCreatedAnnouncements(res.data)
+                    setIsLoading(false)
                 } catch (err) {
                     console.log(err)
                 }
@@ -100,12 +104,20 @@ export default function AnnouncementsTab (props) {
                             label  = 'Select CCA'
                 />
             </View>
-            <FlatList data={createdAnnouncements}
-                    keyExtractor={(item)=>item._id}
-                    renderItem={({ item })=> (
-                        <CreatedAnnouncementCard name={item.announcementTitle} edit={editHandler.bind(this,item._id)} delete={deleteHandler.bind(this,item._id)} />
-                    )}
-            />
+            <View style={{justifyContent: 'center', height: '100%', flex: 8}}>
+            <WithLoading isLoading={isLoading} loadingMessage='Loading events...'>
+                {createdAnnouncements.length == 0 ?
+                    <NoItemLoaded color={GREY[2]} message={`Everything is loaded :)\nWanna create a new announcement? Click '+' button on the top right corner`} />
+                :
+                    <FlatList data={createdAnnouncements}
+                        keyExtractor={(item)=>item._id}
+                        renderItem={({ item })=> (
+                            <CreatedAnnouncementCard name={item.announcementTitle} edit={editHandler.bind(this,item._id)} delete={deleteHandler.bind(this,item._id)} />
+                        )}
+                    />
+                }
+            </WithLoading>
+            </View>
             <DeleteAnnouncementModal isModalVisible={displayModal} closeModal={closeModalHandler} cancelHandler={cancelHandler} confirmHandler={confirmHandler} announcementID={selectedID}/>
         </View>
     )

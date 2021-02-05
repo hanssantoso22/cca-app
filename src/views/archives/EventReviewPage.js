@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
-import { page, GREY, marginHorizontal, font } from '../../components/common/styles'
-import { SafeAreaView, View, Text, StyleSheet, ScrollView, FlatList } from 'react-native'
+import WithLoading from '../../components/hoc/withLoading'
+import { page, marginHorizontal, font } from '../../components/common/styles'
+import { SafeAreaView, View, Text, StyleSheet, FlatList } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
-import PrimaryButton from '../../components/common/buttons/PrimaryBig'
 import ReviewCard from '../../components/archives/ReviewCard'
 
+import axios from 'axios'
+import {URL, authenticate} from '../../api/config'
+import store from '../../redux/store/store'
+
 export default function PastEventReviewPage (props) {
+    const [event, setEvent] = useState({})
+    const [reviews, setReviews] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
     const [isLoaded] = useFonts({
         'MaterialIcons-Regular': require('../../assets/fonts/MaterialIcons-Regular.ttf'),
         Lato_400Regular,
@@ -17,21 +24,6 @@ export default function PastEventReviewPage (props) {
         props.navigation.goBack()
     }
     const { eventID } = props.route.params
-    const dummyEvents = [
-        {id:0, title: 'Arduino Workshop',review: [
-            {id:0,comment:"",rating:2},
-            {id:1,comment:"Nice", rating:4}
-        ]},
-        {id:1, title: 'Introduction to Machine Learning and Deep Learning',review: [
-            {id:0,comment:"",rating:4}
-        ]},
-        {id:2, title: 'Subcommittee Recruitment Talk',review:[
-            
-        ]}
-    ]
-    const eventDetails = dummyEvents.filter((item)=>eventID==item.id)
-    const details = eventDetails[0]
-    const reviews = details.review
     const overallRating = () => {
         if (reviews.length>0) {
             let sum = 0
@@ -58,11 +50,25 @@ export default function PastEventReviewPage (props) {
             fontSize: 16
         }
     })
+    useEffect (() => {
+        async function loadEvent () {
+            try {
+                const res = await axios.get(`${URL}/event/${eventID}/details`, authenticate(store.getState().main.token))
+                setEvent(res.data)
+                setReviews(res.data.reviews)
+                setIsLoading(false)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        loadEvent()
+    },[])
     return (
         <SafeAreaView style={page.main}>
-            <SubNavbar title={details.title} pressed={onBackPress} />
+            <SubNavbar title={event.eventName} pressed={onBackPress} />
+                <WithLoading isLoading={isLoading} loadingMessage='Loading reviews...'>
                 <View style={page.main}>
-                <Text style={{...font.articleTitle,...styles.pageTitle}}>{details.title}</Text>
+                <Text style={{...font.articleTitle,...styles.pageTitle}}>{event.eventName}</Text>
                 <Text style={{...font.articleTitle,...styles.rating}}>Overall rating:   {overallRating()}</Text>
                     <FlatList
                         data={reviews}
@@ -72,6 +78,7 @@ export default function PastEventReviewPage (props) {
                         )}
                     />
                 </View>
+                </WithLoading>
         </SafeAreaView>
     )
 }

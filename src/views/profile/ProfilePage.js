@@ -7,6 +7,7 @@ import { Avatar } from 'react-native-elements'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import { page, marginHorizontal, GREY, MING, RED } from '../../components/common/styles'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
+import WithLoading from '../../components/hoc/withLoading'
 import { useForm, Controller } from 'react-hook-form'
 import CustomTextInput from '../../components/common/forms/TextInput'
 import CustomPicker from '../../components/common/forms/Picker'
@@ -24,6 +25,7 @@ export default function ProfilePage (props) {
     const [isLoaded] = useFonts({Lato_700Bold, Lato_400Regular})
     const loaded = isLoaded
     const dispatch = useDispatch()
+    const [isLoading, setIsLoading] = useState(true)
     const [isChangingPassword, setIsChangingPassword] = useState(false)
     const [showRemoveAvatarModal, setShowRemoveAvatarModal] = useState(false)
     const [isPhotoChanged, setIsPhotoChanged] = useState(false)
@@ -210,6 +212,7 @@ export default function ProfilePage (props) {
                 delete res.data.password
                 setUser(res.data)
                 reset(res.data)
+                setIsLoading(false)
             } catch (err) {
                 console.log(err)
             }
@@ -220,6 +223,7 @@ export default function ProfilePage (props) {
     return (
         <SafeAreaView style={page.main}>
             <SubNavbar title={user.fname} pressed={onBackPress} />
+            <WithLoading loadingMessage='Loading details...' isLoading={isLoading}>
             <ScrollView refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
@@ -320,6 +324,7 @@ export default function ProfilePage (props) {
                     </View>
                 </View>
             </ScrollView>
+            </WithLoading>
             <RemoveAvatarModal isModalVisible={showRemoveAvatarModal} closeModal={closeRemoveAvatarModal} confirmHandler={confirmRemoveAvatarHandler} cancelHandler={closeRemoveAvatarModal} />
         </SafeAreaView>
     )

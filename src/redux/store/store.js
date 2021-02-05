@@ -16,16 +16,7 @@ import {
 } from 'redux-persist'
 import autoMergeLevel1 from 'redux-persist/lib/stateReconciler/autoMergeLevel1'
 import AsyncStorage from '@react-native-community/async-storage'
-import createMigrate from 'redux-persist/es/createMigrate'
 
-const migrations = {
-    1: (state) => ({
-        ...state,
-        isLoggedIn: state.isLoggedIn,
-        token: state.token,
-        isAdmin: state.isAdmin
-    })
-}
 const persistConfig = {
     key: 'root',
     storage: AsyncStorage,

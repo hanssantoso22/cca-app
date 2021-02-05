@@ -37,7 +37,7 @@ const createNewModal = ({ isModalVisible, closeModal, didNotAttendHandler, atten
                     <View style={{marginTop:25, marginBottom: 10}}>
                         <View style={{flexDirection: 'row'}}>
                             <View style={styles.buttonContainer}>
-                                <SecondaryButton text="No" fontSize={16} pressHandler={didNotAttendHandler} />
+                                <SecondaryButton text="No" fontSize={16} pressHandler={didNotAttendHandler.bind(this,eventID)} />
                             </View>
                             <View style={styles.buttonContainer}>
                                 <PrimaryButton text="Yes, I attended" fontSize={16} pressHandler={attendedHandler.bind(this,eventID)} />

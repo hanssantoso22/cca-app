@@ -54,8 +54,9 @@ export const signUp = (data) => async dispatch => {
             token,
             admin: false,
         }))
+        console.log(res)
     } catch (err) {
-
+        console.log(err)
     }
 }
 export const logout = () => async dispatch => {

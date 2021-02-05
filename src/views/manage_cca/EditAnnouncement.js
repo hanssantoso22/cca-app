@@ -3,6 +3,7 @@ import * as ImagePicker from 'expo-image-picker'
 import FormData from 'form-data'
 import mime from 'mime'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
+import WithLoading from '../../components/hoc/withLoading'
 import { page, GREY, marginHorizontal } from '../../components/common/styles'
 import { SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
@@ -26,6 +27,7 @@ export default function CreateAnnouncement (props) {
         Lato_700Bold
     })
     const loaded = isLoaded
+    const [isLoading, setIsLoading] = useState(true)
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [imageURI, setImageURI] = useState(null)
     const [imageUploaded, setImageUploaded] = useState(false)
@@ -177,6 +179,7 @@ export default function CreateAnnouncement (props) {
                     res2.data.visibility = 0
                 }
                 reset(res2.data)
+                setIsLoading(false)
             } catch (err) {
                 console.log('Retrieve CCA failed', err)
             }
@@ -187,6 +190,7 @@ export default function CreateAnnouncement (props) {
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={page.main}>
                 <SubNavbar title='Edit Announcement' pressed={onBackPress} />
+                <WithLoading loadingMessage='Loading details...' isLoading={isLoading}>
                 <ScrollView>
                 <View style={page.main}>
                     <Text style={styles.pageTitle}>Announcement Details</Text>
@@ -261,6 +265,7 @@ export default function CreateAnnouncement (props) {
                 <View style={styles.bottomBar}>
                     <PrimaryBigButton fontSize={20} text="Mark as Obsolete" pressHandler={markAsDoneHandler.bind(this, announcementID)}/>
                 </View>
+                </WithLoading>
                 <ConfirmationModal isModalVisible={isModalVisible} confirmHandler={confirmMarkAsDoneHandler} closeModal={closeModalHandler} cancelHandler={closeModalHandler} id={announcementID} />
             </SafeAreaView>
         </TouchableWithoutFeedback>

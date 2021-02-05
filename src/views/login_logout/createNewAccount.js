@@ -62,7 +62,6 @@ export default function createNewAccount (props) {
     ]
     const { control, handleSubmit, reset, setValue } = useForm({ defaultValues })
     const onSubmit = data => {
-        console.log(data)
         delete data.confirmPassword
         dispatch(signUp(data))
     }

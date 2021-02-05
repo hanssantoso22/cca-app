@@ -3,6 +3,8 @@ import { page, marginHorizontal, GREY } from '../../components/common/styles'
 import { useFocusEffect } from '@react-navigation/native'
 import { useFonts } from '@expo-google-fonts/lato'
 import { View, Text, StyleSheet, FlatList, TouchableWithoutFeedback } from 'react-native'
+import WithLoading from '../../components/hoc/withLoading'
+import NoItemLoaded from '../../components/common/NoItemLoaded'
 import CustomPicker from '../../components/common/forms/Picker'
 import ListCard from '../../components/common/ListCard'
 
@@ -15,10 +17,11 @@ export default function MembersTab (props) {
         'MaterialIcons-Regular': require('../../assets/fonts/MaterialIcons-Regular.ttf')
     })
     const loaded = isLoaded
+    const [isLoading, setIsLoading] = useState(false)
     const [members, setMembers] = useState([])
     const [managedCCA, setManagedCCA] = useState([])
     const [selectedCCA, setSelectedCCA] = useState('')
-    const [selectedCCAid, setSelectedCCAid] = useState(null)
+    const [selectedCCAid, setSelectedCCAid] = useState('')
     const styles = StyleSheet.create({
         pickerContainer: {
             marginHorizontal
@@ -45,7 +48,7 @@ export default function MembersTab (props) {
         if (cca != null) {
             setSelectedCCA(cca)
             setSelectedCCAid(cca)
-            console.log(selectedCCA)
+            setIsLoading(true)
         }
         else {
             setSelectedCCA('')
@@ -72,6 +75,7 @@ export default function MembersTab (props) {
                 try {
                     const res = await axios.get(`${URL}/CCA/${selectedCCAid}/viewMembers`, authenticate(store.getState().main.token))
                     setMembers(res.data.members)
+                    setIsLoading(false)
                 } catch (err) {
                     console.log('Load member error!',err)
                 }
@@ -91,21 +95,23 @@ export default function MembersTab (props) {
                             label  = 'Select CCA'
                 />
             </View>
-            {selectedCCAid!=null &&
-            <> 
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={styles.pageTitle}>{`Members \(${members.length}\)`}&nbsp;&nbsp;&nbsp;</Text>
-                    <TouchableWithoutFeedback onPress={editHandler.bind(this, selectedCCAid)}>
-                        <Text style={styles.icon}>mode_edit</Text>
-                    </TouchableWithoutFeedback>
-                </View>
-                <FlatList data={members}
-                    keyExtractor={(item)=>item._id}
-                    renderItem={({ item })=> (
-                        <ListCard title={item.fname} description={`${item.faculty} / ${item.year}`} />
-                    )}
-                />
-            </>
+            {selectedCCAid!='' ?
+                <WithLoading isLoading={isLoading} loadingMessage="Loading members...">
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.pageTitle}>{`Members \(${members.length}\)`}&nbsp;&nbsp;&nbsp;</Text>
+                        <TouchableWithoutFeedback onPress={editHandler.bind(this, selectedCCAid)}>
+                            <Text style={styles.icon}>mode_edit</Text>
+                        </TouchableWithoutFeedback>
+                    </View>
+                    <FlatList data={members}
+                        keyExtractor={(item)=>item._id}
+                        renderItem={({ item })=> (
+                            <ListCard title={item.fname} description={`${item.faculty} / ${item.year}`} />
+                        )}
+                    />
+                </WithLoading>
+            :
+            null
             }
         </View>
     )

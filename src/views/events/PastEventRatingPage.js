@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
+import WithLoading from '../../components/hoc/withLoading'
 import { page, GREY, marginHorizontal, font } from '../../components/common/styles'
 import { SafeAreaView, View, Text, StyleSheet, ScrollView, FlatList } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular, Lato_300Light } from '@expo-google-fonts/lato'
@@ -7,7 +8,13 @@ import PrimaryButton from '../../components/common/buttons/PrimaryBig'
 import { AirbnbRating } from 'react-native-ratings';
 import MultiLineInput from '../../components/common/forms/MultiLineInput'
 
+import axios from 'axios'
+import {URL, authenticate} from '../../api/config'
+import store from '../../redux/store/store'
+
 export default function EventDetailsPage (props) {
+    const [isLoading, setIsLoading] = useState(true)
+    const [event, setEvent] = useState({event: {}})
     const [isLoaded] = useFonts({
         'MaterialIcons-Regular': require('../../assets/fonts/MaterialIcons-Regular.ttf'),
         Lato_300Light,
@@ -20,15 +27,14 @@ export default function EventDetailsPage (props) {
     }
     const { eventID } = props.route.params
     const [commentBox, setCommentBox] = useState('')
-    const dummyEvents = [
-        {id:0, title: 'Arduino Workshop',date: '28 October 2020',time: '20:00' ,venue: 'Online',link: 'https://ntu-sg.zoom.us/j/99056295240 (Password: 312264)', description:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'},
-        {id:1, title: 'Introduction to Machine Learning and Deep Learning',date: '28 October 2020',time: '20:00' ,venue: 'Online',link: 'https://ntu-sg.zoom.us/j/99056295240 (Password: 312264)', description:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'},
-        {id:2, title: 'Subcommittee Recruitment Talk',date: '28 October 2020',time: '20:00' ,venue: 'Online',link: 'https://ntu-sg.zoom.us/j/99056295240 (Password: 312264)', description:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'}
-    ]
-    const eventDetails = dummyEvents.filter((item)=>eventID==item.id)
-    const details = eventDetails[0]
-    const submitHandler = () => {
-        props.navigation.navigate('Events')
+    const [rating, setRating] = useState(null)
+    const submitHandler = async () => {
+        try {
+            const res = await axios.patch(`${URL}/users/pastEvent/${eventID}/submitReview`, {rating, comment: commentBox}, authenticate(store.getState().main.token))
+            props.navigation.goBack()
+        } catch (err) {
+            console.log(err)
+        }
     }
     const styles = StyleSheet.create ({
         card: {
@@ -72,14 +78,26 @@ export default function EventDetailsPage (props) {
             marginTop: 30,
         }
     })
-
+    useEffect (() => {
+        async function loadEvent () {
+            try {
+                const res = await axios.get(`${URL}/users/pastEvent/${eventID}`, authenticate(store.getState().main.token))
+                setEvent(res.data)
+                setIsLoading(false)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        loadEvent()
+    },[])
     return (
         <SafeAreaView style={page.main}>
             <SubNavbar title='Event Rating' pressed={onBackPress} />
+            <WithLoading isLoading={isLoading} loadingMessage='Loading details...'>
             <ScrollView>
                 <View style={page.main}>
                     <View style={styles.card}>
-                        <Text style={styles.eventName} numberOfLines={2} ellipsizeMode='tail'>{details.title}</Text>
+                        <Text style={styles.eventName} numberOfLines={2} ellipsizeMode='tail'>{event.event.eventName}</Text>
                         <Text style={styles.question}>How was the event?</Text>
                         <AirbnbRating
                             count={4}
@@ -88,6 +106,7 @@ export default function EventDetailsPage (props) {
                             size={30}
                             reviewSize={16}
                             reviewColor={GREY[2]}
+                            onFinishRating={rating => setRating(rating)}
                         />
                         <View style={styles.commentBoxContainer}>
                             <MultiLineInput
@@ -104,6 +123,7 @@ export default function EventDetailsPage (props) {
             <View style={styles.submitButtonWrapper}>
                 <PrimaryButton fontSize={20} pressHandler={submitHandler} text='Submit' />
             </View>
+            </WithLoading>
         </SafeAreaView>
     )
 }

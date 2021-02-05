@@ -21,6 +21,14 @@ const createNewModal = ({ isModalVisible, closeModal, confirmHandler, cancelHand
             textAlign: 'center',
             letterSpacing: 1,
         },
+        description: {
+            fontFamily: 'Lato_400Regular',
+            fontSize: 13,
+            color: GREY[4],
+            textAlign: 'center',
+            lineHeight: 15,
+            marginTop: 15
+        },
         buttonContainer: {
             flex: 1,
             paddingHorizontal: 5
@@ -42,6 +50,7 @@ const createNewModal = ({ isModalVisible, closeModal, confirmHandler, cancelHand
             <Modal isVisible={isModalVisible} onBackdropPress={closeModal}>
                 <View style={{...page.modal, paddingHorizontal: 25}}>
                     <Text style={styles.title}>Are you sure to delete this CCA?</Text>
+                    <Text style={styles.description}>Warning: This action will also delete all announcements and events created by the CCA.</Text>
                     <View style={{marginTop:25, marginBottom: 10}}>
                         <View style={{flexDirection: 'row'}}>
                             <View style={styles.buttonContainer}>

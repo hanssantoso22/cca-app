@@ -3,6 +3,7 @@ import { View, SafeAreaView, FlatList, StyleSheet } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import { page, marginHorizontal } from '../../../components/common/styles'
+import WithLoading from '../../../components/hoc/withLoading'
 import Navbar from '../../../components/common/navigation/navbar/navbar'
 import ListCard from '../../../components/common/ListCard'
 import TextInput from '../../../components/common/forms/TextInputNoLabel'
@@ -14,6 +15,7 @@ import store from '../../../redux/store/store'
 export default function CCAList (props) {
     const [isLoaded] = useFonts({Lato_700Bold})
     const [CCAs, setCCAs] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
     const [filteredCCAs, setFilteredCCAs] = useState([])
     const [keyword, setKeyword] = useState('')
     const loaded = isLoaded
@@ -43,6 +45,7 @@ export default function CCAList (props) {
                     const res = await axios.get(`${URL}/CCAs`, authenticate(store.getState().main.token))
                     setCCAs(res.data)
                     setFilteredCCAs(res.data)
+                    setIsLoading(false)
                 } catch (err) {
                     console.log(err)
                 }
@@ -63,13 +66,15 @@ export default function CCAList (props) {
                         placeHolder="Search CCA..."
                     />
                 </View>
-                <FlatList 
-                    data={filteredCCAs}
-                    keyExtractor={(item)=>item._id}
-                    renderItem={({ item })=> (
-                        <ListCard title={item.ccaName} onPress={onCardPress.bind(this,item._id)}/>
-                    )}
-                />
+                <WithLoading isLoading={isLoading} loadingMessage='Loading CCA...'>
+                    <FlatList 
+                        data={filteredCCAs}
+                        keyExtractor={(item)=>item._id}
+                        renderItem={({ item })=> (
+                            <ListCard title={item.ccaName} onPress={onCardPress.bind(this,item._id)}/>
+                        )}
+                    />
+                </WithLoading>
             </View>
         </SafeAreaView>
     )

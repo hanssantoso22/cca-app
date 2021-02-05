@@ -3,6 +3,7 @@ import { View, SafeAreaView, ScrollView, Text, StyleSheet, TouchableWithoutFeedb
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import { page, RED, MING, GREY, marginHorizontal } from '../../../components/common/styles'
 import SubNavbar from '../../../components/common/navigation/navbar/SubNavbar'
+import WithLoading from '../../../components/hoc/withLoading'
 import { useDispatch, useSelector } from 'react-redux'
 import { editSelectedUsers } from '../../../redux/reducers/AdminSlice'
 import { useForm, Controller } from 'react-hook-form'
@@ -22,6 +23,7 @@ import store from '../../../redux/store/store'
 
 export default function CCADetails (props) {
     const [isLoaded] = useFonts({Lato_700Bold})
+    const [isLoading, setIsLoading] = useState(true)
     const [CCA, setCCA] = useState({})
     const [resetManager, setResetManager] = useState(false)
     const [showResetModal, setShowResetModal] = useState(false) //reset managers
@@ -191,6 +193,7 @@ export default function CCADetails (props) {
                 setCCA(res.data)
                 reset(res.data)
                 if (res.data.managers.length == 0) setResetManager(true)
+                setIsLoading(false)
             } catch (err) {
                 console.log('Error',err)
             }
@@ -201,6 +204,7 @@ export default function CCADetails (props) {
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <SafeAreaView style={page.main}>
             <SubNavbar title={CCA.ccaName} pressed={onBackPress} />
+            <WithLoading isLoading={isLoading} loadingMessage='Loading details...'>
             <ScrollView>
             <View style={{marginTop: marginHorizontal}}>
                 <Text style={styles.pageTitle}>CCA Details</Text>
@@ -293,6 +297,7 @@ export default function CCADetails (props) {
                 </View>
             </View>
             </ScrollView>
+            </WithLoading>
             <ResetManagerModal isModalVisible={showResetModal} closeModal={closeResetModal} confirmHandler={confirmResetManagerHandler} cancelHandler={closeResetModal} ccaID={_id} />
             <ResetMemberModal isModalVisible={showResetMemberModal} closeModal={closeResetMemberModal} confirmHandler={confirmResetMemberHandler} cancelHandler={closeResetMemberModal} ccaID={_id} />
             <DeleteCCAModal isModalVisible={showDeleteModal} closeModal={closeDeleteModal} confirmHandler={confirmDeleteHandler} cancelHandler={closeDeleteModal} ccaID={_id} />

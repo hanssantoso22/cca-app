@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { View, SafeAreaView, FlatList, StyleSheet } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import { page, marginHorizontal } from '../../../components/common/styles'
+import WithLoading from '../../../components/hoc/withLoading'
 import Navbar from '../../../components/common/navigation/navbar/navbar'
 import ListCard from '../../../components/common/ListCard'
 import TextInput from '../../../components/common/forms/TextInputNoLabel'
@@ -13,6 +14,7 @@ import store from '../../../redux/store/store'
 
 export default function UserList (props) {
     const [isLoaded] = useFonts({Lato_700Bold})
+    const [isLoading, setIsLoading] = useState(true)
     const [userList, setUserList] = useState([])
     const [keyword, setKeyword] = useState([])
     const [filteredUserList, setFilteredUserList] = useState([])
@@ -40,6 +42,7 @@ export default function UserList (props) {
                     const res = await axios.get(`${URL}/users`, authenticate(store.getState().main.token))
                     setFilteredUserList(res.data)
                     setUserList(res.data)
+                    setIsLoading(false)
                 } catch (err) {
                     console.log(err)
                 }
@@ -50,25 +53,26 @@ export default function UserList (props) {
     return (
         <SafeAreaView style={page.main}>
             <Navbar title="Manage Users" pressed={onMenuPress} />
-            <View style={{paddingTop: marginHorizontal}}>
-                <View style={styles.searchContainer}>
-                    <TextInput 
-                        value={keyword} 
-                        onChangeText={onKeywordChange}
-                        type="name"
-                        customStyle={{fontStyle: 'italic'}}
-                        placeHolder="Search users..."
+            <WithLoading isLoading={isLoading} loadingMessage='Loading users...'>
+                <View style={{paddingTop: marginHorizontal}}>
+                    <View style={styles.searchContainer}>
+                        <TextInput 
+                            value={keyword} 
+                            onChangeText={onKeywordChange}
+                            type="name"
+                            customStyle={{fontStyle: 'italic'}}
+                            placeHolder="Search users..."
+                        />
+                    </View>
+                    <FlatList 
+                        data={filteredUserList}
+                        keyExtractor={(item)=>item._id}
+                        renderItem={({ item })=> (
+                            <ListCard title={item.fname} onPress={onCardPress.bind(this,item._id)}/>
+                        )}
                     />
                 </View>
-                <FlatList 
-                    data={filteredUserList}
-                    keyExtractor={(item)=>item._id}
-                    renderItem={({ item })=> (
-                        <ListCard title={item.fname} onPress={onCardPress.bind(this,item._id)}/>
-                    )}
-                />
-            </View>
-            
+            </WithLoading>
         </SafeAreaView>
     )
 }

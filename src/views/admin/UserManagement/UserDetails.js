@@ -3,6 +3,7 @@ import { ScrollView, View, Text, StyleSheet, SafeAreaView } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import { page, marginHorizontal, GREY } from '../../../components/common/styles'
 import SubNavbar from '../../../components/common/navigation/navbar/SubNavbar'
+import WithLoading from '../../../components/hoc/withLoading'
 import DangerButton from '../../../components/common/buttons/DangerBig'
 import DeleteUserModal from './DeleteUserModal'
 
@@ -14,6 +15,7 @@ export default function UserList (props) {
     const [isLoaded] = useFonts({Lato_700Bold, Lato_400Regular})
     const loaded = isLoaded
     const { _id } = props.route.params
+    const [isLoading, setIsLoading] = useState(true)
     const [user, setUser] = useState({})
     const [showModal, setShowModal] = useState(false)
     const styles = StyleSheet.create({
@@ -89,6 +91,7 @@ export default function UserList (props) {
             try {
                 const res = await axios.get(`${URL}/user/${_id}`, authenticate(store.getState().main.token))
                 setUser(res.data)
+                setIsLoading(false)
             } catch (err) {
                 console.log(err)
             }
@@ -98,6 +101,7 @@ export default function UserList (props) {
     return (
         <SafeAreaView style={page.main}>
             <SubNavbar title={user.fname} pressed={onBackPress} />
+            <WithLoading isLoading={isLoading} loadingMessage='Loading details...'>
             <ScrollView>
                 <View style={page.main}>
                     <Text style={styles.pageTitle}>User Details</Text>
@@ -164,6 +168,7 @@ export default function UserList (props) {
             <View style={styles.bottomContainer}>
                 <DangerButton text="Delete User" fontSize={20} pressHandler={onDeleteHandler} />
             </View>
+            </WithLoading>
             <DeleteUserModal isModalVisible={showModal} closeModal={closeModalHandler} cancelHandler={closeModalHandler} confirmHandler={confirmDeleteHandler} userID={_id} />
         </SafeAreaView>
     )
