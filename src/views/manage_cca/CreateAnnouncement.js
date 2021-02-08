@@ -86,6 +86,8 @@ export default function CreateAnnouncement (props) {
                     'Content-Type': 'multipart/form-data'
                 }})
             }
+            const res2 = await axios.get(`${URL}/announcement/${res._id}/pushNotificationList`, authenticate(store.getState().main.token))
+            sendPushNotification(res2.data, res.announcementTitle)
             props.navigation.reset({
                 index: 0,
                 routes: [{'name': 'ManageCCAScreen'}]

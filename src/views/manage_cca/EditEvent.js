@@ -259,7 +259,7 @@ export default function home (props) {
                                 control={control}
                                 render= {() => (
                                     <DateTimePicker
-                                        label='Start Date'
+                                        label='Start Time'
                                         mode='datetime'
                                         value={store.getState().createEvent.startDate}
                                         onFocus={()=>setShowStartPicker(true)}
@@ -267,6 +267,7 @@ export default function home (props) {
                                         onChangePicker={(event,itemValue) => {
                                             const val = moment(itemValue).format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)                
                                             dispatch(changeStartDate(val))
+                                            dispatch(changeEndDate(val))
                                         }}
                                     />
                                   )}
@@ -277,8 +278,10 @@ export default function home (props) {
                                 control={control}
                                 render= {() => (
                                     <DateTimePicker
-                                        label='End Date'
+                                        label='End Time'
                                         mode='datetime'
+                                        minimumDate={store.getState().createEvent.startDate}
+                                        maximumDate={moment(store.getState().createEvent.startDate, 'YYYY-MM-DD').add(1,'day').format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)}
                                         value={store.getState().createEvent.endDate}
                                         onFocus={()=>setShowEndPicker(true)}
                                         showPicker={showEndPicker}

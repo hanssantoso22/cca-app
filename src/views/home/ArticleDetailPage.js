@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react'
+import moment from 'moment'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
+import WithLoading from '../../components/hoc/withLoading'
 import { page, GREY, marginHorizontal, font } from '../../components/common/styles'
 import { SafeAreaView, View, Text, StyleSheet, ScrollView, Image } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular, Lato_400Regular_Italic } from '@expo-google-fonts/lato'
 import Dummy1 from '../../assets/dummy/image005.jpg'
-import Dummy2 from '../../assets/dummy/thumbnail_image004.png'
+
+import axios from 'axios'
+import {URL, authenticate} from '../../api/config'
+import store from '../../redux/store/store'
 
 export default function ArticleDetailPage (props) {
+    const [announcement, setAnnouncement] = useState({organizer: ''})
+    const [isLoading, setIsLoading] = useState(true)
     const [isLoaded] = useFonts({
         Lato_400Regular,
         Lato_400Regular_Italic,
@@ -17,16 +24,10 @@ export default function ArticleDetailPage (props) {
         props.navigation.goBack()
     }
     const { articleID } = props.route.params
-    const dummyAnnouncements = [
-        {id:0, title: 'Deep Learning Week 2020 Industry Night',description:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'},
-        {id:1, title: 'NTUSU Election Day 2020',description:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'},
-        {id:2, title: 'Subcommittee Recruitment',description:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'}
-    ]
-    const announcementDetails = dummyAnnouncements.filter((item)=>articleID==item.id)
-    const details = announcementDetails[0]
     const styles = StyleSheet.create ({
         imageWrapper: {
-            marginVertical: 5,
+            marginTop: 5,
+            marginBottom: 10,
             alignItems: 'center',
             flex: 1,
             height: 300,
@@ -57,28 +58,41 @@ export default function ArticleDetailPage (props) {
             fontFamily: 'Lato_400Regular'
         },
     })
-
+    useEffect (() => {
+        async function loadAnnouncement () {
+            try {
+                const res = await axios.get(`${URL}/announcement/${articleID}`, authenticate(store.getState().main.token))
+                setAnnouncement(res.data)
+                setIsLoading(false)
+            } catch (err) {
+        
+            }
+        }
+        loadAnnouncement()
+    },[])
     return (
 
             <SafeAreaView style={page.main}>
-                <SubNavbar title={details.title} pressed={onBackPress} />
+                <SubNavbar title={announcement.announcementTitle} pressed={onBackPress} />
+                <WithLoading isLoading={isLoading} loadingMessage='Loading details...'>
                 <ScrollView>
                     <View style={page.main}>
-                        <Text style={{...font.articleTitle,...styles.pageTitle}}>{details.title}</Text>
+                        <Text style={{...font.articleTitle,...styles.pageTitle}}>{announcement.announcementTitle}</Text>
                         <View style={styles.imageWrapper}>
                             <Image style={styles.image} source={Dummy1} />
                         </View>
                         <View style={styles.smallDetailsWrapper}>
-                            <Text style={styles.smallDetailsFont}>Published on: {details.date}</Text>
-                            <Text style={styles.smallDetailsFont}>by {details.CCAName}</Text>
+                            <Text style={styles.smallDetailsFont}>Published on: {moment(announcement.createdAt,`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`).format('LL')}</Text>
+                            <Text style={styles.smallDetailsFont}>by {announcement.organizer.ccaName}</Text>
                         </View>
                         <View style={styles.articleBodyWrapper}>
                             <Text style={{...font.articleBody,...styles.articleFont}}>
-                                {details.description}
+                                {announcement.content}
                             </Text>
                         </View>
                     </View>
                 </ScrollView>
+                </WithLoading>
             </SafeAreaView>
         
     )

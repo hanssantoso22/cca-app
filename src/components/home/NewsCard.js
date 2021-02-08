@@ -8,7 +8,8 @@ import Dummy1 from '../../assets/dummy/image005.jpg'
 export default function NewsCard (props) {
     const [isLoaded] = useFonts({
         Lato_400Regular,
-        Lato_700Bold
+        Lato_700Bold,
+        'MaterialIcons-Regular': require('../../assets/fonts/MaterialIcons-Regular.ttf')
     })
     const loaded = isLoaded
     const styles = StyleSheet.create ({
@@ -28,6 +29,20 @@ export default function NewsCard (props) {
             width: '100%',
             borderRadius: 15,
         },
+        filler: {
+            backgroundColor: GREY[1],
+            justifyContent:'center',
+            alignItems: 'center',
+            height: 150,
+            width: '100%',
+            borderTopLeftRadius: 15,
+            borderTopRightRadius: 15,
+        },
+        fillerLogo: {
+            fontFamily: 'MaterialIcons-Regular',
+            fontSize: 50,
+            color: GREY[2]
+        },  
         image: {
             flex: 1,
             height: null,
@@ -58,7 +73,13 @@ export default function NewsCard (props) {
         <TouchableWithoutFeedback onPress={props.pressed}>
             <View style={styles.card}>
                 <View style={styles.thumbnail}>
-                    <Image style={styles.image} source={Dummy1} />
+                    {props.image == null ? 
+                        <View style={styles.filler}>
+                            <Text style={styles.fillerLogo}>library_books</Text>
+                        </View>
+                    : 
+                        <Image style={styles.image} source={props.image} />
+                    }
                 </View>
                 <View style={styles.description}>
                     <Text style={styles.newsTitle} ellipsizeMode='tail' numberOfLines={2}>{props.title}</Text>

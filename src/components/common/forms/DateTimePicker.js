@@ -5,7 +5,7 @@ import { useFonts, Lato_400Regular} from '@expo-google-fonts/lato'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import moment from 'moment'
 
-export default function DateTimePickerInput ( { label, onChangeText, onChangePicker, mode, onFocus, showPicker, value } ) {
+export default function DateTimePickerInput ( { label, onChangeText, onChangePicker, mode, onFocus, showPicker, value, minimumDate, maximumDate } ) {
     const [isLoaded] = useFonts ({
         Lato_400Regular
     })
@@ -50,6 +50,8 @@ export default function DateTimePickerInput ( { label, onChangeText, onChangePic
                 {showPicker && (
                     <DateTimePicker
                         testID="dateTimePicker"
+                        minimumDate={minimumDate}
+                        maximumDate={maximumDate}
                         value={new Date(value)}
                         mode={mode}
                         is24Hour={true}
