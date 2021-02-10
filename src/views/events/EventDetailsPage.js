@@ -75,7 +75,7 @@ export default function EventDetailsPage (props) {
             const labelStyle = !isLink?{...font.articleBody, paddingRight: 40}:{...font.articleBody, paddingRight: 40,...font.link}
             if (key=='time') {
                 renderSchedDetails.push(
-                    <View style={{flexDirection: 'row', marginBottom: 20}}>
+                    <View key={key} style={{flexDirection: 'row', marginBottom: 20}}>
                         <Text style={styles.materialIcon}>{icons[key]}</Text>
                         <Text style={labelStyle}>{`${value[0]} - ${value[1]}`}</Text>
                     </View>
@@ -83,7 +83,7 @@ export default function EventDetailsPage (props) {
                 continue
             }
             renderSchedDetails.push(
-                <View style={{flexDirection: 'row', marginBottom: 20}}>
+                <View key={key} style={{flexDirection: 'row', marginBottom: 20}}>
                     <Text style={styles.materialIcon}>{icons[key]}</Text>
                     <Text style={labelStyle}>{value}</Text>
                 </View>
@@ -129,7 +129,7 @@ export default function EventDetailsPage (props) {
                 <ScrollView>
                     <View style={page.main}>
                         <View style={styles.imageWrapper}></View>
-                        <Text style={{...font.articleTitle,...styles.pageTitle}}>{details.title}</Text>
+                        <Text style={{...font.articleTitle,...styles.pageTitle}}>{details.eventName}</Text>
                         <View style={styles.scheduleWrapper}>
                             {renderSchedDetails}
                         </View>

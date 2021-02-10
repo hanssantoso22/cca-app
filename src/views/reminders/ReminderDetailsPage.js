@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import * as Google from 'expo-google-app-auth'
 import moment from 'moment'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import { page, GREY, marginHorizontal, font } from '../../components/common/styles'
@@ -6,13 +7,37 @@ import { SafeAreaView, View, Text, StyleSheet, ScrollView, FlatList } from 'reac
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import PrimaryButton from '../../components/common/buttons/PrimaryBig'
 import WithLoading from '../../components/hoc/withLoading'
+import ConfirmationModal from './ConfirmationModal'
+import AsyncStorage from '@react-native-community/async-storage'
 
 import axios from 'axios'
-import {URL, authenticate} from '../../api/config'
+import {URL, authenticate, googleConfig, gapiURL, gapiKey} from '../../api/config'
 import store from '../../redux/store/store'
 
+const createEvent = async (token, details) => {
+    try {
+        const eventDescription = `${details.description}\n${details.link != '' ? `Link: ${details.link}` : ''}`
+        const event = {
+            summary: details.eventName,
+            description: eventDescription,
+            location: `${details.location == '' ? '': details.venue}`,
+            start: {
+                dateTime: details.startTime,
+                timezone: 'Singapore'
+            },
+            end: {
+                dateTime: details.endTime,
+                timezone: 'Singapore'
+            }
+        }
+        const res3 = await axios.post(`${gapiURL}/calendar/v3/calendars/primary/events?key=${gapiKey}`, event, {headers: {Authorization: `Bearer ${token}`}})
+    } catch (err) {
+        console.log(err.name, err.message)
+    }
+}
 export default function EventDetailsPage (props) {
     const [details, setDetails] = useState({})
+    const [isModalVisible, setIsModalVisible] = useState(true)
     const [isLoading, setIsLoading] = useState(true)
     const [isLoaded] = useFonts({
         'MaterialIcons-Regular': require('../../assets/fonts/MaterialIcons-Regular.ttf'),
@@ -90,8 +115,32 @@ export default function EventDetailsPage (props) {
             )
         }
     }
-    const addToCalendarHandler = () => {
-        props.navigation.navigate('Reminders')
+    
+    //Modal handlers
+    const addToCalendarHandler = async () => {
+        try {
+            const gToken = await AsyncStorage.getItem('googleOAuth')
+            if (gToken === null) {
+                const { type, accessToken, user } = await Google.logInAsync (googleConfig)
+                if (type === 'success') {
+                    await AsyncStorage.setItem('googleOAuth', accessToken)
+                    await createEvent(accessToken, details)
+                }
+            }
+            else {
+                await createEvent(gToken, details)
+            }
+            setIsModalVisible(true)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    const closeModalHandler = () => {
+        setIsModalVisible(false)
+    }
+    const exitPageHandler = () => {
+        setIsModalVisible(false)
+        props.navigation.goBack()
     }
     listItems()
     useEffect (() => {
@@ -113,7 +162,7 @@ export default function EventDetailsPage (props) {
             <ScrollView>
                 <View style={page.main}>
                     <View style={styles.imageWrapper}></View>
-                    <Text style={{...font.articleTitle,...styles.pageTitle}}>{details.title}</Text>
+                    <Text style={{...font.articleTitle,...styles.pageTitle}}>{details.eventName}</Text>
                     <View style={styles.scheduleWrapper}>
                         {renderSchedDetails}
                     </View>
@@ -128,6 +177,7 @@ export default function EventDetailsPage (props) {
                 <PrimaryButton fontSize={20} pressHandler={addToCalendarHandler} text='Add to Calendar' />
             </View>
             </WithLoading>
+            <ConfirmationModal isModalVisible={isModalVisible} closeModal={closeModalHandler} submitHandler={exitPageHandler} />
         </SafeAreaView>
     )
 }

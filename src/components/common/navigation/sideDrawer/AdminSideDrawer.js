@@ -8,13 +8,14 @@ import { useDispatch } from 'react-redux'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import { AppLoading } from 'expo'
 import { GREY } from '../../styles'
+import store from '../../../../redux/store/store'
 
 export default function SideDrawer (props) {
     const dispatch = useDispatch()
 
     const navigateToScreen  = (navScreen) => {
         if (navScreen=='LogoutScreen') {
-            dispatch (logout())
+            dispatch (logout(store.getState().main.token))
             return 0
         }
         props.navigation.navigate(navScreen)

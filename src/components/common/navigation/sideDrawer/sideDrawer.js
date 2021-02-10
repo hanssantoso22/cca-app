@@ -18,7 +18,7 @@ export default function SideDrawer (props) {
 
     const navigateToScreen  = (navScreen) => {
         if (navScreen=='LogoutScreen') {
-            dispatch (logout())
+            dispatch (logout(store.getState().main.token))
             return 0
         }
         props.navigation.navigate(navScreen)

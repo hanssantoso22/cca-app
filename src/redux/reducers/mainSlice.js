@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { URL, authenticate } from '../../api/config'
 import axios from 'axios'
-import store from '../store/store'
 import AsyncStorage from '@react-native-community/async-storage'
 
 export const drawerSlice = createSlice({
@@ -11,6 +10,7 @@ export const drawerSlice = createSlice({
         isAdmin: false,
         isLoggedIn: false,
         token: '',
+        askPushNotification: false,
     },
     reducers: {
         navigateToPage (state, action) {
@@ -30,6 +30,9 @@ export const drawerSlice = createSlice({
         logoutAccount (state,action) {
             state.isLoggedIn = false
             state.isAdmin = false
+        },
+        changeAskPushNotification (state, action) {
+            state.askPushNotification = action.payload
         }
     }
 })
@@ -59,7 +62,7 @@ export const signUp = (data) => async dispatch => {
         console.log(err)
     }
 }
-export const logout = () => async dispatch => {
+export const logout = (userToken) => async dispatch => {
     try {
         await AsyncStorage.clear()
         .then ((res) => {
@@ -68,10 +71,10 @@ export const logout = () => async dispatch => {
         .catch ((err) => {
             console.log('Flush unsuccessful')
         })
-        const token = await axios.get(`${URL}/users/logout`, authenticate(store.getState().main.token))
+        const token = await axios.get(`${URL}/users/logout`, authenticate(userToken))
         dispatch(logoutAccount())
     } catch (err) {
         console.log('Logout failed!',err.request)
     }
 }
-export const { navigateToPage, login, logoutAccount } = drawerSlice.actions
+export const { navigateToPage, login, logoutAccount, changeAskPushNotification } = drawerSlice.actions

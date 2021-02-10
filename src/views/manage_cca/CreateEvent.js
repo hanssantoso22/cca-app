@@ -64,7 +64,6 @@ export default function home (props) {
 
         
     })
-    // REPLACE CCA ID WITH THE REAL ONE
     const audience = [
         {label: 'Public', value: 0},
         ...CCAs
@@ -98,7 +97,6 @@ export default function home (props) {
             }
             data.startTime = store.getState().createEvent.startDate
             data.endTime = store.getState().createEvent.endDate
-            console.log(data)
             const res = await axios.post(`${URL}/events/create`, data, authenticate(store.getState().main.token))
             if (imageURI!=null) {
                 const formData = new FormData()
