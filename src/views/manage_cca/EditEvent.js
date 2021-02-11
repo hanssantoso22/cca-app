@@ -5,10 +5,11 @@ import mime from 'mime'
 import moment from 'moment'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import WithLoading from '../../components/hoc/withLoading'
-import { page, GREY, MING, marginHorizontal } from '../../components/common/styles'
-import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native'
+import { page, GREY, MING, RED, marginHorizontal } from '../../components/common/styles'
+import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, Alert } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import { useForm, Controller } from 'react-hook-form'
+import { ErrorMessage } from '@hookform/error-message'
 import { useDispatch } from 'react-redux'
 import { changeStartDate, changeEndDate } from '../../redux/reducers/CreateEventSlice'
 import CustomTextInput from '../../components/common/forms/TextInput'
@@ -82,6 +83,13 @@ export default function home (props) {
             color: MING[5],
             marginBottom: 15
         },
+        errorMessage: {
+            color: RED[5],
+            fontSize: 11,
+            fontStyle: 'italic',
+            marginBottom: 15,
+            marginTop: -10
+        },
         
     })
     // REPLACE CCA ID WITH THE REAL ONE
@@ -127,7 +135,7 @@ export default function home (props) {
             })
         }
         catch (err) {
-            console.log(err)
+            Alert.alert('Changes not saved')
         }
     }
     const defaultValues = {
@@ -141,7 +149,7 @@ export default function home (props) {
         visibility: "",
         allowedParticipants: "",
     }
-    const { control, handleSubmit, reset, setValue } = useForm({
+    const { control, handleSubmit, reset, setValue, errors } = useForm({
         defaultValues
     })
     const resetHandler = ()=> {
@@ -243,9 +251,15 @@ export default function home (props) {
                         <View style={{width: '100%'}}>
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                }}
                                 render= {({ onChange, value }) => (
                                     <CustomTextInput
-                                        label='Event Name'
+                                        label='Event Name*'
                                         onChangeText={text=>{onChange(text)}}
                                         value={value}
                                         maxLength={40}
@@ -255,11 +269,18 @@ export default function home (props) {
                                   name="eventName"
                                   defaultValue={event.eventName}
                             />
+                            {errors.eventName && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="eventName" /></Text>}
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                }}
                                 render= {() => (
                                     <DateTimePicker
-                                        label='Start Time'
+                                        label='Start Time*'
                                         mode='datetime'
                                         value={store.getState().createEvent.startDate}
                                         onFocus={()=>setShowStartPicker(true)}
@@ -274,11 +295,18 @@ export default function home (props) {
                                   name="startTime"
                                   defaultValue={store.getState().createEvent.startDate}
                             />
+                            {errors.startTime && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="startTime" /></Text>}
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                }}
                                 render= {() => (
                                     <DateTimePicker
-                                        label='End Time'
+                                        label='End Time*'
                                         mode='datetime'
                                         minimumDate={store.getState().createEvent.startDate}
                                         maximumDate={moment(store.getState().createEvent.startDate, 'YYYY-MM-DD').add(1,'day').format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)}
@@ -294,11 +322,12 @@ export default function home (props) {
                                   name="endTime"
                                   defaultValue={store.getState().createEvent.endDate}
                             />
+                            {errors.endTime && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="endTime" /></Text>}
                             <Controller
                                 control={control}
                                 render= {({ onChange, value }) => (
                                     <CustomTextInput
-                                        label='Venue'
+                                        label='Venue (leave blank if online)'
                                         onChangeText={text=>{onChange(text)}}
                                         value={value}
                                         type='name'
@@ -322,9 +351,15 @@ export default function home (props) {
                             />
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                }}
                                 render= {({ onChange, value }) => (
                                     <MultiLineInput
-                                        label='Content'
+                                        label='Content*'
                                         onChangeText={text=>{onChange(text)}}
                                         value={value}
                                         multiline={true}
@@ -335,12 +370,19 @@ export default function home (props) {
                                   name="description"
                                   defaultValue={event.description}
                             />
+                            {errors.description && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="description" /></Text>}
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                }}
                                 render= {({ onChange, value }) => (
                                     <CustomPicker 
                                         items={CCAs} 
-                                        label='CCA'
+                                        label='CCA*'
                                         value={value}
                                         onValueChange={item=>{onChange(item)}}
                                     />
@@ -348,12 +390,19 @@ export default function home (props) {
                                   name="organizer"
                                   defaultValue={event.organizer}
                             />
+                            {errors.organizer && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="organizer" /></Text>}
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                }}
                                 render= {({ onChange, value }) => (
                                     <CustomPicker 
                                         items={audience} 
-                                        label='Visibility'
+                                        label='Visibility*'
                                         value={value} 
                                         onValueChange={item=>{onChange(item)}}
                                     />
@@ -361,12 +410,19 @@ export default function home (props) {
                                   name="visibility"
                                   defaultValue={event.visibility}
                             />
+                            {errors.visibility && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="visibility" /></Text>}
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                }}
                                 render= {({ onChange, value }) => (
                                     <CustomPicker 
                                         items={allowedParticipants} 
-                                        label='Allowed Participants'
+                                        label='Allowed Participants*'
                                         value={value} 
                                         onValueChange={item=>{onChange(item)}}
                                     />
@@ -374,6 +430,7 @@ export default function home (props) {
                                   name="allowedParticipants"
                                   defaultValue={event.allowedParticipants}
                             />
+                            {errors.allowedParticipants && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="allowedParticipants" /></Text>}
                             <TouchableWithoutFeedback onPress={viewParticipantHandler.bind(this, eventID)} >
                                 <Text style={styles.hyperlink}>View Participants</Text>
                             </TouchableWithoutFeedback>

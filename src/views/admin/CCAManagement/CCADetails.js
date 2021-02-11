@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, SafeAreaView, ScrollView, Text, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { View, SafeAreaView, ScrollView, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import { page, RED, MING, GREY, marginHorizontal } from '../../../components/common/styles'
 import SubNavbar from '../../../components/common/navigation/navbar/SubNavbar'
@@ -7,6 +7,7 @@ import WithLoading from '../../../components/hoc/withLoading'
 import { useDispatch, useSelector } from 'react-redux'
 import { editSelectedUsers } from '../../../redux/reducers/AdminSlice'
 import { useForm, Controller } from 'react-hook-form'
+import { ErrorMessage } from '@hookform/error-message'
 import CustomTextInput from '../../../components/common/forms/TextInput'
 import MultiLineInput from '../../../components/common/forms/MultiLineInput'
 import PrimaryButton from '../../../components/common/buttons/PrimarySmall'
@@ -70,6 +71,13 @@ export default function CCADetails (props) {
             color: MING[5],
             marginBottom: 10
         },
+        errorMessage: {
+            color: RED[5],
+            fontSize: 11,
+            fontStyle: 'italic',
+            marginBottom: 15,
+            marginTop: -10
+        },
         redHyperlink: {
             fontSize: 13,
             fontFamily: 'Lato_400Regular',
@@ -116,7 +124,7 @@ export default function CCADetails (props) {
                 dispatch(editSelectedUsers({selectedUsers: [], selectedUserIds: []}))
                 props.navigation.goBack()
             } catch (err) {
-                console.log(err)
+                Alert.alert('Editing not saved')
             }
         }
         submitData()
@@ -136,7 +144,7 @@ export default function CCADetails (props) {
                 setResetManager(true)
                 props.navigation.goBack()
             } catch (err) {
-                console.log(err)
+                Alert.alert('Resetting member failed')
             }
         }
         confirmResetManager()
@@ -155,7 +163,7 @@ export default function CCADetails (props) {
                 setShowResetMemberModal(false)
                 props.navigation.goBack()
             } catch (err) {
-                console.log(err)
+                Alert.alert('Resetting member failed')
             }
         }
         confirmResetMember()
@@ -185,7 +193,7 @@ export default function CCADetails (props) {
         managers: '',
         color: '',
     }
-    const { control, handleSubmit, reset } = useForm({ defaultValues })
+    const { control, handleSubmit, reset, errors } = useForm({ defaultValues })
     useEffect (() => {
         async function loadCCA() {
             try {
@@ -211,9 +219,15 @@ export default function CCADetails (props) {
                 <View style={styles.card}>
                     <Controller
                         control={control}
+                        rules={{
+                            required: {
+                                value: true,
+                                message: 'This is a required field.'
+                            },
+                        }}
                         render= {({ onChange, value }) => (
                             <CustomTextInput
-                                label='CCA Name'
+                                label='CCA Name*'
                                 onChangeText={text=>{onChange(text)}}
                                 value={value}
                                 type='name'
@@ -222,11 +236,18 @@ export default function CCADetails (props) {
                         name="ccaName"
                         defaultValue={CCA.ccaName}
                     />
+                    {errors.ccaName && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="ccaName" /></Text>}
                     <Controller
                         control={control}
+                        rules={{
+                            required: {
+                                value: true,
+                                message: 'This is a required field.'
+                            },
+                        }}
                         render= {({ onChange, value }) => (
                             <MultiLineInput
-                                label='Description'
+                                label='Description*'
                                 onChangeText={text=>{onChange(text)}}
                                 value={value}
                                 multiline={true}
@@ -237,6 +258,7 @@ export default function CCADetails (props) {
                         name="description"
                         defaultValue={CCA.description}
                     />
+                    {errors.description && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="description" /></Text>}
                     <View style={{flexDirection: 'row'}}>
                         <Text style={styles.inputLabel}>Managers: &nbsp;&nbsp;</Text>
                         {resetManager ? 
@@ -277,6 +299,12 @@ export default function CCADetails (props) {
                     }
                     <Controller
                         control={control}
+                        rules={{
+                            required: {
+                                value: true,
+                                message: 'This is a required field.'
+                            },
+                        }}
                         render= {({ onChange, value }) => (
                             <ColorPalette 
                                 onChange={color => onChange(color)}
@@ -286,6 +314,7 @@ export default function CCADetails (props) {
                         name="color"
                         defaultValue={CCA.color}
                     />
+                    {errors.color && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="color" /></Text>}
                     <View style={{flexDirection: 'row', width: '100%'}}>
                         <View style={{paddingRight: 10, flex: 1}}>
                             <SecondaryButton fontSize={16} text="Delete CCA" pressHandler={deleteHandler}/>

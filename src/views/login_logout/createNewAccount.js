@@ -1,10 +1,10 @@
 import React from 'react';
-import { GREY, page, marginHorizontal } from '../../components/common/styles'
+import { GREY, page, marginHorizontal, RED } from '../../components/common/styles'
 import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { signUp } from '../../redux/reducers/mainSlice'
 import { useForm, Controller } from 'react-hook-form'
-import { login } from '../../redux/reducers/mainSlice'
+import { ErrorMessage } from '@hookform/error-message'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import CustomTextInput from '../../components/common/forms/TextInput'
@@ -49,6 +49,13 @@ export default function createNewAccount (props) {
         inputLabel: {
             fontFamily: 'Lato_400Regular'
         },
+        errorMessage: {
+            color: RED[5],
+            fontSize: 11,
+            fontStyle: 'italic',
+            marginBottom: 15,
+            marginTop: -10
+        }
     })
     const years = [
         {label: 'Year 1', value: '1'},
@@ -60,7 +67,7 @@ export default function createNewAccount (props) {
         {label: 'EEE', value: 'EEE'},
         {label: 'IEM', value: 'IEM'},
     ]
-    const { control, handleSubmit, reset, setValue } = useForm({ defaultValues })
+    const { control, handleSubmit, reset, setValue, errors, getValues } = useForm({ defaultValues })
     const onSubmit = data => {
         delete data.confirmPassword
         dispatch(signUp(data))
@@ -90,9 +97,15 @@ export default function createNewAccount (props) {
                         <View style={{width: '100%'}}>
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                }}
                                 render= {({ onChange, value }) => (
                                     <CustomTextInput
-                                        label='Full Name (as NRIC)'
+                                        label='Full Name (as NRIC)*'
                                         onChangeText={text=>{onChange(text)}}
                                         value={value}
                                         maxLength={40}
@@ -102,11 +115,22 @@ export default function createNewAccount (props) {
                                 name="fname"
                                 defaultValue=""
                             />
+                            {errors.fname && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="fname" /></Text>}
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                    pattern: {
+                                        value: /@ntu.edu.sg|@e.ntu.edu.sg$/,
+                                        message: 'Please use NTU email address.'
+                                    }
+                                }}
                                 render= {({ onChange, value }) => (
                                     <CustomTextInput
-                                        label='NTU Email Address'
+                                        label='NTU Email Address*'
                                         onChangeText={text=>{onChange(text)}}
                                         value={value}
                                         type='name'
@@ -115,11 +139,22 @@ export default function createNewAccount (props) {
                                 name="email"
                                 defaultValue=""
                             />
+                            {errors.email && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="email" /></Text>}
                             <Controller
                                 control={control}
+                                rules = {{
+                                    pattern: {
+                                        value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+                                        message: 'Password must contain at least 8 characters, a number, and a unique character.'
+                                    },
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    }
+                                }}
                                 render= {({ onChange, value }) => (
                                     <CustomTextInput
-                                        label='New Password'
+                                        label='New Password*'
                                         onChangeText={text=>{onChange(text)}}
                                         value={value}
                                         type='password'
@@ -128,11 +163,19 @@ export default function createNewAccount (props) {
                                 name="password"
                                 defaultValue=""
                             />
+                            {errors.password && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="password" /></Text>}
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                    validate: (value) => value === getValues('password') || 'Password doesn\'t match.',
+                                }}
                                 render= {({ onChange, value }) => (
                                     <CustomTextInput
-                                        label='Re-type New Password'
+                                        label='Re-type New Password*'
                                         onChangeText={text=>{onChange(text)}}
                                         value={value}
                                         type='password'
@@ -141,12 +184,19 @@ export default function createNewAccount (props) {
                                 name="confirmPassword"
                                 defaultValue=""
                             />
+                            {errors.confirmPassword && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="confirmPassword" /></Text>}
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    }
+                                }}
                                 render= {({ onChange, value }) => (
                                     <CustomPicker 
                                         items={years} 
-                                        label='Academic Year'
+                                        label='Academic Year*'
                                         onValueChange={item=>{onChange(item)}}
                                         value={value}
                                     />
@@ -154,12 +204,19 @@ export default function createNewAccount (props) {
                                 name="year"
                                 defaultValue=""
                             />
+                            {errors.year && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="year" /></Text>}
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    }
+                                }}
                                 render= {({ onChange, value }) => (
                                     <CustomPicker 
                                         items={faculties} 
-                                        label='Faculty'
+                                        label='Faculty*'
                                         onValueChange={item=>{onChange(item)}}
                                         value={value}
                                     />
@@ -167,6 +224,7 @@ export default function createNewAccount (props) {
                                 name="faculty"
                                 defaultValue=""
                             />
+                            {errors.faculty && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="faculty" /></Text>}
                             <View style={{flexDirection: 'row', width: '100%'}}>
                                 <View style={{paddingRight: 10, flex: 1}}>
                                     <SecondaryButton fontSize={16} text="Clear Input" pressHandler={resetHandler}/>

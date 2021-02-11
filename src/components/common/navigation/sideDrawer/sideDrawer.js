@@ -95,7 +95,7 @@ export default function SideDrawer (props) {
                             containerStyle={{marginVertical: 20}} 
                             icon={user.avatar == null ? {name: 'user-circle-o', type:'font-awesome', color: GREY[2], size: 90} : null}
                             source={user.avatar != null ? {
-                                uri: `data:image/png;base64,${user.avatar}`
+                                uri: user.avatar
                             } : null}
                         />
                         <Text style={styles.userName}>{user.fname}</Text>

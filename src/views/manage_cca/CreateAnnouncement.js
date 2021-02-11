@@ -3,10 +3,11 @@ import * as ImagePicker from 'expo-image-picker'
 import FormData from 'form-data'
 import mime from 'mime'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
-import { page, GREY, marginHorizontal } from '../../components/common/styles'
-import { SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { page, GREY, marginHorizontal, RED } from '../../components/common/styles'
+import { SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import { useForm, Controller } from 'react-hook-form'
+import { ErrorMessage } from '@hookform/error-message'
 import CustomTextInput from '../../components/common/forms/TextInput'
 import MultiLineInput from '../../components/common/forms/MultiLineInput'
 import CustomPicker from '../../components/common/forms/Picker'
@@ -53,9 +54,15 @@ export default function CreateAnnouncement (props) {
         },
         inputLabel: {
             fontFamily: 'Lato_400Regular'
-        }
+        },
+        errorMessage: {
+            color: RED[5],
+            fontSize: 11,
+            fontStyle: 'italic',
+            marginBottom: 15,
+            marginTop: -10
+        },
     })
-    //CHANGE CCA ID BELOW WITH THE REAL ONE
     const visibility = [
         {label: 'Public', value: 0},
         ...CCAs
@@ -66,7 +73,7 @@ export default function CreateAnnouncement (props) {
         organizer: '', 
         visibility: ''
     }
-    const { control, handleSubmit, reset, setValue } = useForm({ defaultValues })
+    const { control, handleSubmit, reset, setValue, errors } = useForm({ defaultValues })
     const onSubmit = async data => {
         try {
             if (data.visibility == 0) {
@@ -86,15 +93,15 @@ export default function CreateAnnouncement (props) {
                     'Content-Type': 'multipart/form-data'
                 }})
             }
-            const res2 = await axios.get(`${URL}/announcement/${res._id}/pushNotificationList`, authenticate(store.getState().main.token))
-            sendPushNotification(res2.data, res.announcementTitle)
+            // const res2 = await axios.get(`${URL}/announcement/${res._id}/pushNotificationList`, authenticate(store.getState().main.token))
+            // sendPushNotification(res2.data, res.announcementTitle)
             props.navigation.reset({
                 index: 0,
                 routes: [{'name': 'ManageCCAScreen'}]
             })
         }
         catch (err) {
-            console.log(err)
+            Alert.alert('Announcement is not created')
         }
     }
     const resetHandler = ()=> {
@@ -143,9 +150,15 @@ export default function CreateAnnouncement (props) {
                     <View style={styles.card}>
                         <Controller
                             control={control}
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: 'This is a required field.'
+                                },
+                            }}
                             render= {({ onChange, value }) => (
                                 <CustomTextInput
-                                    label='Announcement Title'
+                                    label='Announcement Title*'
                                     onChangeText={text=>{onChange(text)}}
                                     value={value}
                                     maxLength={40}
@@ -155,12 +168,19 @@ export default function CreateAnnouncement (props) {
                             name="announcementTitle"
                             defaultValue=""
                         />
+                        {errors.announcementTitle && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="announcementTitle" /></Text>}
                         <Controller
                             control={control}
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: 'This is a required field.'
+                                },
+                            }}
                             render= {({ onChange, value }) => (
                                 <CustomPicker 
                                     items={CCAs} 
-                                    label='CCA'
+                                    label='CCA*'
                                     value={value}
                                     onValueChange={item=>{onChange(item)}}
                                 />
@@ -168,11 +188,18 @@ export default function CreateAnnouncement (props) {
                             name="organizer"
                             defaultValue=""
                         />
+                        {errors.organizer && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="organizer" /></Text>}
                         <Controller
                             control={control}
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: 'This is a required field.'
+                                },
+                            }}
                             render= {({ onChange, value }) => (
                                 <MultiLineInput
-                                    label='Content'
+                                    label='Content*'
                                     onChangeText={text=>{onChange(text)}}
                                     value={value}
                                     multiline={true}
@@ -183,12 +210,19 @@ export default function CreateAnnouncement (props) {
                             name="content"
                             defaultValue=""
                         />
+                        {errors.content && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="content" /></Text>}
                         <Controller
                             control={control}
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: 'This is a required field.'
+                                },
+                            }}
                             render= {({ onChange, value }) => (
                                 <CustomPicker 
                                     items={visibility} 
-                                    label='Visibility'
+                                    label='Visibility*'
                                     value={value} 
                                     onValueChange={item=>{onChange(item)}}
                                 />
@@ -196,6 +230,7 @@ export default function CreateAnnouncement (props) {
                             name="visibility"
                             defaultValue=""
                         />
+                        {errors.visibility && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="visibility" /></Text>}
                         <ImageUploader label="Upload Image: " pickImageHandler={pickImageHandler} imageURI={imageURI} removeImageHandler={()=>setImageURI(null)} />
                         <View style={{flexDirection: 'row', width: '100%'}}>
                             <View style={{paddingRight: 10, flex: 1}}>

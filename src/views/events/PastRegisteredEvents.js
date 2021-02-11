@@ -56,7 +56,7 @@ export default function PastRegisteredEvents (props) {
         <View style={page.main}>
             <WithLoading isLoading={isLoading} loadingMessage='Loading events...'>
             {pastEvents.length == 0 ? 
-                <LoadNoItem color={GREY[3]} message={`Everything is loaded :)\n`} />
+                <LoadNoItem color={GREY[2]} message={`Everything is loaded :)\n`} />
             : 
                 <FlatList data={pastEvents}
                     keyExtractor={(item)=>item._id}

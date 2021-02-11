@@ -94,7 +94,7 @@ export default function home (props) {
             <WithLoading isLoading={isLoading} loadingMessage="Loading announcements...">
             <View style={page.main}>
                 {announcements.length == 0 ? 
-                    <NoItemLoaded color={GREY[2]} message={`Everything is loaded :)\nIt seems there's no anonuncement right now.`} />
+                    <NoItemLoaded color={GREY[2]} message={`Everything is loaded :)\nIt seems there's no announcement right now.`} />
                 : 
                     <FlatList data={announcements}
                         keyExtractor={item => item._id}

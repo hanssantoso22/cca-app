@@ -28,10 +28,9 @@ export default function ArticleDetailPage (props) {
         imageWrapper: {
             marginTop: 5,
             marginBottom: 10,
+            marginHorizontal: 30,
             alignItems: 'center',
-            flex: 1,
-            height: 300,
-            width: '100%',
+            height: 'auto',
         },
         pageTitle: {
             fontFamily: 'Lato_700Bold',
@@ -45,6 +44,8 @@ export default function ArticleDetailPage (props) {
         image: {
             flex: 1,
             resizeMode: 'contain',
+            width: '100%',
+            height: 300,
         },
         smallDetailsFont: {
             fontFamily: 'Lato_400Regular_Italic',
@@ -71,7 +72,6 @@ export default function ArticleDetailPage (props) {
         loadAnnouncement()
     },[])
     return (
-
             <SafeAreaView style={page.main}>
                 <SubNavbar title={announcement.announcementTitle} pressed={onBackPress} />
                 <WithLoading isLoading={isLoading} loadingMessage='Loading details...'>
@@ -79,7 +79,7 @@ export default function ArticleDetailPage (props) {
                     <View style={page.main}>
                         <Text style={{...font.articleTitle,...styles.pageTitle}}>{announcement.announcementTitle}</Text>
                         <View style={styles.imageWrapper}>
-                            <Image style={styles.image} source={Dummy1} />
+                            <Image style={{...styles.image, height: announcement.image==null ? 0 : 300}} source={{uri: announcement.image}} />
                         </View>
                         <View style={styles.smallDetailsWrapper}>
                             <Text style={styles.smallDetailsFont}>Published on: {moment(announcement.createdAt,`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`).format('LL')}</Text>

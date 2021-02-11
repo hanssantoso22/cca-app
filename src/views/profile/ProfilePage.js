@@ -236,7 +236,7 @@ export default function ProfilePage (props) {
                             containerStyle={{marginBottom: 20}} 
                             icon={user.avatar == null ? {name: 'user-circle-o', type:'font-awesome', color: GREY[2], size: 90} : null}
                             source={user.avatar != null ? {
-                                uri: `data:image/png;base64,${user.avatar}`
+                                uri: user.avatar
                             } : null}
                         >
                             <TouchableWithoutFeedback onPress={pickImageHandler}>

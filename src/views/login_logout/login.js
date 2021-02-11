@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from 'react'
 import { PURPLE, MING } from '../../components/common/styles'
 import { useFonts, Lato_400Regular, Lato_700Bold } from '@expo-google-fonts/lato'
 import { useForm, Controller } from 'react-hook-form'
 import PrimaryButton from '../../components/common/buttons/PrimaryBig'
 import TextInput from '../../components/common/forms/TextInputNoLabel'
-import { SafeAreaView, StyleSheet, View, Text, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { SafeAreaView, StyleSheet, View, Text, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { verifyLogin, login } from '../../redux/reducers/mainSlice'
 

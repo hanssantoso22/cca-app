@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import WithLoading from '../../components/hoc/withLoading'
 import { page, GREY, marginHorizontal, font } from '../../components/common/styles'
-import { SafeAreaView, View, Text, StyleSheet, ScrollView, FlatList } from 'react-native'
+import { SafeAreaView, View, Text, StyleSheet, ScrollView, Alert } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular, Lato_300Light } from '@expo-google-fonts/lato'
 import PrimaryButton from '../../components/common/buttons/PrimaryBig'
 import { AirbnbRating } from 'react-native-ratings';
@@ -30,10 +30,13 @@ export default function EventDetailsPage (props) {
     const [rating, setRating] = useState(null)
     const submitHandler = async () => {
         try {
+            if (rating == null) {
+                throw new Error('Please rate the event')
+            }
             const res = await axios.patch(`${URL}/users/pastEvent/${eventID}/submitReview`, {rating, comment: commentBox}, authenticate(store.getState().main.token))
             props.navigation.goBack()
         } catch (err) {
-            console.log(err)
+            Alert.alert('Review not submitted')
         }
     }
     const styles = StyleSheet.create ({

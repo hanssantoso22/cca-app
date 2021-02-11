@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import axios from 'axios'
 import {URL, authenticate, googleConfig, gapiURL, gapiKey} from '../../api/config'
 import store from '../../redux/store/store'
+import { add } from 'react-native-reanimated'
 
 const createEvent = async (token, details) => {
     try {
@@ -37,7 +38,7 @@ const createEvent = async (token, details) => {
 }
 export default function EventDetailsPage (props) {
     const [details, setDetails] = useState({})
-    const [isModalVisible, setIsModalVisible] = useState(true)
+    const [isModalVisible, setIsModalVisible] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [isLoaded] = useFonts({
         'MaterialIcons-Regular': require('../../assets/fonts/MaterialIcons-Regular.ttf'),
@@ -126,11 +127,19 @@ export default function EventDetailsPage (props) {
                     await AsyncStorage.setItem('googleOAuth', accessToken)
                     await createEvent(accessToken, details)
                 }
+                setIsModalVisible(true)
             }
             else {
-                await createEvent(gToken, details)
+                try {
+                    await createEvent(gToken, details)
+                    setIsModalVisible(true)
+                }
+                //If token expires, it will prompt users to login again. Need to test this part!
+                catch (err) {
+                    await AsyncStorage.setItem('googleOAuth', null)
+                    addToCalendarHandler()
+                }
             }
-            setIsModalVisible(true)
         } catch (err) {
             console.log(err)
         }

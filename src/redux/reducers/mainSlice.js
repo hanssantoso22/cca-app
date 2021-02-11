@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { Alert } from 'react-native'
 import { URL, authenticate } from '../../api/config'
 import axios from 'axios'
 import AsyncStorage from '@react-native-community/async-storage'
@@ -46,7 +47,7 @@ export const verifyLogin = (email,password) => async dispatch => {
             admin: data.user.role == 'admin'
         }))
     } catch (err) {
-        console.log('Login error:',err,'Email: ',email)
+        Alert.alert('Login failed!')
     }
 }
 export const signUp = (data) => async dispatch => {
@@ -59,7 +60,7 @@ export const signUp = (data) => async dispatch => {
         }))
         console.log(res)
     } catch (err) {
-        console.log(err)
+        Alert.alert('Registration failed!')
     }
 }
 export const logout = (userToken) => async dispatch => {

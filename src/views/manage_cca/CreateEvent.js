@@ -4,11 +4,12 @@ import FormData from 'form-data'
 import mime from 'mime'
 import moment from 'moment'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
-import { page, GREY, marginHorizontal } from '../../components/common/styles'
-import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native'
+import { page, GREY, RED, marginHorizontal } from '../../components/common/styles'
+import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, Alert } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import { useForm, Controller } from 'react-hook-form'
-import { useSelector, useDispatch } from 'react-redux'
+import { ErrorMessage } from '@hookform/error-message'
+import { useDispatch } from 'react-redux'
 import { changeStartDate, changeEndDate } from '../../redux/reducers/CreateEventSlice'
 import CustomTextInput from '../../components/common/forms/TextInput'
 import MultiLineInput from '../../components/common/forms/MultiLineInput'
@@ -61,8 +62,13 @@ export default function home (props) {
         inputLabel: {
             fontFamily: 'Lato_400Regular'
         },
-
-        
+        errorMessage: {
+            color: RED[5],
+            fontSize: 11,
+            fontStyle: 'italic',
+            marginBottom: 15,
+            marginTop: -10
+        },
     })
     const audience = [
         {label: 'Public', value: 0},
@@ -84,7 +90,7 @@ export default function home (props) {
         visibility: "",
         allowedParticipants: "",
     }
-    const { control, handleSubmit, reset, setValue } = useForm({
+    const { control, handleSubmit, reset, setValue, errors } = useForm({
         defaultValues
     })
     const onSubmit = async data => {
@@ -118,6 +124,7 @@ export default function home (props) {
         }
         catch (err) {
             console.log(err)
+            Alert.alert('Event is not created')
         }
     }
     const resetHandler = ()=> {
@@ -172,9 +179,15 @@ export default function home (props) {
                         <View style={{width: '100%'}}>
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                }}
                                 render= {({ onChange, value }) => (
                                     <CustomTextInput
-                                        label='Event Name'
+                                        label='Event Name*'
                                         onChangeText={text=>{onChange(text)}}
                                         value={value}
                                         maxLength={40}
@@ -184,11 +197,18 @@ export default function home (props) {
                                   name="eventName"
                                   defaultValue=""
                             />
+                            {errors.eventName && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="eventName" /></Text>}
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                }}
                                 render= {() => (
                                     <DateTimePicker
-                                        label='Start Time'
+                                        label='Start Time*'
                                         mode='datetime'
                                         value={store.getState().createEvent.startDate}
                                         onFocus={()=>setShowStartPicker(true)}
@@ -203,11 +223,18 @@ export default function home (props) {
                                   name="startTime"
                                   defaultValue={store.getState().createEvent.startDate}
                             />
+                            {errors.startTime && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="startTime" /></Text>}
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                }}
                                 render= {() => (
                                     <DateTimePicker
-                                        label='End Time'
+                                        label='End Time*'
                                         mode='datetime'
                                         minimumDate={store.getState().createEvent.startDate}
                                         maximumDate={moment(store.getState().createEvent.startDate, 'YYYY-MM-DD').add(1,'day').format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)}
@@ -223,11 +250,12 @@ export default function home (props) {
                                   name="endTime"
                                   defaultValue={store.getState().createEvent.startDate}
                             />
+                            {errors.endTime && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="endTime" /></Text>}
                             <Controller
                                 control={control}
                                 render= {({ onChange, value }) => (
                                     <CustomTextInput
-                                        label='Venue'
+                                        label='Venue (leave blank if online)'
                                         onChangeText={text=>{onChange(text)}}
                                         value={value}
                                         type='name'
@@ -238,6 +266,12 @@ export default function home (props) {
                             />
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                }}
                                 render= {({ onChange, value }) => (
                                     <CustomTextInput
                                         label='Link'
@@ -251,9 +285,15 @@ export default function home (props) {
                             />
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                }}
                                 render= {({ onChange, value }) => (
                                     <MultiLineInput
-                                        label='Content'
+                                        label='Content*'
                                         onChangeText={text=>{onChange(text)}}
                                         value={value}
                                         multiline={true}
@@ -264,12 +304,19 @@ export default function home (props) {
                                   name="description"
                                   defaultValue=""
                             />
+                            {errors.description && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="description" /></Text>}
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                }}
                                 render= {({ onChange, value }) => (
                                     <CustomPicker 
                                         items={CCAs} 
-                                        label='CCA'
+                                        label='CCA*'
                                         value={value}
                                         onValueChange={item=>{onChange(item)}}
                                     />
@@ -277,12 +324,19 @@ export default function home (props) {
                                   name="organizer"
                                   defaultValue=""
                             />
+                            {errors.organizer && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="organizer" /></Text>}
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                }}
                                 render= {({ onChange, value }) => (
                                     <CustomPicker 
                                         items={audience} 
-                                        label='Visibility'
+                                        label='Visibility*'
                                         value={value} 
                                         onValueChange={item=>{onChange(item)}}
                                     />
@@ -290,12 +344,19 @@ export default function home (props) {
                                   name="visibility"
                                   defaultValue=""
                             />
+                            {errors.visibility && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="visibility" /></Text>}
                             <Controller
                                 control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'This is a required field.'
+                                    },
+                                }}
                                 render= {({ onChange, value }) => (
                                     <CustomPicker 
                                         items={allowedParticipants} 
-                                        label='Allowed Participants'
+                                        label='Allowed Participants*'
                                         value={value} 
                                         onValueChange={item=>{onChange(item)}}
                                     />
@@ -303,6 +364,7 @@ export default function home (props) {
                                   name="allowedParticipants"
                                   defaultValue=""
                             />
+                            {errors.allowedParticipants && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="allowedParticipants" /></Text>}
                             <ImageUploader label="Upload Image: " pickImageHandler={pickImageHandler} imageURI={imageURI} removeImageHandler={()=>setImageURI(null)} />
                             <View style={{flexDirection: 'row', width: '100%'}}>
                                 <View style={{paddingRight: 10, flex: 1}}>

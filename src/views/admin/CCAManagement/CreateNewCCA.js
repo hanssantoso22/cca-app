@@ -1,11 +1,12 @@
 import React from 'react'
-import { ScrollView, StyleSheet, SafeAreaView, View, TouchableWithoutFeedback, Text, Keyboard } from 'react-native'
+import { ScrollView, StyleSheet, SafeAreaView, View, TouchableWithoutFeedback, Text, Keyboard, Alert } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
-import { page, GREY, MING, marginHorizontal } from '../../../components/common/styles'
+import { page, GREY, MING, marginHorizontal, RED } from '../../../components/common/styles'
 import SubNavbar from '../../../components/common/navigation/navbar/SubNavbar'
 import { useDispatch, useSelector } from 'react-redux'
 import { editSelectedUsers } from '../../../redux/reducers/AdminSlice'
 import { useForm, Controller } from 'react-hook-form'
+import { ErrorMessage } from '@hookform/error-message'
 import CustomTextInput from '../../../components/common/forms/TextInput'
 import MultiLineInput from '../../../components/common/forms/MultiLineInput'
 import PrimaryButton from '../../../components/common/buttons/PrimarySmall'
@@ -62,6 +63,13 @@ export default function CreateNewCCA (props) {
             color: MING[5],
             marginBottom: 10
         },
+        errorMessage: {
+            color: RED[5],
+            fontSize: 11,
+            fontStyle: 'italic',
+            marginBottom: 15,
+            marginTop: -10
+        },
         selectedItemsContainer: {
             flexDirection: 'row',
             flexWrap: 'wrap',
@@ -89,7 +97,7 @@ export default function CreateNewCCA (props) {
         managers: '',  
         color: ''
     }
-    const { control, handleSubmit, reset } = useForm({ defaultValues })
+    const { control, handleSubmit, reset, errors } = useForm({ defaultValues })
     const onSubmit = data => {
         data.managers = store.getState().admin.selectedUserIds
         async function submitData () {
@@ -98,7 +106,7 @@ export default function CreateNewCCA (props) {
                 dispatch(editSelectedUsers({selectedUsers: [], selectedUserIds: []}))
                 props.navigation.goBack()
             } catch (err) {
-                console.log(err)
+                Alert.alert('CCA is not created.')
             }
         }
         submitData()
@@ -119,9 +127,15 @@ export default function CreateNewCCA (props) {
                     <View style={styles.card}>
                         <Controller
                             control={control}
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: 'This is a required field.'
+                                },
+                            }}
                             render= {({ onChange, value }) => (
                                 <CustomTextInput
-                                    label='CCA Name'
+                                    label='CCA Name*'
                                     onChangeText={text=>{onChange(text)}}
                                     value={value}
                                     type='name'
@@ -130,11 +144,18 @@ export default function CreateNewCCA (props) {
                             name="ccaName"
                             defaultValue=""
                         />
+                        {errors.ccaName && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="ccaName" /></Text>}
                         <Controller
                             control={control}
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: 'This is a required field.'
+                                },
+                            }}
                             render= {({ onChange, value }) => (
                                 <MultiLineInput
-                                    label='Description'
+                                    label='Description*'
                                     onChangeText={text=>{onChange(text)}}
                                     value={value}
                                     multiline={true}
@@ -145,6 +166,7 @@ export default function CreateNewCCA (props) {
                             name="description"
                             defaultValue=""
                         />
+                        {errors.description && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="description" /></Text>}
                         <View style={{flexDirection: 'row'}}>
                             <Text style={styles.inputLabel}>Managers: &nbsp;&nbsp;</Text>
                             <TouchableWithoutFeedback onPress={selectManagersHandler}>
@@ -158,6 +180,12 @@ export default function CreateNewCCA (props) {
                         </View>
                         <Controller
                             control={control}
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: 'This is a required field.'
+                                },
+                            }}
                             render= {({ onChange, value }) => (
                                 <ColorPalette 
                                     onChange={color => onChange(color)}
@@ -167,6 +195,7 @@ export default function CreateNewCCA (props) {
                             name="color"
                             defaultValue=""
                         />
+                        {errors.color && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="color" /></Text>}
                         <View style={{flexDirection: 'row', width: '100%'}}>
                             <View style={{paddingRight: 10, flex: 1}}>
                                 <SecondaryButton fontSize={16} text="Clear Input" pressHandler={resetHandler}/>

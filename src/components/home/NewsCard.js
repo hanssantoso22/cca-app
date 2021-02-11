@@ -45,8 +45,8 @@ export default function NewsCard (props) {
         },  
         image: {
             flex: 1,
-            height: null,
-            width: null,
+            height: 150,
+            width: '100%',
             resizeMode: 'cover',
             borderTopLeftRadius: 15,
             borderTopRightRadius: 15,
@@ -73,12 +73,12 @@ export default function NewsCard (props) {
         <TouchableWithoutFeedback onPress={props.pressed}>
             <View style={styles.card}>
                 <View style={styles.thumbnail}>
-                    {props.image == null ? 
+                    {props.imgSource == null ? 
                         <View style={styles.filler}>
                             <Text style={styles.fillerLogo}>library_books</Text>
                         </View>
                     : 
-                        <Image style={styles.image} source={props.image} />
+                        <Image style={styles.image} source={{uri: props.imgSource}} />
                     }
                 </View>
                 <View style={styles.description}>
