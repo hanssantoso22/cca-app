@@ -3,7 +3,7 @@ import { GREY, page } from '../../components/common/styles'
 import Modal from 'react-native-modal';
 import { View, Text, StyleSheet, Image } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
-import { AppLoading } from 'expo'
+
 import PrimaryButton from '../../components/common/buttons/PrimaryBig'
 import CheckIcon from '../../assets/common/icons/check_circle.png'
 
@@ -39,28 +39,23 @@ const createNewModal = ({ isModalVisible, closeModal, submitHandler }) => {
             color: GREY[4],
         },
     })
-    if (!isLoaded) {
-        return (<AppLoading />)
-    }
-    else {
-        return (
-            <Modal isVisible={isModalVisible} onBackdropPress={closeModal}>
-                <View style={{...page.modal, paddingHorizontal: 25}}>
-                    <Text style={styles.title}>Done!</Text>
-                    <View style={styles.iconWrapper}>
-                        <Image style={styles.checkIcon} source={CheckIcon} />
-                    </View>
-                    <View style={styles.captionWrapper}>
-                        <Text style={styles.captionText}>
-                            Event has been added to your calendar!
-                        </Text>
-                    </View>
-                    <View style={{marginTop:25, marginBottom: 10}}>
-                        <PrimaryButton text="Back to Reminders page" fontSize={16} pressHandler={submitHandler}/> 
-                    </View>
-                </View>    
-            </Modal>
-        )
-    }   
+    return (isLoaded &&
+        <Modal isVisible={isModalVisible} onBackdropPress={closeModal}>
+            <View style={{...page.modal, paddingHorizontal: 25}}>
+                <Text style={styles.title}>Done!</Text>
+                <View style={styles.iconWrapper}>
+                    <Image style={styles.checkIcon} source={CheckIcon} />
+                </View>
+                <View style={styles.captionWrapper}>
+                    <Text style={styles.captionText}>
+                        Event has been added to your calendar!
+                    </Text>
+                </View>
+                <View style={{marginTop:25, marginBottom: 10}}>
+                    <PrimaryButton text="Back to Reminders page" fontSize={16} pressHandler={submitHandler}/> 
+                </View>
+            </View>    
+        </Modal>
+    )
 }
 export default createNewModal

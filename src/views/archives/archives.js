@@ -10,12 +10,11 @@ import PastCreatedEvents from './PastCreatedEvents'
 
 export default function Archives (props) {
     const [isLoaded] = useFonts({Lato_700Bold})
-    const loaded = isLoaded
     const EventsTabs = createMaterialTopTabNavigator()
     const onMenuPress = () => {
         props.navigation.openDrawer()
     }
-    return (
+    return (isLoaded &&
         <SafeAreaView style={page.main}>
             <Navbar title="Archives" pressed={onMenuPress} />
             <EventsTabs.Navigator 

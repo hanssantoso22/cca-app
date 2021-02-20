@@ -18,7 +18,7 @@ const LoadingIndicator = ({ message }) => {
             color: PURPLE[5]
         }
     })
-    return (
+    return (isLoaded &&
         <View style={styles.container}>
             <ActivityIndicator size="large" color={PURPLE[5]} />
             <Text style={styles.loadingMessage}>{message}</Text>

@@ -15,7 +15,6 @@ import store from '../../redux/store/store'
 export default function reminders (props) {
     const [importantDates, setImportantDates] = useState({})
     const [isLoaded] = useFonts({Lato_400Regular, Lato_700Bold, Lato_400Regular_Italic})
-    const loaded = isLoaded
     const onMenuPress = () => {
         props.navigation.openDrawer()
     }
@@ -114,7 +113,7 @@ export default function reminders (props) {
         }
         loadReminders()
     },[])
-    return (
+    return (isLoaded &&
         <SafeAreaView style={page.main}>
             <Navbar title="Reminders" pressed={onMenuPress}/>
             <View style={{...page.main, paddingHorizontal: marginHorizontal}}>

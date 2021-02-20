@@ -14,7 +14,6 @@ import ManageMemberScreen from './ManageMembers'
 
 export default function ManageCCA (props) {
     const [isLoaded] = useFonts({Lato_700Bold})
-    const loaded = isLoaded
     const modalVisibility = useSelector(isModalOpened)
     const dispatch = useDispatch()
     const onMenuPress = () => {
@@ -34,7 +33,7 @@ export default function ManageCCA (props) {
         dispatch(selectItemInModal(null))
     } 
     const ManageCCATabs = createMaterialTopTabNavigator()
-    return (
+    return (isLoaded &&
         <SafeAreaView style={page.main}>
             <Navbar title="Manage CCA" pressed={onMenuPress} add={openAddModal}/>
             <ManageCCATabs.Navigator 

@@ -19,7 +19,6 @@ export default function ArticleDetailPage (props) {
         Lato_400Regular_Italic,
         Lato_700Bold
     })
-    const loaded = isLoaded
     const onBackPress = () => {
         props.navigation.goBack()
     }
@@ -71,7 +70,7 @@ export default function ArticleDetailPage (props) {
         }
         loadAnnouncement()
     },[])
-    return (
+    return (isLoaded &&
             <SafeAreaView style={page.main}>
                 <SubNavbar title={announcement.announcementTitle} pressed={onBackPress} />
                 <WithLoading isLoading={isLoading} loadingMessage='Loading details...'>

@@ -19,7 +19,6 @@ export default function createNewAccount (props) {
         Lato_400Regular,
         Lato_700Bold
     })
-    const loaded = isLoaded
     const dispatch = useDispatch()
     const onBackPress = () => {
         props.navigation.goBack()
@@ -86,7 +85,7 @@ export default function createNewAccount (props) {
         setValue("faculty","")
         console.log('reset')
     }
-    return (
+    return (isLoaded &&
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={page.main}>
                 <SubNavbar title='Create New Account' pressed={onBackPress} />
@@ -110,6 +109,7 @@ export default function createNewAccount (props) {
                                         value={value}
                                         maxLength={40}
                                         type='name'
+                                        autoCapitalize='words'
                                     />
                                   )}
                                 name="fname"

@@ -16,7 +16,6 @@ export default function MembersTab (props) {
     const [isLoaded] = useFonts({
         'MaterialIcons-Regular': require('../../assets/fonts/MaterialIcons-Regular.ttf')
     })
-    const loaded = isLoaded
     const [isLoading, setIsLoading] = useState(false)
     const [members, setMembers] = useState([])
     const [managedCCA, setManagedCCA] = useState([])
@@ -86,7 +85,7 @@ export default function MembersTab (props) {
             setMembers([])
         }
     }, [selectedCCAid])
-    return (
+    return (isLoaded &&
         <View style={page.main}>
             <View style={styles.pickerContainer}>
                 <CustomPicker items = {managedCCA}

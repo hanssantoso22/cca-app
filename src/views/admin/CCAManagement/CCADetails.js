@@ -30,7 +30,6 @@ export default function CCADetails (props) {
     const [showResetModal, setShowResetModal] = useState(false) //reset managers
     const [showResetMemberModal, setShowResetMemberModal] = useState(false) //reset members
     const [showDeleteModal, setShowDeleteModal] = useState(false)
-    const loaded = isLoaded
     const { _id } = props.route.params
     const dispatch = useDispatch()
     const styles = StyleSheet.create({
@@ -208,7 +207,7 @@ export default function CCADetails (props) {
         }
         loadCCA()
     }, [reset])
-    return (
+    return (isLoaded &&
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <SafeAreaView style={page.main}>
             <SubNavbar title={CCA.ccaName} pressed={onBackPress} />

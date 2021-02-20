@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { useFonts, Lato_400Regular } from '@expo-google-fonts/lato'
 import { PURPLE, GREY } from '../../styles'
 import { activeScreen } from '../../../../redux/store/store'
-import { AppLoading } from 'expo'
+
 import { useSelector } from 'react-redux'
 
 export default function ItemCard (props) {
@@ -42,23 +42,17 @@ export default function ItemCard (props) {
             backgroundColor: 'white'
         }
     })
-    
-    if (!isLoaded) {
-        return (<AppLoading />)
-    }
-    else {
-        return (
-            <TouchableWithoutFeedback onPress={props.pressed}>
-                <View style={styles.card}>
-                    <View style={{flex: 2, alignItems: 'center'}}>
-                        <Text style={props.navScreen == active ? styles.iconActive : styles.iconInactive}>{props.icon}</Text>
-                    </View>
-                    <View style={{flex: 6, justifyContent: 'center'}}>
-                        <Text style={props.navScreen == active ? styles.activeFont : styles.inactiveFont}>{props.menu}</Text>
-                    </View>
+    return (isLoaded &&
+        <TouchableWithoutFeedback onPress={props.pressed}>
+            <View style={styles.card}>
+                <View style={{flex: 2, alignItems: 'center'}}>
+                    <Text style={props.navScreen == active ? styles.iconActive : styles.iconInactive}>{props.icon}</Text>
                 </View>
-            </TouchableWithoutFeedback>
-            
-        )
-    } 
+                <View style={{flex: 6, justifyContent: 'center'}}>
+                    <Text style={props.navScreen == active ? styles.activeFont : styles.inactiveFont}>{props.menu}</Text>
+                </View>
+            </View>
+        </TouchableWithoutFeedback>
+        
+    )
 }

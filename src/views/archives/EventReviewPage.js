@@ -19,7 +19,6 @@ export default function PastEventReviewPage (props) {
         Lato_400Regular,
         Lato_700Bold
     })
-    const loaded = isLoaded
     const onBackPress = () => {
         props.navigation.goBack()
     }
@@ -63,7 +62,7 @@ export default function PastEventReviewPage (props) {
         }
         loadEvent()
     },[])
-    return (
+    return (isLoaded &&
         <SafeAreaView style={page.main}>
             <SubNavbar title={event.eventName} pressed={onBackPress} />
                 <WithLoading isLoading={isLoading} loadingMessage='Loading reviews...'>

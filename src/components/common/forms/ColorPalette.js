@@ -9,7 +9,6 @@ export default function ({ onChange, value }) {
         Lato_400Regular,
         'MaterialIcons-Regular': require('../../../assets/fonts/MaterialIcons-Regular.ttf')
     })
-    const loaded = isLoaded
     const [showPicker, setShowPicker] = useState(false)
     const styles = StyleSheet.create({
         inputLabel: {
@@ -34,7 +33,7 @@ export default function ({ onChange, value }) {
         },
     })
     const colors = ['#039be5','#7986cb','#33b679','#8e24aa','#e67c73','#f6c026','#f5511d','#616161','#3f51b5','#0b8043','#d60000']
-    return (
+    return (isLoaded &&
         <View style={styles.container}>
             <View style={{flexDirection: 'row'}}>
                 <Text style={styles.inputLabel}>Color (for calendar view):&nbsp;&nbsp;</Text>

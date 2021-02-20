@@ -27,7 +27,6 @@ export default function CreateAnnouncement (props) {
         Lato_400Regular,
         Lato_700Bold
     })
-    const loaded = isLoaded
     const [isLoading, setIsLoading] = useState(true)
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [imageURI, setImageURI] = useState(null)
@@ -194,7 +193,7 @@ export default function CreateAnnouncement (props) {
         }
         loadManagedCCA()
     }, [reset])
-    return (
+    return (isLoaded &&
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={page.main}>
                 <SubNavbar title='Edit Announcement' pressed={onBackPress} />

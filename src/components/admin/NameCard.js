@@ -12,7 +12,6 @@ export default function NameCard ({ onPress, name, faculty, year, checked }) {
         Lato_700Bold,
         'MaterialIcons-Regular': require('../../assets/fonts/MaterialIcons-Regular.ttf')
     })
-    const loaded = isLoaded
     const styles = StyleSheet.create ({
         card: {
             borderRadius: 15,
@@ -58,7 +57,7 @@ export default function NameCard ({ onPress, name, faculty, year, checked }) {
             height: 30
         }
     })
-    return (
+    return (isLoaded &&
         <TouchableWithoutFeedback onPress={onPress}>
             <View style={checked ? {...styles.card, ...styles.cardChecked} : styles.card}>
                 <View style={styles.iconContainer}>

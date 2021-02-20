@@ -3,11 +3,10 @@ import { Text, StyleSheet, TextInput, View } from 'react-native'
 import { GREY, MING } from '../styles'
 import { useFonts, Lato_400Regular} from '@expo-google-fonts/lato'
 
-export default function CustomTextInput ( { label, onChangeText, value, maxLength, type, customStyle, editable } ) {
+export default function CustomTextInput ( { label, onChangeText, value, maxLength, type, customStyle, editable, autoCapitalize } ) {
     const [isLoaded] = useFonts ({
         Lato_400Regular
     })
-    const loaded = isLoaded
     const [containerBorderColor, setContainerBorderColor] = useState(GREY[2])
     const styles = StyleSheet.create({
         inputLabel: {
@@ -35,7 +34,7 @@ export default function CustomTextInput ( { label, onChangeText, value, maxLengt
     const onFocus = () => {
         setContainerBorderColor(MING[6])
     }
-    return (
+    return (isLoaded &&
         <View>
             <Text style={styles.inputLabel}>{label}</Text>
             <TextInput 
@@ -48,6 +47,7 @@ export default function CustomTextInput ( { label, onChangeText, value, maxLengt
                 onFocus={onFocus}
                 secureTextEntry={type=='password'}
                 editable={editable}
+                autoCapitalize={autoCapitalize}
             />
         </View>
     )

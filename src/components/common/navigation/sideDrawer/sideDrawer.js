@@ -6,7 +6,7 @@ import ItemCard from './itemCard'
 import { navigateToPage, logout } from '../../../../redux/reducers/mainSlice'
 import { useDispatch } from 'react-redux'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
-import { AppLoading } from 'expo'
+
 import { MING, GREY } from '../../styles'
 import axios from 'axios'
 import {URL, authenticate} from '../../../../api/config'
@@ -81,30 +81,25 @@ export default function SideDrawer (props) {
         }
         loadUser() 
     },[user])
-    if (!isLoaded) {
-        return (<AppLoading />)
-    }
-    else {
-        return (
-            <SafeAreaView>
-                <TouchableWithoutFeedback onPress={navigateToScreen.bind(this,'ProfileScreen')}>
-                    <View style={styles.nameContainer}>
-                        <Avatar 
-                            rounded 
-                            size={110} 
-                            containerStyle={{marginVertical: 20}} 
-                            icon={user.avatar == null ? {name: 'user-circle-o', type:'font-awesome', color: GREY[2], size: 90} : null}
-                            source={user.avatar != null ? {
-                                uri: user.avatar
-                            } : null}
-                        />
-                        <Text style={styles.userName}>{user.fname}</Text>
-                    </View>
-                </TouchableWithoutFeedback>
-                <View>
-                    {renderFlatList()}
+    return (isLoaded &&
+        <SafeAreaView>
+            <TouchableWithoutFeedback onPress={navigateToScreen.bind(this,'ProfileScreen')}>
+                <View style={styles.nameContainer}>
+                    <Avatar 
+                        rounded 
+                        size={110} 
+                        containerStyle={{marginVertical: 20}} 
+                        icon={user.avatar == null ? {name: 'user-circle-o', type:'font-awesome', color: GREY[2], size: 90} : null}
+                        source={user.avatar != null ? {
+                            uri: user.avatar
+                        } : null}
+                    />
+                    <Text style={styles.userName}>{user.fname}</Text>
                 </View>
-            </SafeAreaView>
-        )
-    }
+            </TouchableWithoutFeedback>
+            <View>
+                {renderFlatList()}
+            </View>
+        </SafeAreaView>
+    )
 }

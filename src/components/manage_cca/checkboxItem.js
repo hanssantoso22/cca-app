@@ -2,7 +2,7 @@ import React from 'react'
 import { MING, GREY, checkboxCard } from '../common/styles'
 import { View, Text, StyleSheet, Image, TouchableWithoutFeedback } from 'react-native'
 import { useFonts, Lato_400Regular } from '@expo-google-fonts/lato'
-import { AppLoading } from 'expo'
+
 import CheckedIcon from '../../assets/common/icons/checked.png'
 import UncheckedIcon from '../../assets/common/icons/unchecked.png'
 
@@ -53,26 +53,21 @@ const checkboxItem = (props) => {
             height: 30,
         }
     })
-    if (!isLoaded) {
-        return (<AppLoading />)
-    }
-    else {
-        return (
-            <TouchableWithoutFeedback onPress={props.selected}>
-                <View style={props.active ? checkboxCard.active : checkboxCard.inactive}>
-                    <View style={styles.smallWrapper}>
-                        <Text style={props.active ? styles.iconActive : styles.iconInactive}>{props.icon}</Text>
-                    </View>
-                    <View style={styles.bigWrapper}>
-                        <Text style={props.active ? styles.activeFont : styles.inactiveFont}>{props.label}</Text>
-                    </View>
-                    <View style={styles.smallWrapper}>
-                        <Image style={styles.checkIcon} source={props.active ? CheckedIcon : UncheckedIcon}/>
-                    </View>
+    return (isLoaded &&
+        <TouchableWithoutFeedback onPress={props.selected}>
+            <View style={props.active ? checkboxCard.active : checkboxCard.inactive}>
+                <View style={styles.smallWrapper}>
+                    <Text style={props.active ? styles.iconActive : styles.iconInactive}>{props.icon}</Text>
                 </View>
-            </TouchableWithoutFeedback>
-        )
-    }   
+                <View style={styles.bigWrapper}>
+                    <Text style={props.active ? styles.activeFont : styles.inactiveFont}>{props.label}</Text>
+                </View>
+                <View style={styles.smallWrapper}>
+                    <Image style={styles.checkIcon} source={props.active ? CheckedIcon : UncheckedIcon}/>
+                </View>
+            </View>
+        </TouchableWithoutFeedback>
+    )
 }
 
 export default checkboxItem

@@ -32,7 +32,6 @@ export default function home (props) {
         Lato_400Regular,
         Lato_700Bold
     })
-    const loaded = isLoaded
     const dispatch = useDispatch()
     const [isLoading, setIsLoading] = useState(true)
     const [CCAs, setCCAs] = useState([])
@@ -239,7 +238,7 @@ export default function home (props) {
         }
         loadManagedCCA()
     }, [reset])
-    return (
+    return (isLoaded &&
         <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss(); setShowStartPicker(false); setShowEndPicker(false)}}>
             <SafeAreaView style={page.main}>
                 <SubNavbar title='Edit Event' pressed={onBackPress} />

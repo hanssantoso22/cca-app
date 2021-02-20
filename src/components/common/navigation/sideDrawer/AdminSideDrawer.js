@@ -6,7 +6,7 @@ import ItemCard from './itemCard'
 import { navigateToPage, logout } from '../../../../redux/reducers/mainSlice'
 import { useDispatch } from 'react-redux'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
-import { AppLoading } from 'expo'
+
 import { GREY } from '../../styles'
 import store from '../../../../redux/store/store'
 
@@ -56,19 +56,14 @@ export default function SideDrawer (props) {
             lineHeight: 30,
         }
     })
-    if (!isLoaded) {
-        return (<AppLoading />)
-    }
-    else {
-        return (
-            <SafeAreaView>
-                <Avatar rounded size="large" />
-                <Accessory />
-                <View style={styles.nameContainer}><Text style={styles.userName}>Admin</Text></View>
-                <View>
-                    {renderFlatList()}
-                </View>
-            </SafeAreaView>
-        )
-    }
+    return (isLoaded &&
+        <SafeAreaView>
+            <Avatar rounded size="large" />
+            <Accessory />
+            <View style={styles.nameContainer}><Text style={styles.userName}>Admin</Text></View>
+            <View>
+                {renderFlatList()}
+            </View>
+        </SafeAreaView>
+    )
 }

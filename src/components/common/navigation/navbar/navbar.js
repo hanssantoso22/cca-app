@@ -2,7 +2,7 @@ import React from 'react'
 import { PURPLE } from '../../styles'
 import { StyleSheet, View, Text } from 'react-native'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
-import { AppLoading } from 'expo'
+
 
 export default function navbar (props) {
     const [isLoaded] = useFonts({
@@ -42,22 +42,17 @@ export default function navbar (props) {
             textAlign: 'center'
         }
     })
-    if (!isLoaded) {
-        return <AppLoading />
-    }
-    else {
-        return (
-            <View style={styles.container}>
-                <View style={styles.padding}>
-                    <Text style={styles.burgerButton} onPress={props.pressed}>menu</Text>
-                </View>
-                <View style={styles.titleWrapper}>
-                    <Text style={styles.title}>{props.title}</Text>
-                </View>
-                <View style={styles.padding}>
-                    {props.title=='Manage CCA' ?<Text style={styles.addButton} onPress={props.add}>add</Text>:null}
-                </View>
+    return (isLoaded &&
+        <View style={styles.container}>
+            <View style={styles.padding}>
+                <Text style={styles.burgerButton} onPress={props.pressed}>menu</Text>
             </View>
-        )
-    }
+            <View style={styles.titleWrapper}>
+                <Text style={styles.title}>{props.title}</Text>
+            </View>
+            <View style={styles.padding}>
+                {props.title=='Manage CCA' ?<Text style={styles.addButton} onPress={props.add}>add</Text>:null}
+            </View>
+        </View>
+    )
 }

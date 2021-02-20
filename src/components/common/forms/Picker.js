@@ -10,7 +10,6 @@ export default function PickerInput ( { label, onValueChange, items, value } ) {
     const [isLoaded] = useFonts ({
         Lato_400Regular
     })
-    const loaded = isLoaded
     const pickerSelectStyles = StyleSheet.create({
         inputIOS: {
             fontSize: 16,
@@ -32,7 +31,7 @@ export default function PickerInput ( { label, onValueChange, items, value } ) {
             marginBottom: 5
         },
     })
-    return (
+    return (isLoaded &&
         <View>
             <Text style={styles.inputLabel}>{label}</Text>
             <Picker

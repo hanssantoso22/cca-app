@@ -9,7 +9,6 @@ export default function ReviewCard ({ rating, additionalComment }) {
         Lato_400Regular,
         Lato_700Bold
     })
-    const loaded = isLoaded
     const styles = StyleSheet.create ({
         card: {
             borderRadius: 15,
@@ -40,7 +39,7 @@ export default function ReviewCard ({ rating, additionalComment }) {
         }
         
     })
-    return (
+    return (isLoaded &&
         <View style={styles.card}>
             <View style={styles.starContainer}>
                 <Text style={{...styles.label, marginTop:4}}>Rating:         </Text>

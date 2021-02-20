@@ -21,7 +21,6 @@ export default function (props) {
     //To store users based on keyword search
     const [filteredUsers, setFilteredUsers] = useState([])
     const [keyword, setKeyword] = useState('')
-    const loaded = isLoaded
     const styles = StyleSheet.create({
         selectedItemsContainer: {
             flexDirection: 'row',
@@ -83,7 +82,7 @@ export default function (props) {
         }
         loadUsers()
     }, [])
-    return (
+    return (isLoaded &&
         <SafeAreaView style={page.main}>
             <SubNavbar title='Select Managers' pressed={onBackPress} back="Done"/>
             <View style={page.main}>

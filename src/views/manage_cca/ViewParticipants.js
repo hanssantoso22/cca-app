@@ -14,7 +14,6 @@ export default function home (props) {
         Lato_400Regular,
         Lato_700Bold
     })
-    const loaded = isLoaded
     const [participants, setParticipants] = useState([])
     const onBackPress = () => {
         props.navigation.goBack()
@@ -57,7 +56,7 @@ export default function home (props) {
         }
         loadParticipants()
     }, [])
-    return (
+    return (isLoaded &&
         <SafeAreaView style={page.main}>
             <SubNavbar title={`View Participants \(${participants.length}\)`} pressed={onBackPress} />
             <View style={{paddingTop: marginHorizontal}}>

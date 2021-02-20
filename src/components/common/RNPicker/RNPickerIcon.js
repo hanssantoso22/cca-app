@@ -17,8 +17,7 @@ export default function dropDownIcon (props) {
             paddingTop: 8,
         }
     })
-    const loaded = isLoaded
-    return (
+    return (isLoaded &&
         <View style={styles.materialIconContainer}>
             <Text style={styles.materialIcon}>arrow_drop_down</Text>
         </View>

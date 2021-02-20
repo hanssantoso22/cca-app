@@ -13,7 +13,6 @@ import store from '../../../redux/store/store'
 
 export default function UserList (props) {
     const [isLoaded] = useFonts({Lato_700Bold, Lato_400Regular})
-    const loaded = isLoaded
     const { _id } = props.route.params
     const [isLoading, setIsLoading] = useState(true)
     const [user, setUser] = useState({})
@@ -98,7 +97,7 @@ export default function UserList (props) {
         }
         loadUser() 
     },[])
-    return (
+    return (isLoaded &&
         <SafeAreaView style={page.main}>
             <SubNavbar title={user.fname} pressed={onBackPress} />
             <WithLoading isLoading={isLoading} loadingMessage='Loading details...'>

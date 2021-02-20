@@ -4,7 +4,8 @@ import { useFonts, Lato_400Regular, Lato_700Bold } from '@expo-google-fonts/lato
 import { useForm, Controller } from 'react-hook-form'
 import PrimaryButton from '../../components/common/buttons/PrimaryBig'
 import TextInput from '../../components/common/forms/TextInputNoLabel'
-import { SafeAreaView, StyleSheet, View, Text, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native'
+import AppLogo from '../../assets/common/logo.png'
+import { SafeAreaView, StyleSheet, View, Text, TouchableWithoutFeedback, Keyboard, Image } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { verifyLogin, login } from '../../redux/reducers/mainSlice'
 
@@ -13,7 +14,6 @@ export default function Login (props) {
         Lato_400Regular,
         Lato_700Bold
     })
-    const loaded = isLoaded
     const dispatch = useDispatch()
     const { control, handleSubmit } = useForm()
     const onSubmit = async data => {
@@ -60,11 +60,17 @@ export default function Login (props) {
             letterSpacing: 2,
             marginTop: 20,
             textAlign: 'center',
+        },
+        appLogo: {
+            width: 90,
+            height: 90,
+            marginBottom: 30,
         }
     })
-    return (
+    return (isLoaded &&
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={styles.mainContainer}>
+                <Image source={AppLogo} style={styles.appLogo} />
                 <View style={styles.wrapper}>
                     <Controller
                         control={control}

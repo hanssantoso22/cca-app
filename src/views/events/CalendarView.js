@@ -13,7 +13,6 @@ import store from '../../redux/store/store'
 export default function EventsCalendarView (props) {
     const [importantDates, setImportantDates] = useState({})
     const [isLoaded] = useFonts({Lato_400Regular, Lato_700Bold, Lato_400Regular_Italic})
-    const loaded = isLoaded
     const styles = StyleSheet.create({
         calendar: {
           marginBottom: 10,
@@ -110,7 +109,7 @@ export default function EventsCalendarView (props) {
         loadEvents()
     })
 
-    return (
+    return (isLoaded &&
         <View style={{...page.main, paddingHorizontal: marginHorizontal}}>
             <Agenda
                     style={styles.calendar}

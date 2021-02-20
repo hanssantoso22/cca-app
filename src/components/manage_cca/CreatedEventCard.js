@@ -10,7 +10,6 @@ export default function CreatedEventCard (props) {
         Lato_700Bold,
         'MaterialIcons-Regular': require('../../assets/fonts/MaterialIcons-Regular.ttf')
     })
-    const loaded = isLoaded
     const styles = StyleSheet.create ({
         card: {
             borderRadius: 15,
@@ -54,7 +53,7 @@ export default function CreatedEventCard (props) {
             color: GREY[2],
         }
     })
-    return (
+    return (isLoaded &&
         <View style={styles.card}>
             <View style={styles.eventNameContainer}>
                 <Text style={styles.eventName} ellipsizeMode='tail' numberOfLines={1} >{props.name}</Text>

@@ -9,7 +9,6 @@ export default function DateTimePickerInput ( { label, onChangeText, onChangePic
     const [isLoaded] = useFonts ({
         Lato_400Regular
     })
-    const loaded = isLoaded
     const screenWidth = Dimensions.get('window').width
     const [containerBorderColor, setContainerBorderColor] = useState(GREY[2])
     const styles = StyleSheet.create({
@@ -37,7 +36,7 @@ export default function DateTimePickerInput ( { label, onChangeText, onChangePic
         const normalDate = moment(dateString).format('DD MMMM YYYY hh:mm A')
         return normalDate
     }
-    return (
+    return (isLoaded &&
         <View>
             <Text style={styles.inputLabel}>{label}</Text>
                 <TextInput 

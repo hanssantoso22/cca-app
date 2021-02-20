@@ -24,7 +24,6 @@ export default function CreateAnnouncement (props) {
         Lato_400Regular,
         Lato_700Bold
     })
-    const loaded = isLoaded
     const [imageURI, setImageURI] = useState(null)
     const [CCAs, setCCAs] = useState([])
     const onBackPress = () => {
@@ -140,7 +139,7 @@ export default function CreateAnnouncement (props) {
         }
         loadManagedCCA()
     }, [])
-    return (
+    return (isLoaded &&
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={page.main}>
                 <SubNavbar title='Create Announcement' pressed={onBackPress} />

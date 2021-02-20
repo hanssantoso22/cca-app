@@ -3,7 +3,7 @@ import { GREY, page, button} from '../../components/common/styles'
 import Modal from 'react-native-modal';
 import { View, Text, StyleSheet } from 'react-native'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
-import { AppLoading } from 'expo'
+
 import { FlatList, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import CheckBoxItem from '../../components/manage_cca/checkboxItem'
 import PrimaryButton from '../../components/common/buttons/PrimaryBig'
@@ -41,26 +41,21 @@ const createNewModal = (props) => {
             dispatch(selectItemInModal('Announcement'))
         }
     }
-    if (!isLoaded) {
-        return (<AppLoading />)
-    }
-    else {
-        return (
-            <Modal isVisible={props.isModalVisible} onBackdropPress={props.closeModal}>
-                <View style={page.modal}>
-                    <Text style={styles.title}>I wanna create a new...</Text>
-                    <FlatList data={data}
-                                keyExtractor={item=>item.id}
-                                renderItem={({ item }) => (
-                                        <CheckBoxItem icon={item.icon} label={item.label} active={item.selected} selected={selectItem.bind(this,item.label)} />
-                                        )}
-                    />
-                    <View style={{marginTop:5}}>
-                        <PrimaryButton text="Create" fontSize={20} pressHandler={props.submit.bind(this,checked)} /> 
-                    </View>
-                </View>    
-            </Modal>
-        )
-    }   
+    return (isLoaded &&
+        <Modal isVisible={props.isModalVisible} onBackdropPress={props.closeModal}>
+            <View style={page.modal}>
+                <Text style={styles.title}>I wanna create a new...</Text>
+                <FlatList data={data}
+                            keyExtractor={item=>item.id}
+                            renderItem={({ item }) => (
+                                    <CheckBoxItem icon={item.icon} label={item.label} active={item.selected} selected={selectItem.bind(this,item.label)} />
+                                    )}
+                />
+                <View style={{marginTop:5}}>
+                    <PrimaryButton text="Create" fontSize={20} pressHandler={props.submit.bind(this,checked)} /> 
+                </View>
+            </View>    
+        </Modal>
+    )   
 }
 export default createNewModal

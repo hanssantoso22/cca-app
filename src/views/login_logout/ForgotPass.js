@@ -1,6 +1,6 @@
 import React from 'react';
 import { marginHorizontal, PURPLE } from '../../components/common/styles'
-import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Alert } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import CustomTextInput from '../../components/common/forms/TextInput'
@@ -15,7 +15,6 @@ export default function ForgotPass (props) {
         Lato_400Regular,
         Lato_700Bold
     })
-    const loaded = isLoaded
     const onBackPress = () => {
         props.navigation.goBack()
     }
@@ -36,16 +35,16 @@ export default function ForgotPass (props) {
     const { control, handleSubmit } = useForm()
     const onSubmit = async data => {
         try {
-            // const res = await axios.post(`${URL}/users/forget`, data)
-            props.navigation.navigate('ForgotPassVerificationScreen')
+            const res = await axios.post(`${URL}/users/forget`, data)
+            props.navigation.navigate('ForgotPassVerificationScreen', {email: data.email})
         } catch (err) {
-            console.log(err)
+            Alert.alert('Email not found')
         }
     }
     const backHandler = () => {
         props.navigation.goBack()
     }
-    return (
+    return (isLoaded &&
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={{height: '100%'}}>
                 <View style={styles.mainPage} >

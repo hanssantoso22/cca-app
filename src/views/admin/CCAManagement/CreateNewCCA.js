@@ -23,7 +23,6 @@ export default function CreateNewCCA (props) {
         Lato_400Regular,
         Lato_700Bold
     })
-    const loaded = isLoaded
     const dispatch = useDispatch()
     const onBackPress = () => {
         props.navigation.goBack()
@@ -117,7 +116,7 @@ export default function CreateNewCCA (props) {
         console.log('reset')
     }
 
-    return (
+    return (isLoaded &&
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={page.main}>
                 <SubNavbar title='Create New CCA' pressed={onBackPress} />

@@ -21,7 +21,6 @@ export default function EventDetailsPage (props) {
         Lato_400Regular,
         Lato_700Bold
     })
-    const loaded = isLoaded
     const onBackPress = () => {
         props.navigation.goBack()
     }
@@ -122,7 +121,7 @@ export default function EventDetailsPage (props) {
         loadEventDetails()
     }, [])
 
-    return (
+    return (isLoaded &&
         <SafeAreaView style={page.main}>
             <SubNavbar title={details.eventName} pressed={onBackPress} />
             <WithLoading isLoading={isLoading} loadingMessage='Loading details...'>

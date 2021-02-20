@@ -18,7 +18,6 @@ export default function CCAList (props) {
     const [isLoading, setIsLoading] = useState(true)
     const [filteredCCAs, setFilteredCCAs] = useState([])
     const [keyword, setKeyword] = useState('')
-    const loaded = isLoaded
     const styles = StyleSheet.create({
         searchContainer: {
             marginHorizontal,
@@ -53,7 +52,7 @@ export default function CCAList (props) {
             loadCCAs()
         },[])
     )
-    return (
+    return (isLoaded &&
         <SafeAreaView style={page.main}>
             <Navbar title="Manage CCA" pressed={onMenuPress} add={addCCAHandler}/>
             <View style={{paddingTop: marginHorizontal}}>

@@ -10,7 +10,6 @@ export default function ListCard ({ title, description, onPress }) {
         Lato_700Bold,
         'MaterialIcons-Regular': require('../../assets/fonts/MaterialIcons-Regular.ttf')
     })
-    const loaded = isLoaded
     const styles = StyleSheet.create ({
         card: {
             borderRadius: 15,
@@ -53,7 +52,7 @@ export default function ListCard ({ title, description, onPress }) {
             color: '#FFCD1D',
         }
     })
-    return (
+    return (isLoaded &&
         <TouchableWithoutFeedback onPress={onPress}>
             <View style={styles.card}>
                 <View style={styles.titleContainer}>

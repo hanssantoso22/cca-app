@@ -3,7 +3,6 @@ import { button, MING } from '../styles'
 import { View, Text, StyleSheet } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { useFonts, Lato_700Bold, Lato_400Regular} from '@expo-google-fonts/lato'
-import { AppLoading } from 'expo'
 
 export default function ({ onPress, text }) {
     const [isLoaded] = useFonts ({
@@ -34,18 +33,13 @@ export default function ({ onPress, text }) {
             marginRight: 3,
         }
     })
-    if (!isLoaded) {
-        return (<AppLoading />)
-    }
-    else {
-        return (
-            <TouchableWithoutFeedback onPress={onPress}>
-                <View style={styles.container}>
-                    <Text style={styles.crossIcon}>x&nbsp;&nbsp;</Text>
-                    <Text style={styles.label} ellipsizeMode='tail' numberOfLines={1}>{text}</Text>
-                </View>
-            </TouchableWithoutFeedback>
-        )
-    }  
+    return (isLoaded &&
+        <TouchableWithoutFeedback onPress={onPress}>
+            <View style={styles.container}>
+                <Text style={styles.crossIcon}>x&nbsp;&nbsp;</Text>
+                <Text style={styles.label} ellipsizeMode='tail' numberOfLines={1}>{text}</Text>
+            </View>
+        </TouchableWithoutFeedback>
+    )
+}  
     
-}

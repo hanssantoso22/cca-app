@@ -7,7 +7,6 @@ export default function MultiLineInput ( { label, onChangeText, value, maxLength
     const [isLoaded] = useFonts ({
         Lato_400Regular
     })
-    const loaded = isLoaded
     const [containerBorderColor, setContainerBorderColor] = useState(GREY[2])
     const styles = StyleSheet.create({
         inputLabel: {
@@ -37,7 +36,7 @@ export default function MultiLineInput ( { label, onChangeText, value, maxLength
     const onFocus = () => {
         setContainerBorderColor(MING[6])
     }
-    return (
+    return (isLoaded &&
         <View>
             <Text style={styles.inputLabel}>{label}</Text>
             <TextInput 

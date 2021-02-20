@@ -23,7 +23,6 @@ import store from '../../redux/store/store'
 
 export default function ProfilePage (props) {
     const [isLoaded] = useFonts({Lato_700Bold, Lato_400Regular})
-    const loaded = isLoaded
     const dispatch = useDispatch()
     const [isLoading, setIsLoading] = useState(true)
     const [isChangingPassword, setIsChangingPassword] = useState(false)
@@ -220,7 +219,7 @@ export default function ProfilePage (props) {
         loadUser()
         setIsPhotoChanged(false)
     },[reset, isPhotoChanged])
-    return (
+    return (isLoaded &&
         <SafeAreaView style={page.main}>
             <SubNavbar title={user.fname} pressed={onBackPress} />
             <WithLoading loadingMessage='Loading details...' isLoading={isLoading}>

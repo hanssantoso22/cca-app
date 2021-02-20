@@ -18,7 +18,6 @@ export default function UserList (props) {
     const [userList, setUserList] = useState([])
     const [keyword, setKeyword] = useState([])
     const [filteredUserList, setFilteredUserList] = useState([])
-    const loaded = isLoaded
     const styles = StyleSheet.create({
         searchContainer: {
             marginHorizontal,
@@ -50,7 +49,7 @@ export default function UserList (props) {
             loadUsers()
         },[])
     )
-    return (
+    return (isLoaded &&
         <SafeAreaView style={page.main}>
             <Navbar title="Manage Users" pressed={onMenuPress} />
             <WithLoading isLoading={isLoading} loadingMessage='Loading users...'>

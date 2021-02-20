@@ -7,7 +7,6 @@ export default function CustomTextInput ( { onChangeText, value, maxLength, type
     const [isLoaded] = useFonts ({
         Lato_400Regular
     })
-    const loaded = isLoaded
     const [containerBorderColor, setContainerBorderColor] = useState(GREY[2])
     const styles = StyleSheet.create({
         inputLabel: {
@@ -36,7 +35,7 @@ export default function CustomTextInput ( { onChangeText, value, maxLength, type
     const onFocus = () => {
         setContainerBorderColor(MING[3])
     }
-    return (
+    return (isLoaded &&
         <View>
             <TextInput 
                 style={{...styles.textInputContainer, ...styles.inputContent, ...customStyle, borderColor: containerBorderColor}}

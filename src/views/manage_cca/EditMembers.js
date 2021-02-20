@@ -19,7 +19,6 @@ export default function (props) {
     //To store users based on keyword search
     const [filteredUsers, setFilteredUsers] = useState([])
     const [keyword, setKeyword] = useState('')
-    const loaded = isLoaded
     const { ccaID } = props.route.params
     const styles = StyleSheet.create({
         sectionScroll: {
@@ -105,7 +104,7 @@ export default function (props) {
         }
         loadUsers()
     }, [])
-    return (
+    return (isLoaded &&
         <SafeAreaView style={page.main}>
             <SubNavbar title='Select Members' pressed={onBackPress} back="Done"/>
             <View style={page.main}>

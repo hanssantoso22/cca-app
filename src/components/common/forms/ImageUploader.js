@@ -7,7 +7,6 @@ export default function ImageUploader ({ label, pickImageHandler, removeImageHan
     const [isLoaded] = useFonts ({
         Lato_400Regular
     })
-    const loaded = isLoaded
     const styles = StyleSheet.create({
         inputLabel: {
             fontSize: 13,
@@ -59,7 +58,7 @@ export default function ImageUploader ({ label, pickImageHandler, removeImageHan
     const onFocus = () => {
         setContainerBorderColor(MING[6])
     }
-    return (
+    return (isLoaded &&
         <View>
             <View style={{flexDirection: 'row'}}>
                 <Text style={styles.inputLabel}>{label}</Text>
