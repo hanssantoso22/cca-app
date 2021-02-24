@@ -24,12 +24,14 @@ import CreateNewModal from '../../views/manage_cca/createNewModal'
 import ArchivesScreen from '../../views/archives/archives'
 import EventReviewPage from '../../views/archives/EventReviewPage'
 import LoginScreen from '../../views/login_logout/login'
+import BiometricsRegistrationScreen from '../../views/login_logout/BiometericsRegistration'
 import CreateAccountScreen from '../../views/login_logout/createNewAccount'
 import ForgotPassScreen from '../../views/login_logout/ForgotPass'
 import ForgotPassVerificationScreen from '../../views/login_logout/ForgotPassVerification'
 import DrawerMenu from '../common/navigation/sideDrawer/sideDrawer'
 
 //COMPONENTS FOR ADMIN
+import AdminProfileScreen from '../../views/admin/AdminProfile'
 import UserListScreen from '../../views/admin/UserManagement/UserList'
 import UserDetailsScreen from '../../views/admin/UserManagement/UserDetails'
 import AdminDrawerMenu from '../common/navigation/sideDrawer/AdminSideDrawer'
@@ -131,8 +133,10 @@ const RootController = () => {
                 drawerLockMode= "locked-closed"
                 disableGestures= {true}
                 drawerWidth= {screenWidth - 60} >
+                <AdminDrawerStack.Screen name="AdminProfileScreen" component={AdminProfileScreen} />
                 <AdminManageUsersStack.Screen name="AdminManageUserScreen" component={AdminManageUsersStackScreen} />
                 <AdminManageCCAStack.Screen name="AdminManageCCAScreen" component={AdminManageCCAStackScreen} />
+                <AdminDrawerStack.Screen name="LogoutScreen" component={LoginScreen} />
             </AdminDrawerStack.Navigator>
         ) : (
             <DrawerStack.Navigator initialRouteName="HomeStackScreen"
@@ -152,6 +156,7 @@ const RootController = () => {
         ) : (
             <AuthStack.Navigator initialRouteName="AuthStackScreen">
                 <AuthStack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown: false}}/>
+                <AuthStack.Screen name="BiometricsRegistrationScreen" component={BiometricsRegistrationScreen} options={{headerShown: false}}/>
                 <AuthStack.Screen name="CreateAccount" component={CreateAccountScreen} options={{headerShown: false}}/>
                 <AuthStack.Screen name="ForgotPassScreen" component={ForgotPassScreen} options={{headerShown: false}}/>
                 <AuthStack.Screen name="ForgotPassVerificationScreen" component={ForgotPassVerificationScreen} options={{headerShown: false}}/>

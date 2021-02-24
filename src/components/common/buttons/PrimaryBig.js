@@ -1,7 +1,6 @@
 import React from 'react'
 import { button } from '../styles'
-import { View, Text, StyleSheet } from 'react-native'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { useFonts, Lato_700Bold} from '@expo-google-fonts/lato'
 
 export default function ({ fontSize, pressHandler, text, style }) {

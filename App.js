@@ -13,24 +13,26 @@ SplashScreen.preventAutoHideAsync()
   .catch(console.warn); // it's good to explicitly catch and inspect any error
 export default function App() {
   const [isAppReady, setIsAppReady] = useState(false)
-  const styles = StyleSheet.create({
-    splashContainer: {
-      backgroundColor: PURPLE[5],
-      alignItems: 'center',
-      alignContent: 'center'
-    },
-    appLogo: {
-      width: 150,
-      height: 150
-    }
-  })
+  // const styles = StyleSheet.create({
+  //   splashContainer: {
+  //     backgroundColor: PURPLE[5],
+  //     alignItems: 'center',
+  //     alignContent: 'center'
+  //   },
+  //   appLogo: {
+  //     width: 150,
+  //     height: 150
+  //   }
+  // })
   useEffect(() => {
     async function loadApp () {
       try {
+        // await SplashScreen.hideAsync();
+        // setIsAppReady(true)
         setTimeout (async () => {
           await SplashScreen.hideAsync();
           setIsAppReady(true)
-        }, 5000)
+        }, 700)
       } catch (error) {
         console.log(error)
       }

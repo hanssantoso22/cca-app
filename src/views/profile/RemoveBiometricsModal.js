@@ -1,17 +1,17 @@
 import React from 'react'
-import { GREY, page } from '../../../components/common/styles'
-import Modal from 'react-native-modal'
+import { GREY, page } from '../../components/common/styles'
+import Modal from 'react-native-modal';
 import { View, Text, StyleSheet } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 
-import PrimaryButton from '../../../components/common/buttons/PrimarySmall'
-import SecondaryButton from '../../../components/common/buttons/SecondarySmall'
+import PrimaryButton from '../../components/common/buttons/PrimarySmall'
+import SecondaryButton from '../../components/common/buttons/SecondarySmall'
 
-const createNewModal = ({ isModalVisible, closeModal, confirmHandler, cancelHandler, userID }) => {
+const createNewModal = ({ isModalVisible, closeModal, confirmHandler, cancelHandler }) => {
     const [isLoaded] = useFonts({
         Lato_700Bold,
         Lato_400Regular,
-        'MaterialIcons-Regular': require('../../../assets/fonts/MaterialIcons-Regular.ttf')
+        'MaterialIcons-Regular': require('../../assets/fonts/MaterialIcons-Regular.ttf')
     })
     const styles = StyleSheet.create ({
         title: {
@@ -34,16 +34,16 @@ const createNewModal = ({ isModalVisible, closeModal, confirmHandler, cancelHand
         }
     })
     return (isLoaded &&
-        <Modal isVisible={isModalVisible} onBackdropPress={closeModal} >
+        <Modal isVisible={isModalVisible} onBackdropPress={closeModal}>
             <View style={{...page.modal, paddingHorizontal: 25}}>
-                <Text style={styles.title}>Are you sure to delete the user?</Text>
+                <Text style={styles.title}>Are you sure to remove biometrics authentication?</Text>
                 <View style={{marginTop:25, marginBottom: 10}}>
                     <View style={{flexDirection: 'row'}}>
                         <View style={styles.buttonContainer}>
                             <SecondaryButton text="Cancel" fontSize={16} pressHandler={cancelHandler} style={styles.secondaryDanger} />
                         </View>
                         <View style={styles.buttonContainer}>
-                            <PrimaryButton text="Yes, just delete" fontSize={16} pressHandler={confirmHandler.bind(this,userID)} style={styles.primaryDanger} />
+                            <PrimaryButton text="Yes, just remove" fontSize={16} pressHandler={confirmHandler} style={styles.primaryDanger} />
                         </View>
                     </View>
                 </View>

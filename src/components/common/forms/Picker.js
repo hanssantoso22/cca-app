@@ -21,6 +21,17 @@ export default function PickerInput ( { label, onValueChange, items, value } ) {
             borderWidth: 1,
             marginBottom: 15,
             borderColor: GREY[2],
+        },
+        inputAndroid: {
+            fontSize: 16,
+            fontFamily: 'Lato_400Regular',
+            color: GREY[5],
+            paddingVertical: 13,
+            paddingHorizontal: 10,
+            borderRadius: 10,
+            borderWidth: 1,
+            marginBottom: 15,
+            borderColor: GREY[2],
         }
     })
     const styles = StyleSheet.create({

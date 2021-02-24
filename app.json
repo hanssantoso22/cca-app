@@ -17,6 +17,9 @@
       "**/*"
     ],
     "ios": {
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Expo Authentication with TouchID or FaceID"
+      },
       "supportsTablet": true
     },
     "web": {

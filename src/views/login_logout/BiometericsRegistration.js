@@ -1,20 +1,21 @@
 import React from 'react';
-import { marginHorizontal, PURPLE } from '../../components/common/styles'
-import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Alert } from 'react-native'
+import { marginHorizontal, PURPLE, GREY } from '../../components/common/styles'
+import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import CustomTextInput from '../../components/common/forms/TextInput'
 import PrimaryButton from '../../components/common/buttons/PrimaryBig'
 import { Keyboard } from 'react-native'
 
-import axios from 'axios'
-import { URL } from '../../api/config'
+import { useDispatch } from 'react-redux'
+import { registerCredentials } from '../../redux/reducers/mainSlice'
 
 export default function ForgotPass (props) {
     const [isLoaded] = useFonts({
         Lato_400Regular,
         Lato_700Bold
     })
+    const dispatch = useDispatch()
     const styles = StyleSheet.create({
         mainPage: {
             marginHorizontal: marginHorizontal,
@@ -27,16 +28,17 @@ export default function ForgotPass (props) {
             color: PURPLE[5],
             fontSize: 13,
             textAlign: 'center'
+        },
+        notice: {
+            color: GREY[4],
+            fontSize: 13,
+            marginBottom: 15,
+            fontStyle: 'italic'
         }
     })
     const { control, handleSubmit } = useForm()
     const onSubmit = async data => {
-        try {
-            const res = await axios.post(`${URL}/users/forget`, data)
-            props.navigation.navigate('ForgotPassVerificationScreen', {email: data.email})
-        } catch (err) {
-            Alert.alert('Email not found')
-        }
+        dispatch(registerCredentials(data.email,data.password))
     }
     const backHandler = () => {
         props.navigation.goBack()
@@ -45,6 +47,7 @@ export default function ForgotPass (props) {
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={{height: '100%'}}>
                 <View style={styles.mainPage} >
+                    <Text style={styles.notice}>Credentials below will be stored on the local storage for biometrics authentication in the future.</Text>
                     <Controller
                         control={control}
                         render= {({ onChange, value }) => (
@@ -58,9 +61,22 @@ export default function ForgotPass (props) {
                         name="email"
                         defaultValue=""
                     />
+                    <Controller
+                        control={control}
+                        render= {({ onChange, value }) => (
+                            <CustomTextInput
+                                label='Password'
+                                onChangeText={text=>{onChange(text)}}
+                                value={value}
+                                type='password'
+                            />
+                            )}
+                        name="password"
+                        defaultValue=""
+                    />
                     <View style={{flexDirection: 'row', width: '100%'}}>
                         <View style={{flex: 1}}>
-                            <PrimaryButton fontSize={16} text="Get Reset Code" pressHandler={handleSubmit(onSubmit)}/>
+                            <PrimaryButton fontSize={16} text="Setup Credentials" pressHandler={handleSubmit(onSubmit)}/>
                             <TouchableWithoutFeedback onPress={backHandler}>
                                 <Text style={styles.backButton}>Back to Login Page</Text>
                             </TouchableWithoutFeedback>

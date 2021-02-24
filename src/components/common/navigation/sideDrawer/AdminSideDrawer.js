@@ -1,13 +1,13 @@
 import React from 'react'
-import { View, Text, StyleSheet, SafeAreaView, Dimensions } from 'react-native'
-import { Avatar, Accessory } from 'react-native-elements'
+import { View, Text, StyleSheet, SafeAreaView, Dimensions, TouchableWithoutFeedback } from 'react-native'
+import { Avatar } from 'react-native-elements'
 import { FlatList } from 'react-native-gesture-handler'
 import ItemCard from './itemCard'
 import { navigateToPage, logout } from '../../../../redux/reducers/mainSlice'
 import { useDispatch } from 'react-redux'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 
-import { GREY } from '../../styles'
+import { MING } from '../../styles'
 import store from '../../../../redux/store/store'
 
 export default function SideDrawer (props) {
@@ -20,7 +20,6 @@ export default function SideDrawer (props) {
         }
         props.navigation.navigate(navScreen)
         dispatch (navigateToPage(navScreen))
-        
     }
     const [isLoaded] = useFonts({
         Lato_700Bold,
@@ -51,7 +50,7 @@ export default function SideDrawer (props) {
         userName: {
             fontFamily: 'Lato_700Bold',
             fontSize: 20,
-            color: GREY[4],
+            color: MING[5],
             textAlign: 'center',
             lineHeight: 30,
         }
@@ -59,8 +58,11 @@ export default function SideDrawer (props) {
     return (isLoaded &&
         <SafeAreaView>
             <Avatar rounded size="large" />
-            <Accessory />
-            <View style={styles.nameContainer}><Text style={styles.userName}>Admin</Text></View>
+            <View style={styles.nameContainer}>
+            <TouchableWithoutFeedback onPress={navigateToScreen.bind(this,'AdminProfileScreen')}>
+                <Text style={styles.userName}>Admin</Text>
+            </TouchableWithoutFeedback>
+            </View>
             <View>
                 {renderFlatList()}
             </View>

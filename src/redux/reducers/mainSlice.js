@@ -3,6 +3,7 @@ import { Alert } from 'react-native'
 import { URL, authenticate } from '../../api/config'
 import axios from 'axios'
 import AsyncStorage from '@react-native-community/async-storage'
+import * as SecureStore from 'expo-secure-store'
 
 export const drawerSlice = createSlice({
     name: 'active_screen',
@@ -48,6 +49,23 @@ export const verifyLogin = (email,password) => async dispatch => {
         }))
     } catch (err) {
         Alert.alert('Login failed!')
+        console.log(err)
+    }
+}
+//Similar to verifyLogin, but for Biometrics Registration purpose
+export const registerCredentials = (email,password) => async dispatch => {
+    try {
+        const response = await axios.post(`${URL}/users/login`, {email, password })
+        const data = response.data
+        await SecureStore.setItemAsync('email',email)
+        await SecureStore.setItemAsync('password',password)
+        dispatch(login({
+            token: data.token,
+            admin: data.user.role == 'admin'
+        }))
+    } catch (err) {
+        Alert.alert('Biometrics authentication setup failed')
+        console.log(err)
     }
 }
 export const signUp = (data) => async dispatch => {

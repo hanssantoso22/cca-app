@@ -14,11 +14,6 @@ import store from '../../redux/store/store'
 export default function PastRegisteredEvents (props) {
     const [pastEvents, setPastEvents] = useState([])
     const [isLoading, setIsLoading] = useState(true)
-    // const pastEvents = [
-    //     {id: 0, name: 'Arduino Workshop', organizer: 'Garage @EEE', read: false},
-    //     {id: 1, name: 'Introduction to Machine Learning and Deep Learning', organizer: 'MLDA @EEE', read: true},
-    //     {id: 2, name: 'Subcommittee Recruitment Talk', organizer: 'EEE Club', read: false}
-    // ]
     const [selectedCard, setSelectedCard] = useState('')
     const onPressHandler = (eventID) => {
         setSelectedCard(eventID)

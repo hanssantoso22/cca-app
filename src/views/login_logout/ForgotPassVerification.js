@@ -1,4 +1,5 @@
-import React from 'react';
+import React from 'react'
+import * as SecureStore from 'expo-secure-store'
 import { GREY, marginHorizontal, PURPLE, RED } from '../../components/common/styles'
 import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Alert } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
@@ -49,6 +50,9 @@ export default function ForgotPassVerification (props) {
         try {
             delete data.confirmPassword
             const res = await axios.post(`${URL}/users/forget/update`, {...data, email })
+            //Update password in keychain
+            const storedEmail = await SecureStore.getItemAsync('email')
+            if (storedEmail != null) await SecureStore.setItemAsync('password',data.password)
             props.navigation.navigate('LoginScreen')
         } catch (err) {
             Alert.alert('Changing password failed')
