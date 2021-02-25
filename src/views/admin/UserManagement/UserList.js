@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import { View, SafeAreaView, FlatList, StyleSheet } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
-import { page, marginHorizontal } from '../../../components/common/styles'
+import { page, marginHorizontal, GREY } from '../../../components/common/styles'
 import WithLoading from '../../../components/hoc/withLoading'
+import NoItemLoaded from '../../../components/common/NoItemLoaded'
 import Navbar from '../../../components/common/navigation/navbar/navbar'
 import ListCard from '../../../components/common/ListCard'
 import TextInput from '../../../components/common/forms/TextInputNoLabel'
@@ -54,22 +55,28 @@ export default function UserList (props) {
             <Navbar title="Manage Users" pressed={onMenuPress} />
             <WithLoading isLoading={isLoading} loadingMessage='Loading users...'>
                 <View style={{paddingTop: marginHorizontal}}>
-                    <View style={styles.searchContainer}>
-                        <TextInput 
-                            value={keyword} 
-                            onChangeText={onKeywordChange}
-                            type="name"
-                            customStyle={{fontStyle: 'italic'}}
-                            placeHolder="Search users..."
+                    {userList.length == 0 ? 
+                        <NoItemLoaded color={GREY[2]} message={`Everything is loaded :)\nIt seems there's no user.`} />
+                    :
+                        <>
+                        <View style={styles.searchContainer}>
+                            <TextInput 
+                                value={keyword} 
+                                onChangeText={onKeywordChange}
+                                type="name"
+                                customStyle={{fontStyle: 'italic'}}
+                                placeHolder="Search users..."
+                            />
+                        </View>
+                        <FlatList 
+                            data={filteredUserList}
+                            keyExtractor={(item)=>item._id}
+                            renderItem={({ item })=> (
+                                <ListCard title={item.fname} onPress={onCardPress.bind(this,item._id)}/>
+                            )}
                         />
-                    </View>
-                    <FlatList 
-                        data={filteredUserList}
-                        keyExtractor={(item)=>item._id}
-                        renderItem={({ item })=> (
-                            <ListCard title={item.fname} onPress={onCardPress.bind(this,item._id)}/>
-                        )}
-                    />
+                        </>
+                    }
                 </View>
             </WithLoading>
         </SafeAreaView>

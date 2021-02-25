@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import WithLoading from '../../components/hoc/withLoading'
-import { page, GREY, marginHorizontal, font } from '../../components/common/styles'
-import { SafeAreaView, View, Text, StyleSheet, ScrollView, Image } from 'react-native'
+import { page, GREY, marginHorizontal, font, MING } from '../../components/common/styles'
+import { SafeAreaView, View, Text, StyleSheet, ScrollView, Image, Alert, TouchableWithoutFeedback } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular, Lato_400Regular_Italic } from '@expo-google-fonts/lato'
 import Dummy1 from '../../assets/dummy/image005.jpg'
 
@@ -33,7 +33,7 @@ export default function ArticleDetailPage (props) {
         },
         pageTitle: {
             fontFamily: 'Lato_700Bold',
-            marginLeft: 30,
+            marginHorizontal: 30,
             marginBottom: marginHorizontal,
         },
         smallDetailsWrapper: {
@@ -49,7 +49,13 @@ export default function ArticleDetailPage (props) {
         smallDetailsFont: {
             fontFamily: 'Lato_400Regular_Italic',
             fontSize: 13,
-            color: GREY[3]
+            color: GREY[3],
+            marginBottom: 5,
+        },
+        hyperlink: {
+            fontFamily: 'Lato_400Regular_Italic',
+            fontSize: 13,
+            color: MING[5]
         },
         articleBodyWrapper: {
             paddingHorizontal: 30,
@@ -65,7 +71,7 @@ export default function ArticleDetailPage (props) {
                 setAnnouncement(res.data)
                 setIsLoading(false)
             } catch (err) {
-        
+                Alert.alert('Loading details error')
             }
         }
         loadAnnouncement()
@@ -82,7 +88,9 @@ export default function ArticleDetailPage (props) {
                         </View>
                         <View style={styles.smallDetailsWrapper}>
                             <Text style={styles.smallDetailsFont}>Published on: {moment(announcement.createdAt,`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`).format('LL')}</Text>
-                            <Text style={styles.smallDetailsFont}>by {announcement.organizer.ccaName}</Text>
+                            <TouchableWithoutFeedback onPress={()=>props.navigation.navigate('CCADetailScreenPublic',{ccaID: announcement.organizer._id})}>
+                                <Text style={styles.hyperlink}>by {announcement.organizer.ccaName}</Text>
+                            </TouchableWithoutFeedback>
                         </View>
                         <View style={styles.articleBodyWrapper}>
                             <Text style={{...font.articleBody,...styles.articleFont}}>

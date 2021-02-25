@@ -157,8 +157,7 @@ export default function CreateNewCCA (props) {
                                     label='Description*'
                                     onChangeText={text=>{onChange(text)}}
                                     value={value}
-                                    multiline={true}
-                                    maxLength={500}
+                                    multiline={true}    
                                     type='name'
                                 />
                             )}

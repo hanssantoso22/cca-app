@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import WithLoading from '../../components/hoc/withLoading'
-import { page, GREY, marginHorizontal, font } from '../../components/common/styles'
-import { SafeAreaView, View, Text, StyleSheet, ScrollView, FlatList } from 'react-native'
-import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
+import { page, GREY, marginHorizontal, font, MING } from '../../components/common/styles'
+import { SafeAreaView, View, Text, StyleSheet, ScrollView, TouchableWithoutFeedback, Image } from 'react-native'
+import { useFonts, Lato_700Bold, Lato_400Regular, Lato_400Regular_Italic } from '@expo-google-fonts/lato'
 import PrimaryButton from '../../components/common/buttons/PrimaryBig'
 import PrimaryDisabled from '../../components/common/buttons/PrimaryBigDisabled'
 import ConfirmationModal from './ConfirmationModal'
@@ -15,11 +15,12 @@ import store from '../../redux/store/store'
 
 export default function EventDetailsPage (props) {
     const [isLoading, setIsLoading] = useState(true)
-    const [details, setDetails] = useState({})
+    const [details, setDetails] = useState({organizer:''})
     const [isLoaded] = useFonts({
         'MaterialIcons-Regular': require('../../assets/fonts/MaterialIcons-Regular.ttf'),
         Lato_400Regular,
-        Lato_700Bold
+        Lato_700Bold,
+        Lato_400Regular_Italic
     })
     const onBackPress = () => {
         props.navigation.goBack()
@@ -32,8 +33,11 @@ export default function EventDetailsPage (props) {
     }
     const styles = StyleSheet.create ({
         imageWrapper: {
-            marginVertical: 5,
+            marginTop: 5,
+            marginBottom: 10,
+            marginHorizontal: 30,
             alignItems: 'center',
+            height: 'auto',
         },
         pageTitle: {
             fontFamily: 'Lato_700Bold',
@@ -64,6 +68,19 @@ export default function EventDetailsPage (props) {
         registerButtonWrapper: {
             flexDirection: 'column-reverse',
             paddingHorizontal: 30,
+        },
+        hyperlink: {
+            fontFamily: 'Lato_400Regular_Italic',
+            fontSize: 13,
+            color: MING[5],
+            marginBottom: 15,
+            marginHorizontal: 30
+        },
+        image: {
+            flex: 1,
+            resizeMode: 'contain',
+            width: '100%',
+            height: 300,
         },
     })
     const renderSchedDetails = []
@@ -127,8 +144,13 @@ export default function EventDetailsPage (props) {
             <WithLoading isLoading={isLoading} loadingMessage='Loading details...'>
                 <ScrollView>
                     <View style={page.main}>
-                        <View style={styles.imageWrapper}></View>
+                        <View style={styles.imageWrapper}>
+                            <Image style={{...styles.image, height: details.image==null ? 0 : 300}} source={{uri: details.image}} />
+                        </View>
                         <Text style={{...font.articleTitle,...styles.pageTitle}}>{details.eventName}</Text>
+                        <TouchableWithoutFeedback onPress={()=>props.navigation.navigate('CCADetailScreenPublic',{ccaID: details.organizer._id})}>
+                            <Text style={styles.hyperlink}>by {details.organizer.ccaName}</Text>
+                        </TouchableWithoutFeedback>
                         <View style={styles.scheduleWrapper}>
                             {renderSchedDetails}
                         </View>

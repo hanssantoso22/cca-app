@@ -8,6 +8,7 @@ import { Dimensions } from 'react-native'
 import HomeScreen from '../../views/home/home'
 import ProfileScreen from '../../views/profile/ProfilePage'
 import ArticleDetailScreen from '../../views/home/ArticleDetailPage'
+import CCADetailScreenPublic from '../../views/cca/CCADetail'
 import EventsScreen from '../../views/events/events'
 import EventDetailsPage from '../../views/events/EventDetailsPage'
 import PastEventRatingPage from '../../views/events/PastEventRatingPage'
@@ -66,6 +67,7 @@ const HomeStackScreen = () => (
     <HomeStack.Navigator>
         <HomeStack.Screen name='Home' component={HomeScreen} options={{headerShown: false}}/>
         <HomeStack.Screen name='ArticleDetail' component={ArticleDetailScreen} options={{headerShown: false}} />
+        <HomeStack.Screen name="CCADetailScreenPublic" component={CCADetailScreenPublic} options={{headerShown: false}} />
     </HomeStack.Navigator>
 )
 const EventsStackScreen = () => (
@@ -73,6 +75,7 @@ const EventsStackScreen = () => (
         <EventsStack.Screen name='Events' component={EventsScreen} options={{headerShown: false}} />
         <EventsStack.Screen name='EventsDetails' component={EventDetailsPage} options={{headerShown: false}} />
         <EventsStack.Screen name='PastEventRating' component={PastEventRatingPage} options={{headerShown: false}} />
+        <EventsStack.Screen name="CCADetailScreenPublic" component={CCADetailScreenPublic} options={{headerShown: false}}/>
     </EventsStack.Navigator>
 )
 const RemindersStackScreen = () => (

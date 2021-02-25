@@ -250,7 +250,6 @@ export default function CCADetails (props) {
                                 onChangeText={text=>{onChange(text)}}
                                 value={value}
                                 multiline={true}
-                                maxLength={500}
                                 type='name'
                             />
                         )}

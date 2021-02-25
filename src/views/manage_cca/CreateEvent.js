@@ -265,12 +265,6 @@ export default function home (props) {
                             />
                             <Controller
                                 control={control}
-                                rules={{
-                                    required: {
-                                        value: true,
-                                        message: 'This is a required field.'
-                                    },
-                                }}
                                 render= {({ onChange, value }) => (
                                     <CustomTextInput
                                         label='Link'
@@ -295,8 +289,7 @@ export default function home (props) {
                                         label='Content*'
                                         onChangeText={text=>{onChange(text)}}
                                         value={value}
-                                        multiline={true}
-                                        maxLength={500}
+                                        multiline={true}        
                                         type='name'
                                     />
                                   )}

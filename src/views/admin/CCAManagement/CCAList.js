@@ -2,8 +2,9 @@ import React, {useEffect, useState} from 'react'
 import { View, SafeAreaView, FlatList, StyleSheet } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
-import { page, marginHorizontal } from '../../../components/common/styles'
+import { page, marginHorizontal, GREY } from '../../../components/common/styles'
 import WithLoading from '../../../components/hoc/withLoading'
+import NoItemLoaded from '../../../components/common/NoItemLoaded'
 import Navbar from '../../../components/common/navigation/navbar/navbar'
 import ListCard from '../../../components/common/ListCard'
 import TextInput from '../../../components/common/forms/TextInputNoLabel'
@@ -55,17 +56,21 @@ export default function CCAList (props) {
     return (isLoaded &&
         <SafeAreaView style={page.main}>
             <Navbar title="Manage CCA" pressed={onMenuPress} add={addCCAHandler}/>
+            <WithLoading isLoading={isLoading} loadingMessage='Loading CCA...'>
             <View style={{paddingTop: marginHorizontal}}>
-                <View style={styles.searchContainer}>
-                    <TextInput 
-                        value={keyword} 
-                        onChangeText={onKeywordChange}
-                        type="name"
-                        customStyle={{fontStyle: 'italic'}}
-                        placeHolder="Search CCA..."
-                    />
-                </View>
-                <WithLoading isLoading={isLoading} loadingMessage='Loading CCA...'>
+                {CCAs.length == 0 ? 
+                    <NoItemLoaded color={GREY[2]} message={`Everything is loaded :)\nIt seems there's no CCA.`} />
+                :
+                    <>
+                    <View style={styles.searchContainer}>
+                        <TextInput 
+                            value={keyword} 
+                            onChangeText={onKeywordChange}
+                            type="name"
+                            customStyle={{fontStyle: 'italic'}}
+                            placeHolder="Search CCA..."
+                        />
+                    </View>
                     <FlatList 
                         data={filteredCCAs}
                         keyExtractor={(item)=>item._id}
@@ -73,8 +78,10 @@ export default function CCAList (props) {
                             <ListCard title={item.ccaName} onPress={onCardPress.bind(this,item._id)}/>
                         )}
                     />
-                </WithLoading>
+                    </>
+                }
             </View>
+            </WithLoading>
         </SafeAreaView>
     )
 }

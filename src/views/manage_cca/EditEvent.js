@@ -361,8 +361,7 @@ export default function home (props) {
                                         label='Content*'
                                         onChangeText={text=>{onChange(text)}}
                                         value={value}
-                                        multiline={true}
-                                        maxLength={500}
+                                        multiline={true}        
                                         type='name'
                                     />
                                   )}

@@ -116,7 +116,7 @@ export default function EventDetailsPage (props) {
                                 value={commentBox}
                                 onChangeText={(text)=>setCommentBox(text)}
                                 type="name"
-                                maxLength={500}
+                                
                             />
                         </View>
                     </View>

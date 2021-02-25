@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react'
+import { useFocusEffect } from '@react-navigation/native'
 import { page, PURPLE, MING, marginHorizontal } from '../../components/common/styles'
 import { View, StyleSheet, Text } from 'react-native'
 import { Agenda } from 'react-native-calendars'
@@ -97,7 +98,7 @@ export default function EventsCalendarView (props) {
             </TouchableWithoutFeedback>
         );
     }
-    useEffect(() => {
+    useFocusEffect(() => {
         async function loadEvents() {
             try {
                 const res = await axios.get(`${URL}/events`, authenticate(store.getState().main.token))
@@ -107,20 +108,20 @@ export default function EventsCalendarView (props) {
             }
         }
         loadEvents()
-    })
+    },[])
 
     return (isLoaded &&
         <View style={{...page.main, paddingHorizontal: marginHorizontal}}>
             <Agenda
-                    style={styles.calendar}
-                    hideExtraDays
-                    enableSwipeMonths={true}
-                    minDate={today}
-                    items={importantDates}
-                    renderItem={renderItem}
-                    theme={{
-                        agendaTodayColor: PURPLE[5],
-                    }}
+                style={styles.calendar}
+                hideExtraDays
+                enableSwipeMonths={true}
+                minDate={today}
+                items={importantDates}
+                renderItem={renderItem}
+                theme={{
+                    agendaTodayColor: PURPLE[5],
+                }}
             />
         </View>
     )

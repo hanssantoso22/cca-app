@@ -21,13 +21,14 @@ export default function MultiLineInput ( { label, onChangeText, value, maxLength
             color: GREY[5],
         },
         textInputContainer:{
-            paddingTop: 13,
-            paddingBottom: 13,
+            paddingTop: 7,
+            paddingBottom: 7,
             paddingHorizontal: 10,
             borderRadius: 10,
             borderWidth: 1,
             marginBottom: 15,
-            height: 100,
+            height: 250,
+            lineHeight: 25,
         },
     })
     const onBlur = () => {
@@ -43,7 +44,6 @@ export default function MultiLineInput ( { label, onChangeText, value, maxLength
                 style={{...styles.textInputContainer, ...styles.inputContent, borderColor: containerBorderColor}}
                 onChangeText={onChangeText}
                 value={value}
-                maxLength={maxLength}
                 type={type}
                 multiline={true}
                 onBlur={onBlur}

@@ -33,7 +33,7 @@ export const font = StyleSheet.create ({
         fontSize: 16,
         lineHeight: 25,
         color: GREY[6],
-        letterSpacing: 1
+        letterSpacing: 0.5,
     },
     link: {
         color: MING[5]
