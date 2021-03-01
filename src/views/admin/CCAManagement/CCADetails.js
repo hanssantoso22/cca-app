@@ -5,18 +5,20 @@ import { page, RED, MING, GREY, marginHorizontal } from '../../../components/com
 import SubNavbar from '../../../components/common/navigation/navbar/SubNavbar'
 import WithLoading from '../../../components/hoc/withLoading'
 import { useDispatch, useSelector } from 'react-redux'
-import { editSelectedUsers } from '../../../redux/reducers/AdminSlice'
+import { editSelectedUsers, editExcos, editMaincomms } from '../../../redux/reducers/AdminSlice'
 import { useForm, Controller } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
 import CustomTextInput from '../../../components/common/forms/TextInput'
 import MultiLineInput from '../../../components/common/forms/MultiLineInput'
 import PrimaryButton from '../../../components/common/buttons/PrimarySmall'
+import PrimaryBig from '../../../components/common/buttons/PrimaryBig'
 import SecondaryButton from '../../../components/common/buttons/SecondarySmall'
 import ColoredButton from '../../../components/common/buttons/ColoredButton'
 import ColorPalette from '../../../components/common/forms/ColorPalette'
 import DeleteCCAModal from './DeleteCCAModal'
 import ResetManagerModal from './ResetManagerModal'
 import ResetMemberModal from './ResetMemberModal'
+import EndCommitteeModal from './EndCommitteeModal'
 
 import axios from 'axios'
 import {URL, authenticate} from '../../../api/config'
@@ -27,9 +29,12 @@ export default function CCADetails (props) {
     const [isLoading, setIsLoading] = useState(true)
     const [CCA, setCCA] = useState({})
     const [resetManager, setResetManager] = useState(false)
+    const [resetMaincomm, setResetMaincomm] = useState(false)
+    const [resetExco, setResetExco] = useState(false)
     const [showResetModal, setShowResetModal] = useState(false) //reset managers
     const [showResetMemberModal, setShowResetMemberModal] = useState(false) //reset members
     const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [showEndCommitteeModal, setShowEndCommitteeModal] = useState(false)
     const { _id } = props.route.params
     const dispatch = useDispatch()
     const styles = StyleSheet.create({
@@ -53,10 +58,6 @@ export default function CCADetails (props) {
             color: GREY[4],
             marginLeft: marginHorizontal,
             marginBottom: marginHorizontal,
-        },
-        bottomContainer: {
-            flexDirection: 'column-reverse',
-            paddingHorizontal: 15,
         },
         inputLabel: {
             fontSize: 13,
@@ -93,16 +94,33 @@ export default function CCADetails (props) {
             fontFamily: 'Lato_400Regular',
             color: GREY[4],
             marginBottom: 5
-        }
+        },
+        bottomBar: {
+            flexDirection: 'column-reverse',
+            paddingHorizontal: 30,
+            paddingVertical: 15,
+        },
     })
     const onBackPress = () => {
         props.navigation.goBack()
         dispatch(editSelectedUsers({selectedUsers: [], selectedUserIds: []}))
+        dispatch(editExcos({selectedExcos: [], selectedExcoIds: []}))
+        dispatch(editMaincomms({selectedMaincomms: [], selectedMaincommIds: []}))
     }
     const selectedUsers = useSelector(state => state.admin.selectedUsers)
     const selectedUserIds = useSelector(state => state.admin.selectedUserIds)
+    const selectedExcos = useSelector(state => state.admin.selectedExcos)
+    const selectedExcoIds = useSelector(state => state.admin.selectedExcoIds)
+    const selectedMaincomms = useSelector(state => state.admin.selectedMaincomms)
+    const selectedMaincommIds = useSelector(state => state.admin.selectedMaincommIds)
     const selectManagersHandler = () => {
         props.navigation.navigate('SelectManagersScreen')
+    }
+    const selectExcosHandler = () => {
+        props.navigation.navigate('SelectExcosScreen')
+    }
+    const selectMaincommsHandler = () => {
+        props.navigation.navigate('SelectMaincommsScreen')
     }
     const removeItemHandler = (managerName) => {
         let tempArray = [...selectedUsers]
@@ -114,13 +132,37 @@ export default function CCADetails (props) {
         tempArray2 = tempArray2.filter((item) => item!=undefined)
         dispatch(editSelectedUsers({selectedUsers: tempArray, selectedUserIds: tempArray2}))
     }
+    const removeExcoHandler = (excoName) => {
+        let tempArray = [...selectedExcos]
+        let tempArray2 = [...selectedExcoIds]
+        const index = selectedExcos.indexOf(excoName)
+        delete tempArray[index]
+        delete tempArray2[index]
+        tempArray = tempArray.filter((item) => item!=undefined)
+        tempArray2 = tempArray2.filter((item) => item!=undefined)
+        dispatch(editExcos({selectedExcos: tempArray, selectedExcoIds: tempArray2}))
+    }
+    const removeMaincommHandler = (maincommName) => {
+        let tempArray = [...selectedMaincomms]
+        let tempArray2 = [...selectedMaincommIds]
+        const index = selectedMaincomms.indexOf(maincommName)
+        delete tempArray[index]
+        delete tempArray2[index]
+        tempArray = tempArray.filter((item) => item!=undefined)
+        tempArray2 = tempArray2.filter((item) => item!=undefined)
+        dispatch(editMaincomms({selectedMaincomms: tempArray, selectedMaincommIds: tempArray2}))
+    }
     const onSubmit = (data) => {
         data.managers = store.getState().admin.selectedUserIds
+        data.executives = store.getState().admin.selectedExcoIds
+        data.maincomms = store.getState().admin.selectedMaincommIds 
         console.log(data)
         async function submitData () {
             try {
                 const res = await axios.patch(`${URL}/CCA/${_id}/edit`, data, authenticate(store.getState().main.token))
                 dispatch(editSelectedUsers({selectedUsers: [], selectedUserIds: []}))
+                dispatch(editExcos({selectedExcos: [], selectedExcoIds: []}))
+                dispatch(editMaincomms({selectedMaincomms: [], selectedMaincommIds: []}))
                 props.navigation.goBack()
             } catch (err) {
                 Alert.alert('Editing not saved')
@@ -141,12 +183,29 @@ export default function CCADetails (props) {
                 const res = await axios.patch(`${URL}/CCA/${ccaID}/resetManager`, {}, authenticate(store.getState().main.token))
                 setShowResetModal(false)
                 setResetManager(true)
-                props.navigation.goBack()
             } catch (err) {
                 Alert.alert('Resetting member failed')
             }
         }
         confirmResetManager()
+    }
+    //Reset exco handler
+    const resetExcoHandler = async (ccaID) => {
+        try {
+            const res = await axios.patch(`${URL}/CCA/${ccaID}/resetExco`, {}, authenticate(store.getState().main.token))
+            setResetExco(true)
+        } catch (err) {
+            Alert.alert('Resetting exco failed')
+        }
+    }
+    //Reset maincomm handler
+    const resetMaincommHandler = async (ccaID) => {
+        try {
+            const res = await axios.patch(`${URL}/CCA/${ccaID}/resetMaincomm`, {}, authenticate(store.getState().main.token))
+            setResetMaincomm(true)
+        } catch (err) {
+            Alert.alert('Resetting maincomm failed')
+        }
     }
     //Reset member handlers
     const resetMemberHandler = () => {
@@ -181,10 +240,27 @@ export default function CCADetails (props) {
                 setShowDeleteModal(false)
                 props.navigation.goBack()
             } catch (err) {
-                console.log(err)
+                Alert.alert('Deleting CCA failed')
             }
         }
         deleteCCA()
+    }
+    //End current committee handlers
+    const endCommitteHandler = () => {
+        setShowEndCommitteeModal(true)
+    }
+    const closeEndCommitteeModal = () => {
+        setShowEndCommitteeModal(false)
+    }
+    const confirmEndCommitteeHandler = async (ccaID, data) => {
+        console.log(data)
+        try {
+            const res = await axios.patch(`${URL}/CCA/${ccaID}/endCommittee`, data, authenticate(store.getState().main.token))
+            setShowEndCommitteeModal(false)
+            props.navigation.goBack()
+        } catch (err) {
+            Alert.alert('Process failed')
+        }
     }
     const defaultValues = {
         ccaName: '',
@@ -200,13 +276,30 @@ export default function CCADetails (props) {
                 setCCA(res.data)
                 reset(res.data)
                 if (res.data.managers.length == 0) setResetManager(true)
+                if (res.data.executives.length == 0) setResetExco(true)
+                if (res.data.maincomms.length == 0) setResetMaincomm(true)
+                if (res.data.managers != undefined) {
+                    const managers = res.data.managers.map(manager => manager.fname)
+                    const managerids = res.data.managers.map(manager => manager._id)
+                    dispatch(editSelectedUsers({selectedUsers: managers, selectedUserIds: managerids}))
+                }
+                if (res.data.executives != undefined) {
+                    const excos = res.data.executives.map(exco => exco.fname)
+                    const excoids = res.data.executives.map(exco => exco._id)
+                    dispatch(editExcos({selectedExcos: excos, selectedExcoIds: excoids}))
+                }
+                if (res.data.maincomms != undefined) {
+                    const maincomms = res.data.maincomms.map(maincomm => maincomm.fname)
+                    const maincommids = res.data.maincomms.map(maincomm => maincomm._id)
+                    dispatch(editMaincomms({selectedMaincomms: maincomms, selectedMaincommIds: maincommids}))
+                }
                 setIsLoading(false)
             } catch (err) {
                 console.log('Error',err)
             }
         }
         loadCCA()
-    }, [reset])
+    }, [reset, resetManager, resetExco, resetMaincomm])
     return (isLoaded &&
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <SafeAreaView style={page.main}>
@@ -257,6 +350,7 @@ export default function CCADetails (props) {
                         defaultValue={CCA.description}
                     />
                     {errors.description && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="description" /></Text>}
+                    {/* SELECT MANAGERS */}
                     <View style={{flexDirection: 'row'}}>
                         <Text style={styles.inputLabel}>Managers: &nbsp;&nbsp;</Text>
                         {resetManager ? 
@@ -268,16 +362,45 @@ export default function CCADetails (props) {
                             </TouchableWithoutFeedback>)
                         }
                     </View>
-                    {CCA.managers && CCA.managers.length > 0 && CCA.managers.map((managerDetails, index) => {
-                        return (
-                            <Text key={index} style={styles.manager}>{`${index+1}. ${managerDetails.fname} / ${managerDetails.year}`}</Text>
-                        )
-                    })}
                     <View style={styles.selectedItemsContainer}>
                         {selectedUsers != [] && selectedUsers.map((user,index) => (
                             <ColoredButton key={index} text={user} onPress={removeItemHandler.bind(this,user)} />
                         ))}
                     </View>
+                    {/* SELECT EXCOS */}
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.inputLabel}>Executive committee: &nbsp;&nbsp;</Text>
+                        {resetExco ? 
+                            (<TouchableWithoutFeedback onPress={selectExcosHandler}>
+                                <Text style={styles.hyperlink} >Edit Executive Committee</Text>
+                            </TouchableWithoutFeedback>) : 
+                            (<TouchableWithoutFeedback onPress={resetExcoHandler.bind(this, _id)}>
+                                <Text style={styles.redHyperlink} >Reset Executive Committee</Text>
+                            </TouchableWithoutFeedback>)
+                        }
+                    </View>
+                    <View style={styles.selectedItemsContainer}>
+                        {selectedExcos != [] && selectedExcos.map((user,index) => (
+                            <ColoredButton key={index} text={user} onPress={removeExcoHandler.bind(this,user)} />
+                        ))}
+                    </View>
+                    {/* SELECT MAINCOMMS */}
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.inputLabel}>Main committee: &nbsp;&nbsp;</Text>
+                        {resetMaincomm ? 
+                            (<TouchableWithoutFeedback onPress={selectMaincommsHandler}>
+                                <Text style={styles.hyperlink} >Edit Maincomms</Text>
+                            </TouchableWithoutFeedback>) : 
+                            (<TouchableWithoutFeedback onPress={resetMaincommHandler.bind(this, _id)}>
+                                <Text style={styles.redHyperlink} >Reset Maincomms</Text>
+                            </TouchableWithoutFeedback>)
+                        }
+                    </View>
+                    <View style={styles.selectedItemsContainer}>
+                        {selectedMaincomms != [] && selectedMaincomms.map((user,index) => (
+                            <ColoredButton key={index} text={user} onPress={removeMaincommHandler.bind(this,user)} />
+                        ))}
+                    </View>       
                     {CCA.members && CCA.members.length > 0 &&
                         <> 
                         <View style={{flexDirection: 'row'}}>
@@ -324,10 +447,14 @@ export default function CCADetails (props) {
                 </View>
             </View>
             </ScrollView>
+            <View style={styles.bottomBar} >
+                <PrimaryBig fontSize={20} pressHandler={endCommitteHandler} text={'End Current Committee'} />
+            </View>
             </WithLoading>
             <ResetManagerModal isModalVisible={showResetModal} closeModal={closeResetModal} confirmHandler={confirmResetManagerHandler} cancelHandler={closeResetModal} ccaID={_id} />
             <ResetMemberModal isModalVisible={showResetMemberModal} closeModal={closeResetMemberModal} confirmHandler={confirmResetMemberHandler} cancelHandler={closeResetMemberModal} ccaID={_id} />
             <DeleteCCAModal isModalVisible={showDeleteModal} closeModal={closeDeleteModal} confirmHandler={confirmDeleteHandler} cancelHandler={closeDeleteModal} ccaID={_id} />
+            <EndCommitteeModal isModalVisible={showEndCommitteeModal} closeModal={closeEndCommitteeModal} confirmHandler={confirmEndCommitteeHandler} cancelHandler={closeEndCommitteeModal} ccaID={_id} />
         </SafeAreaView>
         </TouchableWithoutFeedback>
     )

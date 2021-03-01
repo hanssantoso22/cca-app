@@ -19,7 +19,7 @@ const createNewModal = ({ isModalVisible, closeModal, submitHandler }) => {
             fontSize: 24,
             color: GREY[6],
             textAlign: 'center',
-            letterSpacing: 1,
+            letterSpacing: 0.5,
         },
         iconWrapper: {
             alignItems: 'center',

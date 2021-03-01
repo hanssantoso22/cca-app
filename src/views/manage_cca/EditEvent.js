@@ -5,6 +5,7 @@ import mime from 'mime'
 import moment from 'moment'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import WithLoading from '../../components/hoc/withLoading'
+import LoadingOverlay from '../../components/common/LoadingOverlay'
 import { page, GREY, MING, RED, marginHorizontal } from '../../components/common/styles'
 import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, Alert } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
@@ -34,6 +35,7 @@ export default function home (props) {
     })
     const dispatch = useDispatch()
     const [isLoading, setIsLoading] = useState(true)
+    const [isSubmitLoading, setIsSubmitLoading] = useState(false)
     const [CCAs, setCCAs] = useState([])
     const [event, setEvent] = useState({})
     const [isModalVisible, setIsModalVisible] = useState(false)
@@ -102,6 +104,7 @@ export default function home (props) {
     ]
     const onSubmit = async data => {
         try {
+            setIsSubmitLoading(true)
             if (data.visibility == 0) {
                 delete data.visibility
             }
@@ -128,12 +131,14 @@ export default function home (props) {
             if (imageURI == null && imageChanged == true) {
                 const res3 = await axios.delete(`${URL}/event/${eventID}/deleteImage`, authenticate(store.getState().main.token))
             }
+            setIsSubmitLoading(false)
             props.navigation.reset({
                 index: 0,
                 routes: [{'name': 'ManageCCAScreen'}]
             })
         }
         catch (err) {
+            setIsSubmitLoading(false)
             Alert.alert('Changes not saved')
         }
     }
@@ -241,6 +246,7 @@ export default function home (props) {
     return (isLoaded &&
         <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss(); setShowStartPicker(false); setShowEndPicker(false)}}>
             <SafeAreaView style={page.main}>
+                {isSubmitLoading && <LoadingOverlay />}
                 <SubNavbar title='Edit Event' pressed={onBackPress} />
                 <WithLoading loadingMessage='Loading details...' isLoading={isLoading}>
                 <ScrollView>

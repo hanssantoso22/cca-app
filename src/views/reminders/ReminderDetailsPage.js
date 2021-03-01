@@ -89,6 +89,7 @@ export default function EventDetailsPage (props) {
         registerButtonWrapper: {
             flexDirection: 'column-reverse',
             paddingHorizontal: 30,
+            paddingVertical: 15
         },
     })
     const renderSchedDetails = []

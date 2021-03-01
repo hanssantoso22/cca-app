@@ -27,13 +27,13 @@ const checkboxItem = (props) => {
         activeFont: {
             color: MING[6],
             fontFamily: 'Lato_400Regular',
-            letterSpacing: 1,
+            letterSpacing: 0.5,
             fontSize: 20
         },
         inactiveFont: {
             color: GREY[3],
             fontFamily: 'Lato_400Regular',
-            letterSpacing: 1,
+            letterSpacing: 0.5,
             fontSize: 20
         },
         iconInactive: {

@@ -31,14 +31,9 @@ export default function DateTimePickerInput ( { label, onChangeText, onChangePic
             marginBottom: 15,
         },
     })
-    const normalDateTimeFormatParser = (dateObject) => {
-        const dateString = dateObject.toString()
-        const normalDate = moment(dateString).format('DD MMMM YYYY hh:mm A')
-        return normalDate
-    }
     const normalDateFormatParser = (dateObject) => {
         const dateString = dateObject.toString()
-        const normalDate = moment(dateString).format('DD MMMM YYYY')
+        const normalDate = moment(dateString).format('DD MMMM YYYY hh:mm A')
         return normalDate
     }
     return (isLoaded &&
@@ -46,7 +41,7 @@ export default function DateTimePickerInput ( { label, onChangeText, onChangePic
             <Text style={styles.inputLabel}>{label}</Text>
                 <TextInput 
                     style={{...styles.textInputContainer, ...styles.inputContent, borderColor: containerBorderColor}}
-                    value={mode == 'datetime' ? normalDateTimeFormatParser(value) : normalDateFormatParser(value)}
+                    value={normalDateFormatParser(value)}
                     onChangeText={onChangeText}
                     type='name'
                     onFocus={onFocus}

@@ -4,6 +4,7 @@ import FormData from 'form-data'
 import mime from 'mime'
 import moment from 'moment'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
+import LoadingOverlay from '../../components/common/LoadingOverlay'
 import { page, GREY, RED, marginHorizontal } from '../../components/common/styles'
 import { SafeAreaView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, Alert } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
@@ -30,6 +31,7 @@ export default function home (props) {
     })
     const dispatch = useDispatch()
     const [CCAs, setCCAs] = useState([])
+    const [isSubmitLoading, setIsSubmitLoading] = useState(false)
     const [imageURI, setImageURI] = useState(null)
     const [showStartPicker, setShowStartPicker] = useState(false)
     const [showEndPicker, setShowEndPicker] = useState(false)
@@ -94,6 +96,7 @@ export default function home (props) {
     })
     const onSubmit = async data => {
         try {
+            setIsSubmitLoading(true)
             if (data.visibility == 0) {
                 delete data.visibility
             }
@@ -116,13 +119,14 @@ export default function home (props) {
                     'Content-Type': 'multipart/form-data'
                 }})
             }
+            setIsSubmitLoading(false)
             props.navigation.reset({
                 index: 0,
                 routes: [{'name': 'ManageCCAScreen'}]
             })
         }
         catch (err) {
-            console.log(err)
+            setIsSubmitLoading(false)
             Alert.alert('Event is not created')
         }
     }
@@ -170,6 +174,7 @@ export default function home (props) {
     return (isLoaded &&
         <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss(); setShowStartPicker(false); setShowEndPicker(false)}}>
             <SafeAreaView style={page.main}>
+                {isSubmitLoading && <LoadingOverlay />}
                 <SubNavbar title='Create Event' pressed={onBackPress} />
                 <ScrollView>
                     <View style={page.main}>

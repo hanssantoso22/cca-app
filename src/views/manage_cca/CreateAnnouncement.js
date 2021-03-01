@@ -8,6 +8,7 @@ import { SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableWithoutFeedb
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import { useForm, Controller } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
+import LoadingOverlay from '../../components/common/LoadingOverlay'
 import CustomTextInput from '../../components/common/forms/TextInput'
 import MultiLineInput from '../../components/common/forms/MultiLineInput'
 import CustomPicker from '../../components/common/forms/Picker'
@@ -26,6 +27,7 @@ export default function CreateAnnouncement (props) {
     })
     const [imageURI, setImageURI] = useState(null)
     const [CCAs, setCCAs] = useState([])
+    const [isSubmitLoading, setIsSubmitLoading] = useState(false)
     const onBackPress = () => {
         props.navigation.goBack()
     }
@@ -75,6 +77,7 @@ export default function CreateAnnouncement (props) {
     const { control, handleSubmit, reset, setValue, errors } = useForm({ defaultValues })
     const onSubmit = async data => {
         try {
+            setIsSubmitLoading(true)
             if (data.visibility == 0) {
                 delete data.visibility
             }
@@ -94,12 +97,14 @@ export default function CreateAnnouncement (props) {
             }
             // const res2 = await axios.get(`${URL}/announcement/${res._id}/pushNotificationList`, authenticate(store.getState().main.token))
             // sendPushNotification(res2.data, res.announcementTitle)
+            setIsSubmitLoading(false)
             props.navigation.reset({
                 index: 0,
                 routes: [{'name': 'ManageCCAScreen'}]
             })
         }
         catch (err) {
+            setIsSubmitLoading(false)
             Alert.alert('Announcement is not created')
         }
     }
@@ -142,6 +147,7 @@ export default function CreateAnnouncement (props) {
     return (isLoaded &&
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={page.main}>
+                {isSubmitLoading && <LoadingOverlay />}
                 <SubNavbar title='Create Announcement' pressed={onBackPress} />
                 <ScrollView>
                 <View style={page.main}>

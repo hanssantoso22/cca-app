@@ -4,6 +4,7 @@ import FormData from 'form-data'
 import mime from 'mime'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import WithLoading from '../../components/hoc/withLoading'
+import LoadingOverlay from '../../components/common/LoadingOverlay'
 import { page, GREY, RED, marginHorizontal } from '../../components/common/styles'
 import { SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
@@ -28,6 +29,7 @@ export default function CreateAnnouncement (props) {
         Lato_700Bold
     })
     const [isLoading, setIsLoading] = useState(true)
+    const [isSubmitLoading, setIsSubmitLoading] = useState(false)
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [imageURI, setImageURI] = useState(null)
     const [imageUploaded, setImageUploaded] = useState(false)
@@ -83,6 +85,7 @@ export default function CreateAnnouncement (props) {
     const { control, handleSubmit, reset, setValue, errors } = useForm({ announcement })
     const onSubmit = async data => {
         try {
+            setIsSubmitLoading(true)
             if (data.visibility == 0) {
                 delete data.visibility
             }
@@ -104,12 +107,14 @@ export default function CreateAnnouncement (props) {
             if (imageURI == null && imageChanged == true) {
                 const res3 = await axios.delete(`${URL}/announcement/${announcementID}/deleteImage`, authenticate(store.getState().main.token))
             }
+            setIsSubmitLoading(false)
             props.navigation.reset({
                 index: 0,
                 routes: [{'name': 'ManageCCAScreen'}]
             })
         }
         catch (err) {
+            setIsSubmitLoading(false)
             Alert.alert('Changes not saved')
         }
     }
@@ -196,6 +201,7 @@ export default function CreateAnnouncement (props) {
     return (isLoaded &&
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={page.main}>
+                {isLoading && <LoadingOverlay />}
                 <SubNavbar title='Edit Announcement' pressed={onBackPress} />
                 <WithLoading loadingMessage='Loading details...' isLoading={isLoading}>
                 <ScrollView>

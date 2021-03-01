@@ -67,7 +67,7 @@ export default function EventDetailsPage (props) {
             fontSize: 16,
             color: GREY[4],
             textTransform: 'uppercase',
-            letterSpacing: 1,
+            letterSpacing: 0.5,
             textAlign: 'center',
             marginTop: 25,
             marginBottom: 10,
@@ -75,6 +75,7 @@ export default function EventDetailsPage (props) {
         submitButtonWrapper: {
             flexDirection: 'column-reverse',
             paddingHorizontal: 30,
+            paddingVertical: 15
         },
         commentBoxContainer: {
             marginTop: 30,

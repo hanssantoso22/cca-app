@@ -40,6 +40,8 @@ import CCAListScreen from '../../views/admin/CCAManagement/CCAList'
 import CCADetailsScreen from '../../views/admin/CCAManagement/CCADetails'
 import AddNewCCAScreen from '../../views/admin/CCAManagement/CreateNewCCA'
 import SelectManagersScreen from '../../views/admin/CCAManagement/SelectManagersPage'
+import SelectExcosScreen from '../../views/admin/CCAManagement/SelectExcosPage'
+import SelectMaincommsScreen from '../../views/admin/CCAManagement/SelectMaincommsPage'
 
 
 import { isLoggedIn, isAdmin } from '../../redux/store/store'
@@ -121,6 +123,8 @@ const AdminManageCCAStackScreen = () => (
         <AdminManageCCAStack.Screen name="CCADetailsScreen" component={CCADetailsScreen} options={{headerShown: false}}/>
         <AdminManageCCAStack.Screen name="AddNewCCAScreen" component={AddNewCCAScreen} options={{headerShown: false}}/>
         <AdminManageCCAStack.Screen name="SelectManagersScreen" component={SelectManagersScreen} options={{headerShown: false}}/>
+        <AdminManageCCAStack.Screen name="SelectExcosScreen" component={SelectExcosScreen} options={{headerShown: false}}/>
+        <AdminManageCCAStack.Screen name="SelectMaincommsScreen" component={SelectMaincommsScreen} options={{headerShown: false}}/>
     </AdminManageCCAStack.Navigator>
 )
 
@@ -136,10 +140,10 @@ const RootController = () => {
                 drawerLockMode= "locked-closed"
                 disableGestures= {true}
                 drawerWidth= {screenWidth - 60} >
-                <AdminDrawerStack.Screen name="AdminProfileScreen" component={AdminProfileScreen} />
                 <AdminManageUsersStack.Screen name="AdminManageUserScreen" component={AdminManageUsersStackScreen} />
                 <AdminManageCCAStack.Screen name="AdminManageCCAScreen" component={AdminManageCCAStackScreen} />
                 <AdminDrawerStack.Screen name="LogoutScreen" component={LoginScreen} />
+                <AdminDrawerStack.Screen name="AdminProfileScreen" component={AdminProfileScreen} />
             </AdminDrawerStack.Navigator>
         ) : (
             <DrawerStack.Navigator initialRouteName="HomeStackScreen"

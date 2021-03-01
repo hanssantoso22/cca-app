@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, SafeAreaView, Dimensions } from 'react-native'
 import { Avatar } from 'react-native-elements'
 import { FlatList, TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import ItemCard from './itemCard'
-import { navigateToPage, logout } from '../../../../redux/reducers/mainSlice'
-import { useDispatch } from 'react-redux'
+import { navigateToPage, logout, setUserDetails } from '../../../../redux/reducers/mainSlice'
+import { useDispatch, useSelector } from 'react-redux'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 
 import { MING, GREY } from '../../styles'
@@ -13,9 +13,8 @@ import {URL, authenticate} from '../../../../api/config'
 import store from '../../../../redux/store/store' 
 
 export default function SideDrawer (props) {
-    const [user, setUser] = useState('')
+    const [user, setUser] = useState({})
     const dispatch = useDispatch()
-
     const navigateToScreen  = (navScreen) => {
         if (navScreen=='LogoutScreen') {
             dispatch (logout(store.getState().main.token))
@@ -74,6 +73,7 @@ export default function SideDrawer (props) {
         async function loadUser () {
             try {
                 const res = await axios.get(`${URL}/users/profile`, authenticate(store.getState().main.token))
+                dispatch(setUserDetails(res.data))
                 setUser(res.data)
             } catch (err) {
                 console.log(err)

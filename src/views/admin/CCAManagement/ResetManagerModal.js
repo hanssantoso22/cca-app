@@ -19,7 +19,7 @@ const createNewModal = ({ isModalVisible, closeModal, confirmHandler, cancelHand
             fontSize: 20,
             color: GREY[6],
             textAlign: 'center',
-            letterSpacing: 1,
+            letterSpacing: 0.5,
         },
         subtitle: {
             fontFamily: 'Lato_400Regular',

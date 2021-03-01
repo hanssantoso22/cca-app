@@ -1,5 +1,6 @@
 import {Platform} from 'react-native'
-export const URL = Platform.OS === 'ios' ? 'http://localhost:5000': 'http://10.0.2.2:5000'
+// export const URL = Platform.OS === 'ios' ? 'http://localhost:5000': 'http://10.0.2.2:5000'
+export const URL = 'http://54.179.18.138:5000'
 export const gapiURL = 'https://www.googleapis.com'
 export const gapiKey = 'AIzaSyCy8obSs2LdvaWPzSlTlUnKyLEsXTwo284'
 export const authenticate = token => ({headers: {Authorization: `Bearer ${token}`}})

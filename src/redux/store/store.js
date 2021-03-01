@@ -20,7 +20,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
-    whiteList: ['token','isLoggedIn','isAdmin', 'askPushNotification'],
+    whiteList: ['token','isLoggedIn','isAdmin', 'askPushNotification', 'user'],
     blacklist: ['activeScreen'],
     version: 1,
     stateReconciler: autoMergeLevel1,

@@ -80,10 +80,6 @@ export default function ProfilePage (props) {
             color: RED[5],
             marginBottom: 15
         },
-        bottomContainer: {
-            flexDirection: 'column-reverse',
-            paddingHorizontal: 15,
-        },
         fieldName: {
             fontFamily: 'Lato_400Regular',
             fontSize: 13,

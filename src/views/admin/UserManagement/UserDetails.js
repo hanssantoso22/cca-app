@@ -42,6 +42,7 @@ export default function UserList (props) {
         bottomContainer: {
             flexDirection: 'column-reverse',
             paddingHorizontal: 15,
+            paddingVertical: 15,
         },
         rowContainer: {
             flexDirection: 'row',
