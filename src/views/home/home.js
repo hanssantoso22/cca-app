@@ -83,7 +83,7 @@ export default function home (props) {
                 setIsLoading(false)
                 // await registerForPushNotifications()
             } catch (err) {
-                console.log(err)
+                
             }
         }
         fetchData()

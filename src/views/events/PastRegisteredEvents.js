@@ -47,7 +47,7 @@ export default function PastRegisteredEvents (props) {
             const res = await axios.delete(`${URL}/users/pastEvent/${eventID}/delete`, authenticate(store.getState().main.token))
             setDisplayModal(false)
         } catch (err) {
-            console.log(err)
+            
         }
     }
     const attendedHandler = (eventID) => {
@@ -89,7 +89,7 @@ export default function PastRegisteredEvents (props) {
                 in Co-Curricular Activities. Hereby, this is the summary of your active contribution in the School of Electrical and Electronic Engineering.</p>
             `
             if (dataRes.pastCCAs.length > 0) {
-                htmlScript+=`<h5>CCA Participation</h5><table cellspacing="0" border="2"><tr><th class="col-1">Organization</th><th class="col-2">Period</th><th class="col-3">Position</th><th>Description</th></tr>`
+                htmlScript+=`<h5>Leadership Activities</h5><table cellspacing="0" border="2"><tr><th class="col-1">Organization</th><th class="col-2">Period</th><th class="col-3">Position</th><th>Description</th></tr>`
                 dataRes.pastCCAs.forEach(pastCCA => {
                     const starting = moment(pastCCA.start,`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`).format('MMM YYYY')
                     const ending = moment(pastCCA.end,`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`).format('MMM YYYY')
@@ -140,7 +140,6 @@ export default function PastRegisteredEvents (props) {
             Alert.alert('Download successful')
             
         } catch (err) {
-            console.log(err)
             setIsSubmitLoading(false)
             Alert.alert('Download failed')
         }
@@ -152,7 +151,7 @@ export default function PastRegisteredEvents (props) {
                 setDataRes(res.data)
                 setIsLoading(false)
             } catch (err) {
-                console.log(err)
+                Alert.alert('Loading details failed')
             }
         }
         loadPastEvents()

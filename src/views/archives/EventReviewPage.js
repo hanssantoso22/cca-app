@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import WithLoading from '../../components/hoc/withLoading'
 import { page, marginHorizontal, font } from '../../components/common/styles'
-import { SafeAreaView, View, Text, StyleSheet, FlatList } from 'react-native'
+import { SafeAreaView, View, Text, StyleSheet, FlatList, Alert } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import ReviewCard from '../../components/archives/ReviewCard'
 
@@ -57,7 +57,7 @@ export default function PastEventReviewPage (props) {
                 setReviews(res.data.reviews)
                 setIsLoading(false)
             } catch (err) {
-                console.log(err)
+                Alert.alert('Loading events failed')
             }
         }
         loadEvent()

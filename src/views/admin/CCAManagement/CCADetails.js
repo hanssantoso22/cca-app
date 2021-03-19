@@ -156,7 +156,6 @@ export default function CCADetails (props) {
         data.managers = store.getState().admin.selectedUserIds
         data.executives = store.getState().admin.selectedExcoIds
         data.maincomms = store.getState().admin.selectedMaincommIds 
-        console.log(data)
         async function submitData () {
             try {
                 const res = await axios.patch(`${URL}/CCA/${_id}/edit`, data, authenticate(store.getState().main.token))
@@ -253,7 +252,6 @@ export default function CCADetails (props) {
         setShowEndCommitteeModal(false)
     }
     const confirmEndCommitteeHandler = async (ccaID, data) => {
-        console.log(data)
         try {
             const res = await axios.patch(`${URL}/CCA/${ccaID}/endCommittee`, data, authenticate(store.getState().main.token))
             setShowEndCommitteeModal(false)
@@ -295,7 +293,7 @@ export default function CCADetails (props) {
                 }
                 setIsLoading(false)
             } catch (err) {
-                console.log('Error',err)
+                Alert.alert('Loading CCA error')
             }
         }
         loadCCA()

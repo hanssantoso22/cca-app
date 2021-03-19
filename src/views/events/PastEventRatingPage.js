@@ -88,7 +88,7 @@ export default function EventDetailsPage (props) {
                 setEvent(res.data)
                 setIsLoading(false)
             } catch (err) {
-                console.log(err)
+                Alert.alert('Loading details failed')
             }
         }
         loadEvent()

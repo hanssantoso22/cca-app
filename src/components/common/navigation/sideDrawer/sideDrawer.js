@@ -76,7 +76,7 @@ export default function SideDrawer (props) {
                 dispatch(setUserDetails(res.data))
                 setUser(res.data)
             } catch (err) {
-                console.log(err)
+                
             }
         }
         loadUser() 

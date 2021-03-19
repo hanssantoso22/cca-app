@@ -113,7 +113,6 @@ export default function CreateNewCCA (props) {
     const resetHandler = ()=> {
         reset(defaultValues)
         dispatch(editSelectedUsers({selectedUsers: [], selectedUserIds: []}))
-        console.log('reset')
     }
 
     return (isLoaded &&

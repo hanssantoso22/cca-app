@@ -3,7 +3,7 @@ import moment from 'moment'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import WithLoading from '../../components/hoc/withLoading'
 import { page, GREY, marginHorizontal, font, MING } from '../../components/common/styles'
-import { SafeAreaView, View, Text, StyleSheet, ScrollView, TouchableWithoutFeedback, Image } from 'react-native'
+import { SafeAreaView, View, Text, StyleSheet, ScrollView, TouchableWithoutFeedback, Image, Alert } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular, Lato_400Regular_Italic } from '@expo-google-fonts/lato'
 import PrimaryButton from '../../components/common/buttons/PrimaryBig'
 import PrimaryDisabled from '../../components/common/buttons/PrimaryBigDisabled'
@@ -116,7 +116,7 @@ export default function EventDetailsPage (props) {
             const res = await axios.post(`${URL}/event/${eventID}/register`, {}, authenticate (store.getState().main.token))
             setDisplayModal(true)
         } catch (err) {
-            console.log(err)
+
         }
     }
     const submitModalHandler = () => {
@@ -133,7 +133,7 @@ export default function EventDetailsPage (props) {
                 setDetails(res.data)
                 setIsLoading(false)
             } catch (err) {
-                console.log(err)
+                Alert.alert('Loading details failed')
             }
         }
         loadEventDetails()

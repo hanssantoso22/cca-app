@@ -130,7 +130,6 @@ export default function CreateAnnouncement (props) {
         setValue("visibility","")
         setImageURI(null)
         setImageUploaded(false)
-        console.log('reset')
     }
     const pickImageHandler = async () => {
         try {
@@ -145,7 +144,7 @@ export default function CreateAnnouncement (props) {
                 setImageChanged(true)
             }
         } catch (err) {
-            console.log(err)
+            
         }
     }
     const removeImageHandler = () => {
@@ -193,7 +192,7 @@ export default function CreateAnnouncement (props) {
                 reset(res2.data)
                 setIsLoading(false)
             } catch (err) {
-                console.log('Retrieve CCA failed', err)
+                Alert.alert('Retrieving CCA failed')
             }
         }
         loadManagedCCA()

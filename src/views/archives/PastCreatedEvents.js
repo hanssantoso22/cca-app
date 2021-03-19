@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useFocusEffect } from '@react-navigation/native'
 import { page, marginHorizontal, GREY } from '../../components/common/styles'
-import { View, StyleSheet, FlatList } from 'react-native'
+import { View, StyleSheet, FlatList, Alert } from 'react-native'
 import WithLoading from '../../components/hoc/withLoading'
 import NoItemLoaded from '../../components/common/NoItemLoaded'
 import PastEventCard from '../../components/archives/PastEventCard'
@@ -47,7 +47,7 @@ export default function PastCreatedEvents (props) {
                 })
                 setManagedCCA(ccaArray)
             } catch (err) {
-                console.log(err)
+                Alert.alert('Loading CCA failed')
             }
         }
         loadManagedCCA()
@@ -60,7 +60,7 @@ export default function PastCreatedEvents (props) {
                     setPastEvents(res.data)
                     setIsLoading(false)
                 } catch (err) {
-                    console.log(err)
+                    Alert.alert('Loading events failed')
                 }
             }
             loadCreatedEvents()

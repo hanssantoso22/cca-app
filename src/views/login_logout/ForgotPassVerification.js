@@ -61,10 +61,9 @@ export default function ForgotPassVerification (props) {
     const backHandler = async () => {
         try {
             const res = await axios.patch(`${URL}/users/forget/resetToken`, {email})
-            console.log(res.data)
             props.navigation.navigate('LoginScreen')
         } catch (err) {
-            console.log(err)
+            
         }
     }
     return (isLoaded &&

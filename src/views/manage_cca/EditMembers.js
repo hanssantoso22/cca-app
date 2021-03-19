@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, SafeAreaView, FlatList, StyleSheet, ScrollView } from 'react-native'
+import { View, SafeAreaView, FlatList, StyleSheet, ScrollView, Alert } from 'react-native'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import { useDispatch, useSelector } from 'react-redux'
 import { editSelectedUsers } from '../../redux/reducers/AdminSlice'
@@ -48,7 +48,7 @@ export default function (props) {
                 })
                 dispatch(editSelectedUsers({selectedUsers: [], selectedUserIds: []}))
             } catch (err) {
-                console.log(err)
+                
             }
         }
         editMembers()
@@ -99,7 +99,7 @@ export default function (props) {
                 setFilteredUsers(res.data)
                 dispatch(editSelectedUsers({selectedUsers: memberNames, selectedUserIds: memberIDs}))
             } catch (err) {
-                console.log(err)
+                Alert.alert('Loading users failed')
             }
         }
         loadUsers()

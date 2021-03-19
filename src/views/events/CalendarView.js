@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useFocusEffect } from '@react-navigation/native'
 import { page, PURPLE, MING, marginHorizontal } from '../../components/common/styles'
-import { View, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet, Text, Alert } from 'react-native'
 import { Agenda } from 'react-native-calendars'
 import { useFonts, Lato_400Regular, Lato_700Bold, Lato_400Regular_Italic } from '@expo-google-fonts/lato'
 import moment from 'moment'
@@ -104,7 +104,7 @@ export default function EventsCalendarView (props) {
                 const res = await axios.get(`${URL}/events`, authenticate(store.getState().main.token))
                 setImportantDates(res.data)
             } catch (err) {
-                console.log(err)
+                Alert.alert('Loading events failed')
             }
         }
         loadEvents()

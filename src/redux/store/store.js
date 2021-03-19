@@ -20,11 +20,10 @@ import AsyncStorage from '@react-native-community/async-storage'
 const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
-    whiteList: ['token','isLoggedIn','isAdmin', 'askPushNotification', 'user'],
+    whiteList: ['token','isLoggedIn','isAdmin', 'user'],
     blacklist: ['activeScreen'],
     version: 1,
     stateReconciler: autoMergeLevel1,
-    // migrate: createMigrate(migrations)
 }
 const store = configureStore({
     reducer: {

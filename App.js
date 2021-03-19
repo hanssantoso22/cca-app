@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Image, View, Text } from 'react-native'
-import { PURPLE } from './src/components/common/styles'
-import AppLogo from './src/assets/common/logo.png'
+import { Alert } from 'react-native'
 import * as SplashScreen from 'expo-splash-screen'
 import RootController from './src/components/drawer/RootController'
 import { Provider } from 'react-redux'
@@ -34,7 +32,7 @@ export default function App() {
           setIsAppReady(true)
         }, 700)
       } catch (error) {
-        console.log(error)
+        Alert.alert('App error')
       }
     }
     loadApp()

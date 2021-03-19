@@ -139,7 +139,7 @@ export default function ProfilePage (props) {
             try {
                 const res = await axios.patch(`${URL}/users/profile/removeAvatar`, {}, authenticate(store.getState().main.token))
             } catch (err) {
-                console.log(err)
+                Alert.alert('Profile picture is not removed')
             }
         }
         removePhoto()
@@ -169,7 +169,7 @@ export default function ProfilePage (props) {
                     setIsPhotoChanged(!isPhotoChanged)
                 }
             } catch (err) {
-                console.log(err)
+                
             }
         }
         pickImage()
@@ -190,7 +190,6 @@ export default function ProfilePage (props) {
             }
             setShowRemoveBiometricsModal(false)
         } catch (err) {
-            console.log(err)
             Alert.alert('Removing biometrics authentication failed')
         }
     }
@@ -214,7 +213,6 @@ export default function ProfilePage (props) {
                 }
             } catch (err) {
                 Alert.alert('Updating profile failed')
-                console.log(err)
             }
         }
         submitData()
@@ -226,7 +224,7 @@ export default function ProfilePage (props) {
             setUser(res.data)
             reset(res.data)
         } catch (err) {
-            console.log(err)
+            
         }
         setRefreshing(true);
         wait(500).then(() => setRefreshing(false));
@@ -240,7 +238,7 @@ export default function ProfilePage (props) {
                 reset(res.data)
                 setIsLoading(false)
             } catch (err) {
-                console.log(err)
+                Alert.alert('Loading users failed')
             }
         }
         loadUser()

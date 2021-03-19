@@ -58,7 +58,6 @@ export default function Login (props) {
             }
         } catch (err) {
             Alert.alert("Login failed")
-            console.log(err)
         }
     }
     const styles = StyleSheet.create({
@@ -111,7 +110,7 @@ export default function Login (props) {
                 const supportedAuthentication = await LocalAuthentication.supportedAuthenticationTypesAsync()
                 setAuthenticationMethods(supportedAuthentication)
             } catch (err) {
-                console.log(err)
+                
             }
         }
         loadAuthenticationMethods()

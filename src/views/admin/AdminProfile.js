@@ -121,7 +121,6 @@ export default function ProfilePage (props) {
             }
             setShowRemoveBiometricsModal(false)
         } catch (err) {
-            console.log(err)
             Alert.alert('Removing biometrics authentication failed')
         }
     }
@@ -145,7 +144,6 @@ export default function ProfilePage (props) {
                 }
             } catch (err) {
                 Alert.alert('Updating profile failed')
-                console.log(err)
             }
         }
         submitData()
@@ -158,7 +156,7 @@ export default function ProfilePage (props) {
                 setUser(res.data)
                 setIsLoading(false)
             } catch (err) {
-                console.log(err)
+                Alert.alert('Loading user failed')
             }
         }
         loadUser()

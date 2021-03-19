@@ -53,7 +53,6 @@ export const verifyLogin = (email,password) => async dispatch => {
         }))
     } catch (err) {
         Alert.alert('Login failed!')
-        console.log(err)
     }
 }
 //Similar to verifyLogin, but for Biometrics Registration purpose
@@ -69,7 +68,6 @@ export const registerCredentials = (email,password) => async dispatch => {
         }))
     } catch (err) {
         Alert.alert('Biometrics authentication setup failed')
-        console.log(err)
     }
 }
 export const signUp = (data) => async dispatch => {
@@ -97,7 +95,7 @@ export const logout = (userToken) => async dispatch => {
         const token = await axios.get(`${URL}/users/logout`, authenticate(userToken))
         dispatch(logoutAccount())
     } catch (err) {
-        console.log('Logout failed!',err.request)
+        Alert.alert('Logout failed')
     }
 }
 export const { navigateToPage, login, logoutAccount, changeAskPushNotification, setUserDetails } = drawerSlice.actions

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, SafeAreaView, FlatList, StyleSheet } from 'react-native'
+import { View, SafeAreaView, FlatList, StyleSheet, Alert } from 'react-native'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import { useDispatch, useSelector } from 'react-redux'
 import { editExcos } from '../../../redux/reducers/AdminSlice'
@@ -71,13 +71,12 @@ export default function (props) {
     useEffect (() => {
         async function loadUsers() {
             try {
-                console.log('fetching')
                 const res = await axios.get(`${URL}/users`, authenticate(store.getState().main.token))
                 setUsers(res.data)
                 setFilteredUsers(res.data)
                 setIsLoading(false)
             } catch (err) {
-                console.log(err)
+                Alert.alert('Loading users failed')
             }
         }
         loadUsers()

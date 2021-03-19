@@ -29,7 +29,7 @@ export default function ({ message, color }) {
             color: fontColor
         }
     })
-    return (
+    return (isLoaded &&
         <View style={styles.container}>
             <Text style={styles.icon}>check_circle_outline</Text>
             <Text style={styles.message}>{message}</Text>

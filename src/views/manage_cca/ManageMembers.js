@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { page, marginHorizontal, GREY } from '../../components/common/styles'
 import { useFocusEffect } from '@react-navigation/native'
 import { useFonts } from '@expo-google-fonts/lato'
-import { View, Text, StyleSheet, FlatList, TouchableWithoutFeedback } from 'react-native'
+import { View, Text, StyleSheet, FlatList, TouchableWithoutFeedback, Alert } from 'react-native'
 import WithLoading from '../../components/hoc/withLoading'
 import NoItemLoaded from '../../components/common/NoItemLoaded'
 import CustomPicker from '../../components/common/forms/Picker'
@@ -63,7 +63,7 @@ export default function MembersTab (props) {
                 })
                 setManagedCCA(ccaArray)
             } catch (err) {
-                console.log(err)
+                
             }
         }
         loadManagedCCA()
@@ -76,7 +76,7 @@ export default function MembersTab (props) {
                     setMembers(res.data.members)
                     setIsLoading(false)
                 } catch (err) {
-                    console.log('Load member error!',err)
+                    Alert.alert('Loading members error')
                 }
             }
             loadMembers()

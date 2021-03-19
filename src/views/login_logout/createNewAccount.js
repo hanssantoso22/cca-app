@@ -83,7 +83,6 @@ export default function createNewAccount (props) {
         reset(defaultValues)
         setValue("year","")
         setValue("faculty","")
-        console.log('reset')
     }
     return (isLoaded &&
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>

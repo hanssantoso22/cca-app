@@ -3,7 +3,7 @@ import * as Google from 'expo-google-app-auth'
 import moment from 'moment'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import { page, GREY, marginHorizontal, font } from '../../components/common/styles'
-import { SafeAreaView, View, Text, StyleSheet, ScrollView, FlatList } from 'react-native'
+import { SafeAreaView, View, Text, StyleSheet, ScrollView, FlatList, Alert } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import PrimaryButton from '../../components/common/buttons/PrimaryBig'
 import WithLoading from '../../components/hoc/withLoading'
@@ -33,7 +33,7 @@ const createEvent = async (token, details) => {
         }
         const res3 = await axios.post(`${gapiURL}/calendar/v3/calendars/primary/events?key=${gapiKey}`, event, {headers: {Authorization: `Bearer ${token}`}})
     } catch (err) {
-        console.log(err.name, err.message)
+        Alert.alert('Adding event to calendar failed')
     }
 }
 export default function EventDetailsPage (props) {
@@ -134,14 +134,14 @@ export default function EventDetailsPage (props) {
                     await createEvent(gToken, details)
                     setIsModalVisible(true)
                 }
-                //If token expires, it will prompt users to login again. Need to test this part!
+                //If token expires, it will prompt users to login again
                 catch (err) {
                     await AsyncStorage.setItem('googleOAuth', null)
                     addToCalendarHandler()
                 }
             }
         } catch (err) {
-            console.log(err)
+            
         }
     }
     const closeModalHandler = () => {
@@ -159,7 +159,7 @@ export default function EventDetailsPage (props) {
                 setDetails(res.data)
                 setIsLoading(false)
             } catch (err) {
-                console.log(err)
+                Alert.alert('Loading events failed')
             }
         }
         loadEvent()

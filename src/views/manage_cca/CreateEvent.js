@@ -152,7 +152,7 @@ export default function home (props) {
                 setImageURI(result.uri)
             }
         } catch (err) {
-            console.log(err)
+            
         }
     }
     useEffect(() => {
@@ -166,7 +166,7 @@ export default function home (props) {
                 })
                 setCCAs(ccaArray)
             } catch (err) {
-                console.log('Retrieve CCA failed', err)
+                Alert.alert('Retrieve CCA failed')
             }
         }
         loadManagedCCA()

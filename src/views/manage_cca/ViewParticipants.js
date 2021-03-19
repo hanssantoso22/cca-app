@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import { page, GREY, marginHorizontal } from '../../components/common/styles'
-import { SafeAreaView, StyleSheet, View, FlatList } from 'react-native'
+import { SafeAreaView, StyleSheet, View, FlatList, Alert } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import ListCard from '../../components/common/ListCard'
 
@@ -51,7 +51,7 @@ export default function home (props) {
                 const res = await axios.get(`${URL}/event/${props.route.params.eventID}/details`, authenticate(store.getState().main.token))
                 setParticipants(res.data.participants)
             } catch (err) {
-                console.log('Retrieve participants failed', err)
+                Alert.alert('Retrieve participants failed')
             }
         }
         loadParticipants()

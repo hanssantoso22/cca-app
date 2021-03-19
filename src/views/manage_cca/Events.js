@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { page, marginHorizontal, GREY } from '../../components/common/styles'
 import { useFocusEffect } from '@react-navigation/native'
-import { View, Text, StyleSheet, FlatList } from 'react-native'
+import { View, Text, StyleSheet, FlatList, Alert } from 'react-native'
 import WithLoading from '../../components/hoc/withLoading'
 import NoItemLoaded from '../../components/common/NoItemLoaded'
 import CreatedEventCard from '../../components/manage_cca/CreatedAnnouncementCard'
@@ -47,7 +47,7 @@ export default function EventsTab (props) {
                 routes: [{'name': 'ManageCCAScreen'}]
             })
         } catch (err) {
-            console.log(err)
+            
         }
     }
     const closeModalHandler = () => {
@@ -73,7 +73,7 @@ export default function EventsTab (props) {
                 })
                 setManagedCCA(ccaArray)
             } catch (err) {
-                console.log(err)
+                
             }
         }
         loadManagedCCA()
@@ -86,7 +86,7 @@ export default function EventsTab (props) {
                     setCreatedEvents(res.data)
                     setIsLoading(false)
                 } catch (err) {
-                    console.log(err)
+                    Alert.alert('Loading events failed')
                 }
             }
             loadCreatedEvents()

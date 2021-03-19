@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, SafeAreaView, FlatList, StyleSheet } from 'react-native'
+import { View, SafeAreaView, FlatList, StyleSheet, Alert } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import { page, marginHorizontal, GREY } from '../../../components/common/styles'
@@ -44,7 +44,7 @@ export default function UserList (props) {
                     setUserList(res.data)
                     setIsLoading(false)
                 } catch (err) {
-                    console.log(err)
+                    Alert.alert('Loading users failed')
                 }
             }
             loadUsers()

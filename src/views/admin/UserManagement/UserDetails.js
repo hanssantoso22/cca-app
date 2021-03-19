@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { ScrollView, View, Text, StyleSheet, SafeAreaView } from 'react-native'
+import { ScrollView, View, Text, StyleSheet, SafeAreaView, Alert } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import { page, marginHorizontal, GREY } from '../../../components/common/styles'
 import SubNavbar from '../../../components/common/navigation/navbar/SubNavbar'
@@ -83,7 +83,7 @@ export default function UserList (props) {
             setShowModal(false)
             props.navigation.goBack()
         } catch (err) {
-            console.log(err)
+            
         }
     }
     useEffect(()=>{
@@ -93,7 +93,7 @@ export default function UserList (props) {
                 setUser(res.data)
                 setIsLoading(false)
             } catch (err) {
-                console.log(err)
+                Alert.alert('Loading users failed')
             }
         }
         loadUser() 

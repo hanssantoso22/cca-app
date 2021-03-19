@@ -179,7 +179,7 @@ export default function home (props) {
                 setImageChanged(true)
             }
         } catch (err) {
-            console.log(err)
+            
         }
     }
     const removeImageHandler = () => {
@@ -205,7 +205,7 @@ export default function home (props) {
                 routes: [{'name': 'ManageCCAScreen'}]
             })
         } catch (err) {
-            console.log(err)
+            
         }
     }
     const closeModalHandler = () => {
@@ -238,7 +238,7 @@ export default function home (props) {
                 reset(res2.data)
                 setIsLoading(false)
             } catch (err) {
-                console.log('Retrieve CCA failed', err)
+                Alert.alert('Retrieve CCA failed')
             }
         }
         loadManagedCCA()

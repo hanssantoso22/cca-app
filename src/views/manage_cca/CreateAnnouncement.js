@@ -113,7 +113,6 @@ export default function CreateAnnouncement (props) {
         setValue("organizer","")
         setValue("visibility","")
         setImageURI(null)
-        console.log('reset')
     }
     const pickImageHandler = async () => {
         try {
@@ -127,7 +126,7 @@ export default function CreateAnnouncement (props) {
                 setImageURI(result.uri)
             }
         } catch (err) {
-            console.log(err)
+            
         }
     }
     useEffect(() => {
@@ -139,7 +138,7 @@ export default function CreateAnnouncement (props) {
                 })
                 setCCAs(ccaArray)
             } catch (err) {
-                console.log('Retrieve CCA failed', err)
+                Alert.alert('Retrieving CCA failed')
             }
         }
         loadManagedCCA()

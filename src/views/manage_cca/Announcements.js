@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { page, marginHorizontal, GREY } from '../../components/common/styles'
-import { View, StyleSheet, FlatList } from 'react-native'
+import { View, StyleSheet, FlatList, Alert } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import CreatedAnnouncementCard from '../../components/manage_cca/CreatedAnnouncementCard'
 import DeleteAnnouncementModal from './DeleteAnnouncementModal'
@@ -47,7 +47,7 @@ export default function AnnouncementsTab (props) {
                 routes: [{'name': 'ManageCCAScreen'}]
             })
         } catch (err) {
-            console.log(err)
+            Alert.alert('Deleting image failed')
         }
     }
     const closeModalHandler = () => {
@@ -73,7 +73,7 @@ export default function AnnouncementsTab (props) {
                 })
                 setManagedCCA(ccaArray)
             } catch (err) {
-                console.log(err)
+                
             }
         }
         loadManagedCCA()
@@ -86,7 +86,7 @@ export default function AnnouncementsTab (props) {
                     setCreatedAnnouncements(res.data)
                     setIsLoading(false)
                 } catch (err) {
-                    console.log(err)
+                    Alert.alert('Loading announcements failed')
                 }
             }
             loadCreatedAnnouncements()

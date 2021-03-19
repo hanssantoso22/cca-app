@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { page, marginHorizontal, GREY } from '../../components/common/styles'
-import { View, StyleSheet, FlatList } from 'react-native'
+import { View, StyleSheet, FlatList, Alert } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import WithLoading from '../../components/hoc/withLoading'
 import NoItemLoaded from '../../components/common/NoItemLoaded'
@@ -42,7 +42,7 @@ export default function PastCreatedAnnouncements (props) {
                 })
                 setManagedCCA(ccaArray)
             } catch (err) {
-                console.log(err)
+                Alert.alert('Loading managed CCA failed')
             }
         }
         loadManagedCCA()
@@ -55,7 +55,7 @@ export default function PastCreatedAnnouncements (props) {
                     setPastAnnouncements(res.data)
                     setIsLoading(false)
                 } catch (err) {
-                    console.log(err)
+                    Alert.alert('Loading announcements failed')
                 }
             }
             loadCreatedAnnouncements()
