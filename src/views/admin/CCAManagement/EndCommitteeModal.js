@@ -23,8 +23,6 @@ const createNewModal = ({ isModalVisible, closeModal, confirmHandler, cancelHand
     })
     const [showStartPicker, setShowStartPicker] = useState(false)
     const [showEndPicker, setShowEndPicker] = useState(false)
-    const [starting, setStarting] = useState(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`))
-    const [ending, setEnding] = useState(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`))
     const styles = StyleSheet.create ({
         title: {
             fontFamily: 'Lato_700Bold',
@@ -83,6 +81,7 @@ const createNewModal = ({ isModalVisible, closeModal, confirmHandler, cancelHand
                             label='Start*'
                             mode='date'
                             value={store.getState().createEvent.startDate}
+                            minimumDate={moment().subtract(1,'year').format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)}
                             onFocus={()=>setShowStartPicker(true)}
                             showPicker={showStartPicker}
                             onChangePicker={(event, itemValue) => {

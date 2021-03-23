@@ -12,7 +12,6 @@ export const drawerSlice = createSlice({
         isAdmin: false,
         isLoggedIn: false,
         token: '',
-        askPushNotification: false,
         user: {}
     },
     reducers: {
@@ -33,9 +32,6 @@ export const drawerSlice = createSlice({
         logoutAccount (state,action) {
             state.isLoggedIn = false
             state.isAdmin = false
-        },
-        changeAskPushNotification (state, action) {
-            state.askPushNotification = action.payload
         },
         setUserDetails (state, action) {
             state.user = action.payload
@@ -98,4 +94,4 @@ export const logout = (userToken) => async dispatch => {
         Alert.alert('Logout failed')
     }
 }
-export const { navigateToPage, login, logoutAccount, changeAskPushNotification, setUserDetails } = drawerSlice.actions
+export const { navigateToPage, login, logoutAccount, setUserDetails } = drawerSlice.actions

@@ -135,9 +135,6 @@ export default function CreateAnnouncement (props) {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
-                allowsEditing: true,
-                maxWidth: 1000,
-                maxHeight: 1000,
             })
             if (result.cancelled==false) {
                 setImageURI(result.uri)
@@ -220,7 +217,6 @@ export default function CreateAnnouncement (props) {
                                     label='Announcement Title*'
                                     onChangeText={text=>{onChange(text)}}
                                     value={value}
-                                    maxLength={40}
                                     type='name'
                                 />
                             )}

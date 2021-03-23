@@ -84,6 +84,7 @@ export default function PastRegisteredEvents (props) {
                     }
                 </style>
                 <center><h2>School of Eletrical and Electronic Engineering</h2></center><br>
+                <p>${moment().format('DD MMM YYYY')}</p>
                 <p>Dear ${user.fname},</p>
                 <p>We would like to thank you for your participation in the events conducted by the School of Electrical and Electronic Engineering, and active contribution
                 in Co-Curricular Activities. Hereby, this is the summary of your active contribution in the School of Electrical and Electronic Engineering.</p>

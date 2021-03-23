@@ -144,9 +144,6 @@ export default function home (props) {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
-                allowsEditing: true,
-                maxWidth: 1000,
-                maxHeight: 1000,
             })
             if (result.cancelled==false) {
                 setImageURI(result.uri)
@@ -194,7 +191,6 @@ export default function home (props) {
                                         label='Event Name*'
                                         onChangeText={text=>{onChange(text)}}
                                         value={value}
-                                        maxLength={40}
                                         type='name'
                                     />
                                   )}
@@ -218,7 +214,8 @@ export default function home (props) {
                                         onFocus={()=>setShowStartPicker(true)}
                                         showPicker={showStartPicker}
                                         onChangePicker={(event,itemValue) => {
-                                            const val = moment(itemValue).format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)                
+                                            const val = moment(itemValue).format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)
+                                            console.log(val)           
                                             dispatch(changeStartDate(val))
                                             dispatch(changeEndDate(val))
                                         }}

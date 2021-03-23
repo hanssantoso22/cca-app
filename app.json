@@ -2,7 +2,7 @@
   "expo": {
     "name": "cca-app",
     "slug": "cca-app",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./src/assets/common/icon.png",
     "splash": {
@@ -20,7 +20,8 @@
       "infoPlist": {
         "NSFaceIDUsageDescription": "Expo Authentication with TouchID or FaceID"
       },
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ekskul.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"

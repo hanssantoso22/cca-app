@@ -3,7 +3,7 @@ import * as Google from 'expo-google-app-auth'
 import moment from 'moment'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
 import { page, GREY, marginHorizontal, font } from '../../components/common/styles'
-import { SafeAreaView, View, Text, StyleSheet, ScrollView, FlatList, Alert } from 'react-native'
+import { SafeAreaView, View, Text, StyleSheet, ScrollView, Image, Alert } from 'react-native'
 import { useFonts, Lato_700Bold, Lato_400Regular } from '@expo-google-fonts/lato'
 import PrimaryButton from '../../components/common/buttons/PrimaryBig'
 import WithLoading from '../../components/hoc/withLoading'
@@ -57,8 +57,17 @@ export default function EventDetailsPage (props) {
 }
     const styles = StyleSheet.create ({
         imageWrapper: {
-            marginVertical: 5,
+            marginTop: 5,
+            marginBottom: 10,
+            marginHorizontal: 30,
             alignItems: 'center',
+            height: 'auto',
+        },
+        image: {
+            flex: 1,
+            resizeMode: 'contain',
+            width: '100%',
+            height: 300,
         },
         pageTitle: {
             fontFamily: 'Lato_700Bold',
@@ -170,7 +179,9 @@ export default function EventDetailsPage (props) {
             <WithLoading isLoading={isLoading} loadingMessage='Loading details...'>
             <ScrollView>
                 <View style={page.main}>
-                    <View style={styles.imageWrapper}></View>
+                    <View style={styles.imageWrapper}>
+                        <Image style={{...styles.image, height: details.image==null ? 0 : 300}} source={{uri: details.image}} />
+                    </View>
                     <Text style={{...font.articleTitle,...styles.pageTitle}}>{details.eventName}</Text>
                     <View style={styles.scheduleWrapper}>
                         {renderSchedDetails}

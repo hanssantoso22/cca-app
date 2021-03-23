@@ -111,8 +111,8 @@ export default function home (props) {
             if (data.allowedParticipants == 0) {
                 delete data.allowedParticipants
             }
-            data.startTime = store.getState().startDate
-            data.endTime = store.getState().endDate
+            data.startTime = store.getState().createEvent.startDate
+            data.endTime = store.getState().createEvent.endDate
             const res = await axios.patch(`${URL}/event/${eventID}/edit`, data, authenticate(store.getState().main.token))
             if (imageURI!=null && imageChanged == true) {
                 const formData = new FormData()
@@ -170,9 +170,6 @@ export default function home (props) {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
-                allowsEditing: true,
-                maxWidth: 1000,
-                maxHeight: 1000,
             })
             if (result.cancelled==false) {
                 setImageURI(result.uri)
@@ -267,7 +264,6 @@ export default function home (props) {
                                         label='Event Name*'
                                         onChangeText={text=>{onChange(text)}}
                                         value={value}
-                                        maxLength={40}
                                         type='name'
                                     />
                                   )}

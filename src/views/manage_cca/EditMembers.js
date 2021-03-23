@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, SafeAreaView, FlatList, StyleSheet, ScrollView, Alert } from 'react-native'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
 import { useDispatch, useSelector } from 'react-redux'
+import WithLoading from '../../components/hoc/withLoading'
 import { editSelectedUsers } from '../../redux/reducers/AdminSlice'
 import { page, marginHorizontal } from '../../components/common/styles'
 import SubNavbar from '../../components/common/navigation/navbar/SubNavbar'
@@ -15,6 +16,7 @@ import store from '../../redux/store/store'
 
 export default function (props) {
     const [isLoaded] = useFonts({Lato_700Bold})
+    const [isLoading, setIsLoading] = useState(true)
     const [users, setUsers] = useState ([])
     //To store users based on keyword search
     const [filteredUsers, setFilteredUsers] = useState([])
@@ -98,6 +100,7 @@ export default function (props) {
                 setUsers(res.data)
                 setFilteredUsers(res.data)
                 dispatch(editSelectedUsers({selectedUsers: memberNames, selectedUserIds: memberIDs}))
+                setIsLoading(false)
             } catch (err) {
                 Alert.alert('Loading users failed')
             }
@@ -107,6 +110,7 @@ export default function (props) {
     return (isLoaded &&
         <SafeAreaView style={page.main}>
             <SubNavbar title='Select Members' pressed={onBackPress} back="Done"/>
+            <WithLoading isLoading={isLoading} loadingMessage='Loading users...'>
             <View style={page.main}>
                 <View style={styles.searchContainer}>
                     <TextInput 
@@ -132,6 +136,7 @@ export default function (props) {
                     )}
                 />
             </View>
+            </WithLoading>
         </SafeAreaView>
     )
 }
