@@ -17,11 +17,12 @@ import PrimaryButton from '../../components/common/buttons/PrimarySmall'
 import SecondaryButton from '../../components/common/buttons/SecondarySmall'
 import RemoveAvatarModal from './RemoveAvatarModal'
 import RemoveBiometricsModal from './RemoveBiometricsModal'
+import LogoutAllDevicesModal from './LogoutAllDeviceModal'
 
 import axios from 'axios'
 import {URL, authenticate} from '../../api/config'
 import { useDispatch } from 'react-redux'
-import { logout, navigateToPage } from '../../redux/reducers/mainSlice'
+import { logout } from '../../redux/reducers/mainSlice'
 import store from '../../redux/store/store'
 
 export default function ProfilePage (props) {
@@ -31,6 +32,7 @@ export default function ProfilePage (props) {
     const [isChangingPassword, setIsChangingPassword] = useState(false)
     const [showRemoveAvatarModal, setShowRemoveAvatarModal] = useState(false)
     const [showRemoveBiometricsModal, setShowRemoveBiometricsModal] = useState(false)
+    const [showLogoutAllModal, setShowLogoutAllModal] = useState(false)
     const [isPhotoChanged, setIsPhotoChanged] = useState(false)
     const [user, setUser] = useState('')
     const [refreshing, setRefreshing] = useState(false);
@@ -193,6 +195,23 @@ export default function ProfilePage (props) {
             Alert.alert('Removing biometrics authentication failed')
         }
     }
+    //Logout all handlers
+    const logoutAllHandler = () => {
+        setShowLogoutAllModal(true)
+    }
+    const closeLogoutAllModal = () => {
+        setShowLogoutAllModal(false)
+    }
+    const confirmLogoutAllHandler = async () => {
+        try {
+            const token = store.getState().main.token
+            const res = await axios.post(`${URL}/users/logout/all`, {}, authenticate(token))
+            dispatch (logout(store.getState().main.token))
+        } catch (err) {
+            
+        }
+    }
+
     const onSubmit = data => {
         async function submitData () {
             try {
@@ -356,6 +375,7 @@ export default function ProfilePage (props) {
                             </>
                         )}
                         <Text onPress={removeBiometricsHandler} style={styles.redHyperlink}>Remove biometrics authentication</Text>
+                        <Text onPress={logoutAllHandler} style={styles.hyperlink}>Logout all devices</Text>
                         <View style={{flexDirection: 'row', width: '100%'}}>
                             <View style={{paddingRight: 10, flex: 1}}>
                                 <SecondaryButton fontSize={13} text="Discard" pressHandler={onBackPress}/>
@@ -371,6 +391,7 @@ export default function ProfilePage (props) {
             </WithLoading>
             <RemoveAvatarModal isModalVisible={showRemoveAvatarModal} closeModal={closeRemoveAvatarModal} confirmHandler={confirmRemoveAvatarHandler} cancelHandler={closeRemoveAvatarModal} />
             <RemoveBiometricsModal isModalVisible={showRemoveBiometricsModal} closeModal={closeRemoveBiometricsModal} confirmHandler={confirmRemoveBiometricsHandler} cancelHandler={closeRemoveBiometricsModal} />
+            <LogoutAllDevicesModal isModalVisible={showLogoutAllModal} closeModal={closeLogoutAllModal} confirmHandler={confirmLogoutAllHandler} cancelHandler={closeLogoutAllModal} />
         </SafeAreaView>
     )
 }

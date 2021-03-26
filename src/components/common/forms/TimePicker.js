@@ -5,7 +5,7 @@ import { useFonts, Lato_400Regular} from '@expo-google-fonts/lato'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import moment from 'moment'
 
-export default function DateTimePickerInput ( { label, onChangeText, onChangePicker, mode, onFocus, showPicker, value, minimumDate, maximumDate } ) {
+export default function DateTimePickerInput ( { label, onChangeText, onChangePicker, mode, onFocus, showPicker, value, style } ) {
     const [isLoaded] = useFonts ({
         Lato_400Regular
     })
@@ -31,17 +31,17 @@ export default function DateTimePickerInput ( { label, onChangeText, onChangePic
             marginBottom: 15,
         },
     })
-    const normalDateFormatParser = (dateObject) => {
+    const timeParser = (dateObject) => {
         const dateString = dateObject.toString()
-        const normalDate = moment(dateString).format('DD MMMM YYYY')
+        const normalDate = moment(dateString).format('hh:mm A')
         return normalDate
     }
     return (isLoaded &&
-        <View>
+        <View style={{...style}}>
             <Text style={styles.inputLabel}>{label}</Text>
                 <TextInput 
                     style={{...styles.textInputContainer, ...styles.inputContent, borderColor: containerBorderColor}}
-                    value={normalDateFormatParser(value)}
+                    value={timeParser(value)}
                     onChangeText={onChangeText}
                     type='name'
                     onFocus={onFocus}
@@ -49,13 +49,12 @@ export default function DateTimePickerInput ( { label, onChangeText, onChangePic
                 {showPicker && (
                     <DateTimePicker
                         testID="dateTimePicker"
-                        minimumDate={minimumDate}
-                        maximumDate={maximumDate}
                         value={new Date(value)}
                         mode={mode}
                         is24Hour={true}
                         display="default"
                         onChange={onChangePicker}
+                        minuteInterval={15}
                     />
                 )}
         </View>

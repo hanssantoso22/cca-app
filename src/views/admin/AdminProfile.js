@@ -12,6 +12,7 @@ import CustomTextInput from '../../components/common/forms/TextInput'
 import PrimaryButton from '../../components/common/buttons/PrimarySmall'
 import SecondaryButton from '../../components/common/buttons/SecondarySmall'
 import RemoveBiometricsModal from './RemoveBiometricsModal'
+import LogoutAllDevicesModal from './LogoutAllDevicesModal'
 
 import axios from 'axios'
 import {URL, authenticate} from '../../api/config'
@@ -25,6 +26,7 @@ export default function ProfilePage (props) {
     const [isLoading, setIsLoading] = useState(true)
     const [isChangingPassword, setIsChangingPassword] = useState(false)
     const [showRemoveBiometricsModal, setShowRemoveBiometricsModal] = useState(false)
+    const [showLogoutAllModal, setShowLogoutAllModal] = useState(false)
     const [user, setUser] = useState('')
 
     const styles = StyleSheet.create({
@@ -124,6 +126,23 @@ export default function ProfilePage (props) {
             Alert.alert('Removing biometrics authentication failed')
         }
     }
+    //Remove biometrics authentication handlers
+    const logoutAllHandler = () => {
+        setShowLogoutAllModal(true)
+    }
+    const closeLogoutAllModal = () => {
+        setShowLogoutAllModal(false)
+    }
+    const confirmLogoutAllHandler = async () => {
+        try {
+            const token = store.getState().main.token
+            const res = await axios.post(`${URL}/users/logout/all`, {}, authenticate(token))
+            dispatch (logout(store.getState().main.token))
+        } catch (err) {
+            
+        }
+    }
+
     const onSubmit = data => {
         async function submitData () {
             try {
@@ -233,6 +252,7 @@ export default function ProfilePage (props) {
                             </>
                         )}
                         <Text onPress={removeBiometricsHandler} style={styles.redHyperlink}>Remove biometrics authentication</Text>
+                        <Text onPress={logoutAllHandler} style={styles.hyperlink}>Logout all devices</Text>
                         <View style={{flexDirection: 'row', width: '100%'}}>
                             <View style={{paddingRight: 10, flex: 1}}>
                                 <SecondaryButton fontSize={13} text="Discard" pressHandler={onBackPress}/>
@@ -247,6 +267,7 @@ export default function ProfilePage (props) {
             </ScrollView>
             </WithLoading>
             <RemoveBiometricsModal isModalVisible={showRemoveBiometricsModal} closeModal={closeRemoveBiometricsModal} confirmHandler={confirmRemoveBiometricsHandler} cancelHandler={closeRemoveBiometricsModal} />
+            <LogoutAllDevicesModal isModalVisible={showLogoutAllModal} closeModal={closeLogoutAllModal} confirmHandler={confirmLogoutAllHandler} cancelHandler={closeLogoutAllModal} />
         </SafeAreaView>
     )
 }

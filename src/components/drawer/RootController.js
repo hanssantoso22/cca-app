@@ -42,6 +42,7 @@ import AddNewCCAScreen from '../../views/admin/CCAManagement/CreateNewCCA'
 import SelectManagersScreen from '../../views/admin/CCAManagement/SelectManagersPage'
 import SelectExcosScreen from '../../views/admin/CCAManagement/SelectExcosPage'
 import SelectMaincommsScreen from '../../views/admin/CCAManagement/SelectMaincommsPage'
+import EndCurrentCommitteeScreen from '../../views/admin/CCAManagement/EndCurrentCommittee'
 
 
 import { isLoggedIn, isAdmin } from '../../redux/store/store'
@@ -125,6 +126,7 @@ const AdminManageCCAStackScreen = () => (
         <AdminManageCCAStack.Screen name="SelectManagersScreen" component={SelectManagersScreen} options={{headerShown: false}}/>
         <AdminManageCCAStack.Screen name="SelectExcosScreen" component={SelectExcosScreen} options={{headerShown: false}}/>
         <AdminManageCCAStack.Screen name="SelectMaincommsScreen" component={SelectMaincommsScreen} options={{headerShown: false}}/>
+        <AdminManageCCAStack.Screen name="EndCurrentCommitteeScreen" component={EndCurrentCommitteeScreen} options={{headerShown: false}}/>
     </AdminManageCCAStack.Navigator>
 )
 

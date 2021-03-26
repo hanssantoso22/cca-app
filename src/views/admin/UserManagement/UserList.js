@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { View, SafeAreaView, FlatList, StyleSheet, Alert } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import { useFonts, Lato_700Bold } from '@expo-google-fonts/lato'
@@ -12,8 +13,10 @@ import TextInput from '../../../components/common/forms/TextInputNoLabel'
 import axios from 'axios'
 import {URL, authenticate} from '../../../api/config'
 import store from '../../../redux/store/store'
+import { logout } from '../../../redux/reducers/mainSlice'
 
 export default function UserList (props) {
+    const dispatch = useDispatch()
     const [isLoaded] = useFonts({Lato_700Bold})
     const [isLoading, setIsLoading] = useState(true)
     const [userList, setUserList] = useState([])
@@ -44,6 +47,7 @@ export default function UserList (props) {
                     setUserList(res.data)
                     setIsLoading(false)
                 } catch (err) {
+                    if (err.response.status === 401) return dispatch(logout(store.getState().main.token))
                     Alert.alert('Loading users failed')
                 }
             }

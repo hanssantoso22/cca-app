@@ -91,6 +91,7 @@ export const logout = (userToken) => async dispatch => {
         const token = await axios.get(`${URL}/users/logout`, authenticate(userToken))
         dispatch(logoutAccount())
     } catch (err) {
+        if (err.response.status === 401) return dispatch(logoutAccount())
         Alert.alert('Logout failed')
     }
 }

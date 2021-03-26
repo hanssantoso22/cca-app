@@ -18,7 +18,6 @@ import ColorPalette from '../../../components/common/forms/ColorPalette'
 import DeleteCCAModal from './DeleteCCAModal'
 import ResetManagerModal from './ResetManagerModal'
 import ResetMemberModal from './ResetMemberModal'
-import EndCommitteeModal from './EndCommitteeModal'
 
 import axios from 'axios'
 import {URL, authenticate} from '../../../api/config'
@@ -34,7 +33,6 @@ export default function CCADetails (props) {
     const [showResetModal, setShowResetModal] = useState(false) //reset managers
     const [showResetMemberModal, setShowResetMemberModal] = useState(false) //reset members
     const [showDeleteModal, setShowDeleteModal] = useState(false)
-    const [showEndCommitteeModal, setShowEndCommitteeModal] = useState(false)
     const { _id } = props.route.params
     const dispatch = useDispatch()
     const styles = StyleSheet.create({
@@ -246,20 +244,9 @@ export default function CCADetails (props) {
     }
     //End current committee handlers
     const endCommitteHandler = () => {
-        setShowEndCommitteeModal(true)
+        props.navigation.navigate('EndCurrentCommitteeScreen',{ccaID: _id})
     }
-    const closeEndCommitteeModal = () => {
-        setShowEndCommitteeModal(false)
-    }
-    const confirmEndCommitteeHandler = async (ccaID, data) => {
-        try {
-            const res = await axios.patch(`${URL}/CCA/${ccaID}/endCommittee`, data, authenticate(store.getState().main.token))
-            setShowEndCommitteeModal(false)
-            props.navigation.goBack()
-        } catch (err) {
-            Alert.alert('Process failed')
-        }
-    }
+    
     const defaultValues = {
         ccaName: '',
         description: '',
@@ -452,7 +439,6 @@ export default function CCADetails (props) {
             <ResetManagerModal isModalVisible={showResetModal} closeModal={closeResetModal} confirmHandler={confirmResetManagerHandler} cancelHandler={closeResetModal} ccaID={_id} />
             <ResetMemberModal isModalVisible={showResetMemberModal} closeModal={closeResetMemberModal} confirmHandler={confirmResetMemberHandler} cancelHandler={closeResetMemberModal} ccaID={_id} />
             <DeleteCCAModal isModalVisible={showDeleteModal} closeModal={closeDeleteModal} confirmHandler={confirmDeleteHandler} cancelHandler={closeDeleteModal} ccaID={_id} />
-            <EndCommitteeModal isModalVisible={showEndCommitteeModal} closeModal={closeEndCommitteeModal} confirmHandler={confirmEndCommitteeHandler} cancelHandler={closeEndCommitteeModal} ccaID={_id} />
         </SafeAreaView>
         </TouchableWithoutFeedback>
     )

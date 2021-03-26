@@ -5,12 +5,13 @@ import Navbar from '../../components/common/navigation/navbar/navbar'
 import WithLoading from '../../components/hoc/withLoading'
 import NoItemLoaded from '../../components/common/NoItemLoaded'
 import { page, GREY } from '../../components/common/styles'
-import { SafeAreaView, View, FlatList } from 'react-native'
+import { SafeAreaView, View, FlatList, Alert } from 'react-native'
 import NewsCard from '../../components/home/NewsCard'
 
 import axios from 'axios'
 import {URL, authenticate} from '../../api/config'
 import store from '../../redux/store/store'
+import { logout } from '../../redux/reducers/mainSlice'
 
 export default function home (props) {
     const [isLoading, setIsLoading] = useState(true)
@@ -32,7 +33,8 @@ export default function home (props) {
                 setAnnouncements(data)
                 setIsLoading(false)
             } catch (err) {
-                
+                if (err.response.status === 401) return dispatch(logout(store.getState().main.token))
+                Alert.alert('Loading announcements failed')
             }
         }
         fetchData()

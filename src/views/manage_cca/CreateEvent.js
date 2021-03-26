@@ -15,7 +15,8 @@ import { changeStartDate, changeEndDate } from '../../redux/reducers/CreateEvent
 import CustomTextInput from '../../components/common/forms/TextInput'
 import MultiLineInput from '../../components/common/forms/MultiLineInput'
 import CustomPicker from '../../components/common/forms/Picker'
-import DateTimePicker from '../../components/common/forms/DateTimePicker'
+import DatePicker from '../../components/common/forms/DatePicker'
+import TimePicker from '../../components/common/forms/TimePicker'
 import PrimaryButton from '../../components/common/buttons/PrimarySmall'
 import SecondaryButton from '../../components/common/buttons/SecondarySmall'
 import ImageUploader from '../../components/common/forms/ImageUploader'
@@ -24,6 +25,11 @@ import axios from 'axios'
 import { URL, authenticate } from '../../api/config'
 import store from '../../redux/store/store'
 
+const getISOTime = (date, time) => {
+    const dateOnly = moment(date).format('YYYY-MM-DD')
+    const timeOnly = moment(time).format('HH:mm:ss.sssZ')
+    return `${dateOnly}T${timeOnly}`
+}
 export default function home (props) {
     const [isLoaded] = useFonts({
         Lato_400Regular,
@@ -33,8 +39,12 @@ export default function home (props) {
     const [CCAs, setCCAs] = useState([])
     const [isSubmitLoading, setIsSubmitLoading] = useState(false)
     const [imageURI, setImageURI] = useState(null)
-    const [showStartPicker, setShowStartPicker] = useState(false)
-    const [showEndPicker, setShowEndPicker] = useState(false)
+    const [date, setDate] = useState(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`))
+    const [startTime, setStartTime] = useState(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`))
+    const [endTime, setEndTime] = useState(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`))
+    const [showDatePicker, setShowDatePicker] = useState(false)
+    const [showStartTimePicker, setShowStartTimePicker] = useState(false)
+    const [showEndTimePicker, setShowEndTimePicker] = useState(false)
     const onBackPress = () => {
         props.navigation.goBack()
     }
@@ -82,6 +92,7 @@ export default function home (props) {
 
     const defaultValues = {
         eventName: "",
+        date: moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`),
         startTime: moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`),
         endTime: moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`),
         venue: "",
@@ -103,8 +114,9 @@ export default function home (props) {
             if (data.allowedParticipants == 0) {
                 delete data.allowedParticipants
             }
-            data.startTime = store.getState().createEvent.startDate
-            data.endTime = store.getState().createEvent.endDate
+            data.startTime = getISOTime(date, startTime)
+            data.endTime = getISOTime(date, endTime)
+            delete data.date
             const res = await axios.post(`${URL}/events/create`, data, authenticate(store.getState().main.token))
             if (imageURI!=null) {
                 const formData = new FormData()
@@ -137,8 +149,9 @@ export default function home (props) {
         setValue("visibility","")
         setValue("allowedParticipants","")
         setImageURI(null)
-        dispatch(changeStartDate(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)))
-        dispatch(changeEndDate(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)))
+        setDate(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`))
+        setStartTime(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`))
+        setEndTime(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`))
     }
     const pickImageHandler = async () => {
         try {
@@ -155,8 +168,6 @@ export default function home (props) {
     useEffect(() => {
         async function loadManagedCCA () {
             try {
-                dispatch(changeStartDate(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)))
-                dispatch(changeEndDate(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)))
                 const res = await axios.get(`${URL}/users/managedCCAs`, authenticate(store.getState().main.token))
                 const ccaArray = res.data.map((CCA) => {
                     return {label: CCA.ccaName, value: CCA._id}
@@ -169,7 +180,7 @@ export default function home (props) {
         loadManagedCCA()
     }, [])
     return (isLoaded &&
-        <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss(); setShowStartPicker(false); setShowEndPicker(false)}}>
+        <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss(); setShowDatePicker(false); setShowStartTimePicker(false); setShowEndTimePicker(false)}}>
             <SafeAreaView style={page.main}>
                 {isSubmitLoading && <LoadingOverlay />}
                 <SubNavbar title='Create Event' pressed={onBackPress} />
@@ -200,57 +211,85 @@ export default function home (props) {
                             {errors.eventName && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="eventName" /></Text>}
                             <Controller
                                 control={control}
-                                rules={{
-                                    required: {
-                                        value: true,
-                                        message: 'This is a required field.'
-                                    },
-                                }}
                                 render= {() => (
-                                    <DateTimePicker
-                                        label='Start Time*'
-                                        mode='datetime'
-                                        value={store.getState().createEvent.startDate}
-                                        onFocus={()=>setShowStartPicker(true)}
-                                        showPicker={showStartPicker}
+                                    <DatePicker
+                                        label='Date*'
+                                        mode='date'
+                                        value={date}
+                                        minimumDate={Date.parse(moment().format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`))}
+                                        onFocus={()=>setShowDatePicker(true)}
+                                        showPicker={showDatePicker}
                                         onChangePicker={(event,itemValue) => {
+                                            if (Platform.OS == "android"){ 
+                                                setShowDatePicker(!showDatePicker)
+                                                Keyboard.dismiss()
+                                            }
                                             const val = moment(itemValue).format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)
                                             console.log(val)           
-                                            dispatch(changeStartDate(val))
-                                            dispatch(changeEndDate(val))
+                                            setDate(val)
                                         }}
+                                    />
+                                  )}
+                                  name="date"
+                                  defaultValue={date}
+                            />
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <Controller
+                                control={control}
+                                render= {() => (
+                                    <TimePicker
+                                        label='Start Time*'
+                                        mode='time'
+                                        value={startTime}
+                                        onFocus={()=>setShowStartTimePicker(true)}
+                                        showPicker={showStartTimePicker}
+                                        onChangePicker={(event,itemValue) => {
+                                            if (Platform.OS == "android"){ 
+                                                setShowStartTimePicker(!showStartTimePicker)
+                                                Keyboard.dismiss()
+                                            }
+                                            const val = moment(itemValue).format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)
+                                            console.log(val)
+                                            setStartTime(val)
+                                            setEndTime(val)           
+                                        }}
+                                        style={{width: '47%'}}
                                     />
                                   )}
                                   name="startTime"
-                                  defaultValue={store.getState().createEvent.startDate}
+                                  defaultValue={startTime}
                             />
-                            {errors.startTime && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="startTime" /></Text>}
+                        
                             <Controller
                                 control={control}
                                 rules={{
-                                    required: {
-                                        value: true,
-                                        message: 'This is a required field.'
-                                    },
+                                    validate: (value) => {
+                                            if (startTime < endTime) return true
+                                            return 'Time setting is invalid'
+                                    }
                                 }}
                                 render= {() => (
-                                    <DateTimePicker
+                                    <TimePicker
                                         label='End Time*'
-                                        mode='datetime'
-                                        minimumDate={store.getState().createEvent.startDate}
-                                        maximumDate={moment(store.getState().createEvent.startDate, 'YYYY-MM-DD').add(1,'day').format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)}
-                                        value={store.getState().createEvent.endDate}
-                                        onFocus={()=>setShowEndPicker(true)}
-                                        showPicker={showEndPicker}
+                                        mode='time'
+                                        value={endTime}
+                                        onFocus={()=>setShowEndTimePicker(true)}
+                                        showPicker={showEndTimePicker}
                                         onChangePicker={(event,itemValue) => {
+                                            if (Platform.OS == "android"){ 
+                                                setShowEndTimePicker(!showEndTimePicker)
+                                                Keyboard.dismiss()
+                                            }
                                             const val = moment(itemValue).format(`${'YYYY-MM-DD'}T${'HH:mm:ss.sssZ'}`)                
-                                            dispatch(changeEndDate(val))
+                                            setEndTime(val)
                                         }}
+                                        style={{width: '47%'}}
                                     />
                                   )}
                                   name="endTime"
-                                  defaultValue={store.getState().createEvent.startDate}
+                                  defaultValue={startTime}
                             />
+                            </View>
                             {errors.endTime && <Text style={styles.errorMessage}><ErrorMessage errors={errors} name="endTime" /></Text>}
                             <Controller
                                 control={control}
