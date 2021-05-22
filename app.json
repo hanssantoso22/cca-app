@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "cca-app",
-    "slug": "cca-app",
-    "version": "1.0.1",
+    "name": "ekskul-app",
+    "slug": "ekskul-app",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./src/assets/common/icon.png",
     "splash": {

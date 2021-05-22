@@ -133,7 +133,7 @@ export default function EventDetailsPage (props) {
                 setDetails(res.data)
                 setIsLoading(false)
             } catch (err) {
-                Alert.alert('Loading details failed')
+                
             }
         }
         loadEventDetails()

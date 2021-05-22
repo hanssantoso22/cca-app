@@ -62,9 +62,6 @@ export default function PastRegisteredEvents (props) {
             setIsSubmitLoading(true)
             let htmlScript = `
                 <style>
-                    @page {
-                        margin: 2.54cm;
-                    }
                     th {
                         background-color: #205F67;
                         color: white;
@@ -152,7 +149,7 @@ export default function PastRegisteredEvents (props) {
                 setDataRes(res.data)
                 setIsLoading(false)
             } catch (err) {
-                Alert.alert('Loading details failed')
+                
             }
         }
         loadPastEvents()
